@@ -166,6 +166,14 @@
           "description": "Generate random person(identity) from US, include name,address,phone,email,employment,family,personal information like interest, online profile, brower, and more. Use for testing as database.",
           "icon": "https://www.fakepersongenerator.com/Public/img/favicon.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738163435_v4m5bhlm3",
+          "title": "AI换脸、AI数字人、AI绘画、AI语音克隆 - AI直播换脸、AI实时换脸 - DeepFaceLab软件下载、DeepFaceLab教程；AI直播换脸软件 - DeepFaceLive下载、DeepFaceLive教程-AI资源站 -  DeepFaceLab资源站",
+          "href": "https://deepface.cc/",
+          "description": "AI换脸软件、AI数字人、AI绘画、AI语音克隆 - AI直播换脸、AI实时换脸 - DeepFaceLab软件下载、DeepFaceLab教程；AI直播换脸软件 - DeepFaceLive下载、DeepFaceLive教程-AI资源站",
+          "icon": "/assets/favicon_1754738149064.ico",
+          "enabled": true
         }
       ],
       "subCategories": [
