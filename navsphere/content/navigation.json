@@ -511,6 +511,14 @@
           "description": "传世单机网",
           "icon": "/assets/favicon_1754739483107.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754739545818_xwuneiu2i",
+          "title": "168版本库",
+          "href": "https://www.168bbk.com/forum.php",
+          "description": "168版本库",
+          "icon": "/assets/img_1754739538387.png",
+          "enabled": true
         }
       ],
       "subCategories": [],
