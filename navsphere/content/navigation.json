@@ -421,6 +421,14 @@
           "description": "咸鱼单机发布页",
           "icon": "/assets/img_1754739002647.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754739025203_ne7isng1m",
+          "title": "Poki (宝玩) - 免费在线小游戏 - 马上玩！",
+          "href": "https://poki.com/zh",
+          "description": "与Poki (宝玩)一起探索免费在线游戏的世界！即刻玩耍，无需下载，享受与所有设备兼容的游戏。",
+          "icon": "/assets/favicon_1754739020273.png",
+          "enabled": true
         }
       ],
       "subCategories": []
