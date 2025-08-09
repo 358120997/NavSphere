@@ -503,7 +503,16 @@
       "id": "8",
       "title": "签到",
       "icon": "LayoutGrid",
-      "items": [],
+      "items": [
+        {
+          "id": "site_1754739502058_q52ck8vls",
+          "title": "传世单机网",
+          "href": "https://www.wooolc.com/plugin.php?id=k_misign:sign",
+          "description": "传世单机网",
+          "icon": "/assets/favicon_1754739483107.ico",
+          "enabled": true
+        }
+      ],
       "subCategories": [],
       "description": "",
       "enabled": true
