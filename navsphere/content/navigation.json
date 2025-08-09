@@ -373,6 +373,14 @@
           "description": "小妖怪分享网,每天为大家更新国内外单机PJ游戏，安卓PJ软件，WIN软件下载，CAD 3DMAX的实用教程，收录最新最全的STEAM单机破解游戏，本站游戏免解压免安装，下载即玩。",
           "icon": "/assets/favicon_1754738824319.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738843099_r90z7gw8v",
+          "title": "GKinto 游戏大桶",
+          "href": "https://www.gkinto.com/",
+          "description": "",
+          "icon": "/assets/favicon_1754738837738.png",
+          "enabled": true
         }
       ],
       "subCategories": []
