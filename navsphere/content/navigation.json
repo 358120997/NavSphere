@@ -307,6 +307,14 @@
           "description": "",
           "icon": "/assets/favicon_1754738615609.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738660882_5o5wmivkj",
+          "title": "传奇部落",
+          "href": "https://www.gmbuluo.net/",
+          "description": "",
+          "icon": "/assets/favicon_1754738637682.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
