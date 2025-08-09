@@ -47,10 +47,10 @@
         },
         {
           "id": "1_6",
-          "title": "Leonardo.AI",
-          "href": "https://app.leonardo.ai/",
-          "description": "Leonardo.AI是一个人工智能绘图社区和工具。它基于Stable Diffusion人工智能模型,深度集成了其各种插件,提供强大的图片生成和创作功能。",
-          "icon": "/assets/images/logos/leonardo.ico",
+          "title": "AMZ123亚马逊",
+          "href": "https://www.amz123.com/minitools",
+          "description": "亚马逊卖家必备运营工具，显著提高亚马逊运营效率，一起来看看吧!",
+          "icon": "/assets/favicon_1754737033904.png",
           "enabled": true
         },
         {
