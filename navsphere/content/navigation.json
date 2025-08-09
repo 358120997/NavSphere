@@ -437,7 +437,16 @@
       "id": "2",
       "title": "资源",
       "icon": "LayoutGrid",
-      "items": [],
+      "items": [
+        {
+          "id": "site_1754739054666_sipv660hr",
+          "title": "小昕资源网盘",
+          "href": "https://pan.iosxin.top/",
+          "description": "",
+          "icon": "/assets/favicon_1754739047630.svg",
+          "enabled": true
+        }
+      ],
       "subCategories": [],
       "description": "",
       "enabled": true
