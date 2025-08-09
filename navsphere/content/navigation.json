@@ -251,6 +251,14 @@
           "description": "",
           "icon": "/assets/favicon_1754738420811.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738480699_2md9jspuv",
+          "title": "藏宝弯 -  Powered by Discuz!",
+          "href": "https://www.iopq.net/forum.php?mod=forumdisplay&fid=79&filter=author&orderby=dateline",
+          "description": "",
+          "icon": "/assets/favicon_1754738463227.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
