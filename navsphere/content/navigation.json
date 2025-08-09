@@ -216,39 +216,6 @@
               "enabled": true
             }
           ]
-        },
-        {
-          "id": "4da4ad49-4cfe-4e78-992b-af84a1d6c0ad",
-          "title": "托管平台",
-          "icon": "Book",
-          "description": "",
-          "enabled": true,
-          "items": [
-            {
-              "id": "1735612561958",
-              "title": "Cloudflare",
-              "href": "https://dash.cloudflare.com/",
-              "description": "Cloudflare以向客户提供基于反向代理的内容分发网络及分布式域名解析服务为主要业务。",
-              "icon": "/assets/images/logos/cloudflar.ico",
-              "enabled": true
-            },
-            {
-              "id": "1735612588184",
-              "title": "Vercel",
-              "href": "https://vercel.com/",
-              "description": "Vercel 提供开发者工具和云基础设施，帮助构建、扩展和保护更快、更个性化的网络应用。",
-              "icon": "/assets/images/logos/vercel.png",
-              "enabled": true
-            },
-            {
-              "id": "1735612629450",
-              "title": "netlify",
-              "href": "https://www.netlify.com/",
-              "description": "Netlify is the essential platform for the delivery of exceptional and dynamic web experiences, without limitations.",
-              "icon": "/assets/img_1735612745862.png",
-              "enabled": true
-            }
-          ]
         }
       ]
     },
