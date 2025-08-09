@@ -397,6 +397,14 @@
           "description": "免费单机游戏电影动漫软件分享",
           "icon": "/assets/favicon_1754738872212.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754738945002_plfhu5h60",
+          "title": "品技 - 论坛",
+          "href": "https://www.tekqart.com/forum.php?mod=forumdisplay&fid=141&filter=author&orderby=dateline",
+          "description": "",
+          "icon": "/assets/img_1754738934565.png",
+          "enabled": true
         }
       ],
       "subCategories": []
