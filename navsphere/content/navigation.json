@@ -381,6 +381,14 @@
           "description": "",
           "icon": "/assets/favicon_1754738837738.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754738862419_h41tozb0c",
+          "title": "flysheep资源避难所",
+          "href": "http://flysheep.ysepan.com",
+          "description": "",
+          "icon": "/assets/favicon_1754738856952.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
