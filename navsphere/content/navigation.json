@@ -477,6 +477,14 @@
           "description": "亿破姐『易破解』网站专注无流氓绿色软件分享、游戏下载、电脑技术、经验教程为一体的站点、安全、纯净、放心、十年磨一剑，不忘初心只为给你最需要的内容。",
           "icon": "/assets/favicon_1754739252859.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754739451938_c50n17ydm",
+          "title": "乐玩ioa资源站",
+          "href": "https://pan.lewsky.top/",
+          "description": "",
+          "icon": "/assets/img_1754739436228.png",
+          "enabled": true
         }
       ],
       "subCategories": [],
