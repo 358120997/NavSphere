@@ -23,10 +23,10 @@
         },
         {
           "id": "1_3",
-          "title": "Cloudflare",
-          "href": "https://dash.cloudflare.com/",
-          "description": "Cloudflare以向客户提供基于反向代理的内容分发网络及分布式域名解析服务为主要业务。",
-          "icon": "/assets/images/logos/cloudflar.ico",
+          "title": "PayPal",
+          "href": "https://www.paypal.com/",
+          "description": "Gebruik je PayPal-rekening om geld uit te geven, over te maken en te beheren. Of maak een zakelijke rekening aan voor je bedrijf. En nog veel meer. Ontdek hier alle details.",
+          "icon": "/assets/favicon_1754706249824.png",
           "enabled": true
         },
         {
