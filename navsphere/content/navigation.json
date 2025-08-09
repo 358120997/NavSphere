@@ -283,6 +283,14 @@
           "description": "",
           "icon": "/assets/img_1754738556183.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754738582427_z1zqrghkz",
+          "title": "传世资源站 -  Powered by Discuz!",
+          "href": "http://bbs.93hf.com/",
+          "description": "论坛",
+          "icon": "/assets/favicon_1754738574070.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
