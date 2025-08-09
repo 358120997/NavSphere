@@ -102,6 +102,14 @@
           "description": "一个优雅的开车app",
           "icon": "https://www.javrocket.top/favicon.ico",
           "enabled": true
+        },
+        {
+          "id": "9_2",
+          "title": "源仓库",
+          "href": "https://www.yckceo.com/",
+          "description": "源仓库",
+          "icon": "/assets/img_1754737756764.png",
+          "enabled": true
         }
       ],
       "subCategories": [
@@ -112,14 +120,6 @@
           "description": "",
           "enabled": true,
           "items": [
-            {
-              "id": "9_2",
-              "title": "Claude",
-              "href": "https://claude.ai/",
-              "description": "Anthropic开发的AI助手，擅长分析和创作。",
-              "icon": "/assets/images/logos/claude.png",
-              "enabled": true
-            },
             {
               "id": "9_3",
               "title": "Gemini",
