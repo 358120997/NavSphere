@@ -92,6 +92,14 @@
           "description": "Your personal ChatGPT Chat Bot.",
           "icon": "/assets/favicon_1754740229762.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754740258625_1dny85vz0",
+          "title": "橘子TV - 免费在线视频搜索与观看平台",
+          "href": "https://tv.guojubb.top/",
+          "description": "橘子TV是一个免费的在线视频搜索平台，无广告、安全，提供来自多个视频源的内容搜索与观看服务，无需注册即可使用。",
+          "icon": "/assets/favicon_1754740249589.png",
+          "enabled": true
         }
       ],
       "subCategories": [],
