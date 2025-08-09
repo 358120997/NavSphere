@@ -31,10 +31,10 @@
         },
         {
           "id": "1_4",
-          "title": "Google AdSense",
-          "href": "https://www.google.com/adsense/",
-          "description": "Google AdSense广告服务。",
-          "icon": "/assets/images/logos/gads.ico",
+          "title": "PingPong",
+          "href": "https://us.pingpongx.com/dashboard/account",
+          "description": "PingPong是跨境行业的创新推动者，业务现已覆盖全球超200个国家和地区，旗下拥有跨境收款、外贸B2B收付款、全球收单、供应链融资、SaaS等产品和服务",
+          "icon": "/assets/favicon_1754706289570.ico",
           "enabled": true
         },
         {
