@@ -158,6 +158,14 @@
           "description": "PC Game Cheats and Mods",
           "icon": "/assets/favicon_1754738065017.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754738127667_rvnaqoxjl",
+          "title": "美国身份生成 | User Identity, Account and Profile Generator",
+          "href": "https://www.fakepersongenerator.com/",
+          "description": "Generate random person(identity) from US, include name,address,phone,email,employment,family,personal information like interest, online profile, brower, and more. Use for testing as database.",
+          "icon": "https://www.fakepersongenerator.com/Public/img/favicon.ico",
+          "enabled": true
         }
       ],
       "subCategories": [
