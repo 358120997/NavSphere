@@ -275,6 +275,14 @@
           "description": "七玩网|网游单机|游戏攻略|综合工具|社区论坛拥有专业网游单机游戏攻略和综合工具等资源。",
           "icon": "/assets/favicon_1754738509789.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754738560539_m4qj04gps",
+          "title": "菜狗游戏小窝",
+          "href": "https://cggm.cc",
+          "description": "",
+          "icon": "/assets/img_1754738556183.png",
+          "enabled": true
         }
       ],
       "subCategories": []
