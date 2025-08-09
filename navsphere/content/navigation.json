@@ -76,6 +76,14 @@
           "description": "",
           "icon": "/assets/favicon_1754737125289.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754740212529_x9au2t9vg",
+          "title": "提示词优化器",
+          "href": "https://prompt.always200.com",
+          "description": "提示词优化器",
+          "icon": "/assets/favicon_1754740202689.ico",
+          "enabled": true
         }
       ],
       "subCategories": [],
