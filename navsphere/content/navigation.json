@@ -349,6 +349,14 @@
           "description": "",
           "icon": "/assets/img_1754738762753.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754738790442_gbsox0ge4",
+          "title": "switch520",
+          "href": "https://laoquzhang.com/",
+          "description": "",
+          "icon": "https://laoquzhang.com/favicon.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
