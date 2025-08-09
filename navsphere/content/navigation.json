@@ -365,6 +365,14 @@
           "description": "Smash Karts is a 3D multiplayer IO kart battle game. Drive your go-kart, pick up weapons, and blow up other karts to win! Keep playing to level up and unlock new characters and prizes.",
           "icon": "/assets/favicon_1754738799721.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754738827714_98qbwpk2x",
+          "title": "小妖怪分享|兴趣使然的资源搬运Blog",
+          "href": "https://www.xyg688.com/",
+          "description": "小妖怪分享网,每天为大家更新国内外单机PJ游戏，安卓PJ软件，WIN软件下载，CAD 3DMAX的实用教程，收录最新最全的STEAM单机破解游戏，本站游戏免解压免安装，下载即玩。",
+          "icon": "/assets/favicon_1754738824319.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
