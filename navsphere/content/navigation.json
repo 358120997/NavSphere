@@ -76,14 +76,6 @@
           "description": "",
           "icon": "/assets/favicon_1754737125289.ico",
           "enabled": true
-        },
-        {
-          "id": "1754229699374",
-          "title": "Lucide",
-          "href": "https://lucide.dev/",
-          "description": "Beautiful & consistent icon toolkit made by the community.",
-          "icon": "/assets/favicon_1754229702059.ico",
-          "enabled": true
         }
       ],
       "subCategories": [],
