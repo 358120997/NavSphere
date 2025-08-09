@@ -94,6 +94,14 @@
           "description": "",
           "icon": "https://lengqiu.tacyzs.com/favicon.ico",
           "enabled": true
+        },
+        {
+          "id": "9_1",
+          "title": "JavRocket | 一个优雅的开车app",
+          "href": "https://www.javrocket.top/",
+          "description": "一个优雅的开车app",
+          "icon": "https://www.javrocket.top/favicon.ico",
+          "enabled": true
         }
       ],
       "subCategories": [
@@ -104,14 +112,6 @@
           "description": "",
           "enabled": true,
           "items": [
-            {
-              "id": "9_1",
-              "title": "ChatGPT",
-              "href": "https://chat.openai.com/",
-              "description": "OpenAI开发的人工智能聊天机器人程序。",
-              "icon": "/assets/images/logos/chatgpt.png",
-              "enabled": true
-            },
             {
               "id": "9_2",
               "title": "Claude",
