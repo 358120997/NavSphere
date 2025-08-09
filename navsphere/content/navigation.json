@@ -485,6 +485,14 @@
           "description": "",
           "icon": "/assets/img_1754739436228.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754739470274_17n0xs2xf",
+          "title": "清烟资源库丨致力打造全网最全资源",
+          "href": "https://pan.qlam.cc/",
+          "description": "专注iOS应用分享，以及苹果科技教程软件，APPLE编程教程",
+          "icon": "/assets/favicon_1754739467120.ico",
+          "enabled": true
         }
       ],
       "subCategories": [],
