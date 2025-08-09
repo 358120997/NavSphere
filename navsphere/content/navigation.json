@@ -461,6 +461,14 @@
           "description": "本站提供 Windows 11、Windows 10、Windows 8.1、Windows 8、Windows 7、Windows XP 的 MSDN 镜像资源展示。",
           "icon": "https://cdn.sjjzm.com/favicon.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754739240082_mfqre61rl",
+          "title": "软仓",
+          "href": "https://www.ruancang.net",
+          "description": "",
+          "icon": "/assets/img_1754739234780.png",
+          "enabled": true
         }
       ],
       "subCategories": [],
