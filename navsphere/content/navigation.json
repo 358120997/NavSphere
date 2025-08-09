@@ -405,6 +405,14 @@
           "description": "",
           "icon": "/assets/img_1754738934565.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754738961210_nvw6clpio",
+          "title": "每周都有免费游戏 | Epic游戏商城",
+          "href": "https://store.epicgames.com/zh-CN/free-games",
+          "description": "立即下载免费游戏或加入免费游戏社区吧！",
+          "icon": "/assets/favicon_1754738956846.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
