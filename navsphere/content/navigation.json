@@ -235,7 +235,16 @@
       "icon": "LayoutGrid",
       "description": "",
       "enabled": true,
-      "items": [],
+      "items": [
+        {
+          "id": "site_1754738355107_uyg61sd3k",
+          "title": "彩虹引擎工作室",
+          "href": "https://old.ch3bbs.com/",
+          "description": "",
+          "icon": "https://old.ch3bbs.com/favicon.ico",
+          "enabled": true
+        }
+      ],
       "subCategories": []
     },
     {
