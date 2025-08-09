@@ -259,6 +259,14 @@
           "description": "",
           "icon": "/assets/favicon_1754738463227.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738497779_c6i32mfc7",
+          "title": "九零一起玩资源网",
+          "href": "https://www.dwymw.com/",
+          "description": "九零一起玩资源网（帝王源码网）,是分享Web互联网资源的博客，偶尔分享个人建站心得，汇聚各优质资源站，建站资源、建站经验教程、游戏源代码资源等,让学习变的更便捷.永久域名为九零一起玩的谐音90175.com",
+          "icon": "/assets/favicon_1754738493486.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
