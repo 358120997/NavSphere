@@ -357,6 +357,14 @@
           "description": "",
           "icon": "https://laoquzhang.com/favicon.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738812354_k849ojdif",
+          "title": "Smash Karts 🏎️ 小游戏",
+          "href": "https://www.crazygames.com/game/smash-karts",
+          "description": "Smash Karts is a 3D multiplayer IO kart battle game. Drive your go-kart, pick up weapons, and blow up other karts to win! Keep playing to level up and unlock new characters and prizes.",
+          "icon": "/assets/favicon_1754738799721.png",
+          "enabled": true
         }
       ],
       "subCategories": []
