@@ -243,6 +243,14 @@
           "description": "",
           "icon": "https://old.ch3bbs.com/favicon.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738441091_rthq35hw5",
+          "title": "热血侠",
+          "href": "http://www.rexuexia.com/forum.php?mod=forumdisplay&fid=2&filter=author&orderby=dateline",
+          "description": "",
+          "icon": "/assets/favicon_1754738420811.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
