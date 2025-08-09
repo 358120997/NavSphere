@@ -267,6 +267,14 @@
           "description": "九零一起玩资源网（帝王源码网）,是分享Web互联网资源的博客，偶尔分享个人建站心得，汇聚各优质资源站，建站资源、建站经验教程、游戏源代码资源等,让学习变的更便捷.永久域名为九零一起玩的谐音90175.com",
           "icon": "/assets/favicon_1754738493486.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738511763_7w6ziew2g",
+          "title": "七玩网-全网首发游戏资源库｜全端游戏资源库·大型单机/MOD/补丁｜日更500+",
+          "href": "https://www.7chaowan.com/",
+          "description": "七玩网|网游单机|游戏攻略|综合工具|社区论坛拥有专业网游单机游戏攻略和综合工具等资源。",
+          "icon": "/assets/favicon_1754738509789.png",
+          "enabled": true
         }
       ],
       "subCategories": []
