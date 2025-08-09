@@ -221,11 +221,12 @@
     },
     {
       "id": "8",
-      "title": "素材资源",
-      "icon": "linecons-thumbs-up",
+      "title": "签到",
+      "icon": "LayoutGrid",
       "items": [],
       "subCategories": [],
-      "description": ""
+      "description": "",
+      "enabled": true
     }
   ]
 }
