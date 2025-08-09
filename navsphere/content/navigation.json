@@ -84,6 +84,14 @@
           "description": "提示词优化器",
           "icon": "/assets/favicon_1754740202689.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754740236345_r2uj3zxy6",
+          "title": "NextChat",
+          "href": "https://gpt.guojubb.top",
+          "description": "Your personal ChatGPT Chat Bot.",
+          "icon": "/assets/favicon_1754740229762.ico",
+          "enabled": true
         }
       ],
       "subCategories": [],
