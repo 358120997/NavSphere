@@ -118,6 +118,14 @@
           "description": "",
           "icon": "/assets/favicon_1754737796762.svg",
           "enabled": true
+        },
+        {
+          "id": "9_4",
+          "title": "恩山无线论坛 -  Powered by Discuz!",
+          "href": "https://www.right.com.cn/forum/forum.php",
+          "description": "恩山无线论坛-无线路由器爱好者的乐园",
+          "icon": "/assets/favicon_1754737830608.ico",
+          "enabled": true
         }
       ],
       "subCategories": [
@@ -128,14 +136,6 @@
           "description": "",
           "enabled": true,
           "items": [
-            {
-              "id": "9_4",
-              "title": "Poe",
-              "href": "https://poe.com/",
-              "description": "Poe一款由Quora开发的应用程序。该应用程序集成了多种生成式人工智能，可使用户能够便利切换，比较和使用市场上主流的大型语言模型。",
-              "icon": "/assets/images/logos/poe.svg",
-              "enabled": true
-            },
             {
               "id": "1739871926277",
               "title": "perplexity",
