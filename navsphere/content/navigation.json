@@ -341,7 +341,16 @@
       "icon": "LayoutGrid",
       "description": "",
       "enabled": true,
-      "items": [],
+      "items": [
+        {
+          "id": "site_1754738768546_4tthah5wy",
+          "title": "switch618",
+          "href": "https://www.switch618.com/",
+          "description": "",
+          "icon": "/assets/img_1754738762753.png",
+          "enabled": true
+        }
+      ],
       "subCategories": []
     },
     {
