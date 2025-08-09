@@ -103,25 +103,7 @@
       "title": "AI工具包",
       "icon": "Brain",
       "items": [],
-      "subCategories": [
-        {
-          "id": "21bf96f3-acb0-4e28-aaa8-2759ac55d278",
-          "title": "MCP Server",
-          "icon": "Edit",
-          "description": "",
-          "enabled": true,
-          "items": [
-            {
-              "id": "1752554261491",
-              "title": "MCP Server 集合站",
-              "href": "https://smithery.ai/",
-              "description": "各种各样的 MCP Server",
-              "icon": "/assets/img_1752554273115.png",
-              "enabled": true
-            }
-          ]
-        }
-      ],
+      "subCategories": [],
       "description": "",
       "enabled": true
     },
