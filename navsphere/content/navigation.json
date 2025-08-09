@@ -389,6 +389,14 @@
           "description": "",
           "icon": "/assets/favicon_1754738856952.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738875075_145ygl2hv",
+          "title": "小叽资源 - Free Share",
+          "href": "https://steamzg.com/",
+          "description": "免费单机游戏电影动漫软件分享",
+          "icon": "/assets/favicon_1754738872212.png",
+          "enabled": true
         }
       ],
       "subCategories": []
