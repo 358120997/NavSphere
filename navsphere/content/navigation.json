@@ -126,6 +126,14 @@
           "description": "恩山无线论坛-无线路由器爱好者的乐园",
           "icon": "/assets/favicon_1754737830608.ico",
           "enabled": true
+        },
+        {
+          "id": "1739871926277",
+          "title": "欧歌线路",
+          "href": "http://tv.nxog.top",
+          "description": "",
+          "icon": "/assets/img_1754737977538.png",
+          "enabled": true
         }
       ],
       "subCategories": [
@@ -135,16 +143,7 @@
           "icon": "Book",
           "description": "",
           "enabled": true,
-          "items": [
-            {
-              "id": "1739871926277",
-              "title": "perplexity",
-              "href": "https://www.perplexity.ai/",
-              "description": "一个人工智能助手，旨在为您提供信息、解答问题和帮助您完成各种任务。",
-              "icon": "/assets/img_1739871936809.png",
-              "enabled": true
-            }
-          ]
+          "items": []
         },
         {
           "id": "cbb3e33d-408b-41ba-9e9a-e0444303e3ff",
