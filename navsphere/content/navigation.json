@@ -527,6 +527,14 @@
           "description": "思维资源网",
           "icon": "/assets/img_1754739572591.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754739604442_crk7a52jd",
+          "title": "小悠源码网",
+          "href": "https://vip.skt3.com/",
+          "description": "小悠源码网",
+          "icon": "/assets/img_1754739601322.png",
+          "enabled": true
         }
       ],
       "subCategories": [],
