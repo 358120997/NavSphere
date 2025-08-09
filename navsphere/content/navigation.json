@@ -323,6 +323,14 @@
           "description": "",
           "icon": "/assets/favicon_1754738671781.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754738691107_r0jjevbmm",
+          "title": "狗凯之家免费源码网-提供程序源代码和网站模板主题",
+          "href": "https://www.bygoukai.com/",
+          "description": "一个免费资源网站源码分享平台，每天更新技术教程、精品源码、实用软件等，分享最具价值的内容，致力打造全网秀的免费资源网、资源网、源码资源网，提供丰富的优质源码,网站模板并且大部分经过测试。欢迎各位源码爱好者前来下载 狗凯之家源码网是一个专注于收集精品源码的专业性网站！",
+          "icon": "/assets/favicon_1754738686662.png",
+          "enabled": true
         }
       ],
       "subCategories": []
