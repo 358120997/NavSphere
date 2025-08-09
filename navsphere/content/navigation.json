@@ -315,6 +315,14 @@
           "description": "",
           "icon": "/assets/favicon_1754738637682.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738675363_xyhmr6ezl",
+          "title": "521GM游戏网-分享快乐的游戏网站",
+          "href": "https://521gm.cn/",
+          "description": "",
+          "icon": "/assets/favicon_1754738671781.png",
+          "enabled": true
         }
       ],
       "subCategories": []
