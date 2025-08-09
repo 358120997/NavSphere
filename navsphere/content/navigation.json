@@ -182,6 +182,14 @@
           "description": "开源软件 手机app 电视盒子app 下载分享 免费下载，本站没有收费项目，没有套路",
           "icon": "/assets/favicon_1754738220344.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738255971_0to8xhgjd",
+          "title": "有趣的开源社区 - HelloGitHub",
+          "href": "https://hellogithub.com/",
+          "description": "HelloGitHub 开源社区，专注于发现和分享有趣、入门级的开源项目。在这里，探索开源技术解决方案，体验开源的乐趣，自荐或推荐开源项目，开启你的开源之旅。",
+          "icon": "/assets/favicon_1754738239679.png",
+          "enabled": true
         }
       ],
       "subCategories": [
