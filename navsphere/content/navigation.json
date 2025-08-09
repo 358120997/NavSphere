@@ -469,6 +469,14 @@
           "description": "",
           "icon": "/assets/img_1754739234780.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754739255274_vil5fpe1m",
+          "title": "易破解 - 给你所需要的内容",
+          "href": "https://www.ypojie.com/",
+          "description": "亿破姐『易破解』网站专注无流氓绿色软件分享、游戏下载、电脑技术、经验教程为一体的站点、安全、纯净、放心、十年磨一剑，不忘初心只为给你最需要的内容。",
+          "icon": "/assets/favicon_1754739252859.ico",
+          "enabled": true
         }
       ],
       "subCategories": [],
