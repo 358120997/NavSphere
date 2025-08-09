@@ -299,6 +299,14 @@
           "description": "",
           "icon": "/assets/favicon_1754738594412.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738624043_tivhnwvtp",
+          "title": "星河引擎简介 | 星河引擎官网",
+          "href": "http://www.agg5.com:3000/docs/introduct/",
+          "description": "",
+          "icon": "/assets/favicon_1754738615609.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
