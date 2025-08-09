@@ -413,6 +413,14 @@
           "description": "立即下载免费游戏或加入免费游戏社区吧！",
           "icon": "/assets/favicon_1754738956846.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754739010570_m20y5ikg7",
+          "title": "咸鱼单机发布页",
+          "href": "https://www.game7.vip/",
+          "description": "咸鱼单机发布页",
+          "icon": "/assets/img_1754739002647.png",
+          "enabled": true
         }
       ],
       "subCategories": []
