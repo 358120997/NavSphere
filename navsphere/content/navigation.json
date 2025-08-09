@@ -174,6 +174,14 @@
           "description": "AI换脸软件、AI数字人、AI绘画、AI语音克隆 - AI直播换脸、AI实时换脸 - DeepFaceLab软件下载、DeepFaceLab教程；AI直播换脸软件 - DeepFaceLive下载、DeepFaceLive教程-AI资源站",
           "icon": "/assets/favicon_1754738149064.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754738226011_8ezpagyik",
+          "title": "剑二十七 - 精品软件下载",
+          "href": "https://www.jian27.com/",
+          "description": "开源软件 手机app 电视盒子app 下载分享 免费下载，本站没有收费项目，没有套路",
+          "icon": "/assets/favicon_1754738220344.ico",
+          "enabled": true
         }
       ],
       "subCategories": [
