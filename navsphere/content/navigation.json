@@ -150,6 +150,14 @@
           "description": "一个免费的音乐软件！",
           "icon": "/assets/favicon_1754738043543.ico",
           "enabled": true
+        },
+        {
+          "id": "1752554261491",
+          "title": "风灵月影 - PC Game Cheats and Mods",
+          "href": "https://flingtrainer.com/",
+          "description": "PC Game Cheats and Mods",
+          "icon": "/assets/favicon_1754738065017.png",
+          "enabled": true
         }
       ],
       "subCategories": [
@@ -175,16 +183,7 @@
           "icon": "Edit",
           "description": "",
           "enabled": true,
-          "items": [
-            {
-              "id": "1752554261491",
-              "title": "MCP Server 集合站",
-              "href": "https://smithery.ai/",
-              "description": "各种各样的 MCP Server",
-              "icon": "/assets/img_1752554273115.png",
-              "enabled": true
-            }
-          ]
+          "items": []
         }
       ],
       "description": "",
