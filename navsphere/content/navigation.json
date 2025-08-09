@@ -78,14 +78,6 @@
           "enabled": true
         },
         {
-          "id": "item-1754218579319",
-          "enabled": true,
-          "title": "DeepSeek - 探索未至之境",
-          "href": "https://chat.deepseek.com/",
-          "description": "Chat with DeepSeek AI – your intelligent assistant for coding, content creation, file reading, and more. Upload documents, engage in long-context conversations, and get expert help in AI, natural language processing, and beyond. | 深度求索（DeepSeek）助力编程代码开发、创意写作、文件处理等任务，支持文件上传及长文本对话，随时为您提供高效的AI支持。",
-          "icon": "/assets/favicon_1754218571142.svg"
-        },
-        {
           "id": "1754229699374",
           "title": "Lucide",
           "href": "https://lucide.dev/",
@@ -102,7 +94,16 @@
       "id": "9",
       "title": "APP",
       "icon": "Brain",
-      "items": [],
+      "items": [
+        {
+          "id": "item-1754218579319",
+          "title": "代刷",
+          "href": "https://lengqiu.tacyzs.com/",
+          "description": "",
+          "icon": "https://lengqiu.tacyzs.com/favicon.ico",
+          "enabled": true
+        }
+      ],
       "subCategories": [
         {
           "id": "cbb3e33d-408b-41ba-9e9a-e0444303e3fd",
