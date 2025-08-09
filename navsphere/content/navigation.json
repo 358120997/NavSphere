@@ -142,6 +142,14 @@
           "description": "",
           "icon": "/assets/img_1736418335098.png",
           "enabled": true
+        },
+        {
+          "id": "1736911347619",
+          "title": "洛雪音乐 | Link3",
+          "href": "https://link3.cc/lxmusic",
+          "description": "一个免费的音乐软件！",
+          "icon": "/assets/favicon_1754738043543.ico",
+          "enabled": true
         }
       ],
       "subCategories": [
@@ -159,16 +167,7 @@
           "icon": "Book",
           "description": "",
           "enabled": true,
-          "items": [
-            {
-              "id": "1736911347619",
-              "title": "gamma",
-              "href": "https://gamma.app/",
-              "description": "AI生成PPT工具",
-              "icon": "/assets/img_1736911490095.png",
-              "enabled": true
-            }
-          ]
+          "items": []
         },
         {
           "id": "21bf96f3-acb0-4e28-aaa8-2759ac55d278",
