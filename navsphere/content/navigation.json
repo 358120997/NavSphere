@@ -210,31 +210,6 @@
       "items": [],
       "subCategories": [
         {
-          "id": "e2b07afd-968c-4985-b6c2-8dc504bce17b",
-          "title": "录屏工具",
-          "icon": "Folder",
-          "description": "",
-          "enabled": true,
-          "items": [
-            {
-              "id": "1753395646962",
-              "title": "Screenity",
-              "href": "https://screenity.io/",
-              "description": "开源免费的 chrome 录屏插件。",
-              "icon": "/assets/img_1753395904831.png",
-              "enabled": true
-            },
-            {
-              "id": "1753396049185",
-              "title": "Cursorful",
-              "href": "https://cursorful.com/",
-              "description": "具有自动缩放功能的屏幕录像 使用 Cursorful 浏览器扩展程序录制精美的屏幕录像跟随光标缩放或在编辑器中加载您自己的视频并可以手动添加缩放。",
-              "icon": "/assets/img_1753396105178.png",
-              "enabled": true
-            }
-          ]
-        },
-        {
           "id": "0ed6d8b1-effe-4535-8cde-60ec38f9c96c",
           "title": "AI 检测工具",
           "icon": "BookOpen",
