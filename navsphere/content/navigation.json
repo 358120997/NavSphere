@@ -190,6 +190,14 @@
           "description": "HelloGitHub 开源社区，专注于发现和分享有趣、入门级的开源项目。在这里，探索开源技术解决方案，体验开源的乐趣，自荐或推荐开源项目，开启你的开源之旅。",
           "icon": "/assets/favicon_1754738239679.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754738335099_z81yayisb",
+          "title": "Ventoy - PE启动盘",
+          "href": "https://www.ventoy.net/cn/",
+          "description": "Ventoy is an open source tool to create bootable USB drive for ISO files. With ventoy, you don",
+          "icon": "/assets/favicon_1754738318087.ico",
+          "enabled": true
         }
       ],
       "subCategories": [
