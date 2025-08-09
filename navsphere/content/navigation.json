@@ -108,6 +108,14 @@
           "description": "个人笔记",
           "icon": "/assets/favicon_1754740271442.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754740326305_unuvo019s",
+          "title": "Temp Email - 临时邮箱",
+          "href": "https://yx.guojubb.top/",
+          "description": "Temp Email",
+          "icon": "/assets/favicon_1754740314834.png",
+          "enabled": true
         }
       ],
       "subCategories": [],
