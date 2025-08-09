@@ -519,6 +519,14 @@
           "description": "168版本库",
           "icon": "/assets/img_1754739538387.png",
           "enabled": true
+        },
+        {
+          "id": "site_1754739576682_14s62aa9n",
+          "title": "思维资源网",
+          "href": "https://swzyw.com/",
+          "description": "思维资源网",
+          "icon": "/assets/img_1754739572591.png",
+          "enabled": true
         }
       ],
       "subCategories": [],
