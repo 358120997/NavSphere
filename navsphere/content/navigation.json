@@ -242,14 +242,6 @@
       ],
       "subCategories": [
         {
-          "id": "cbb3e33d-408b-41ba-9e9a-e0444303e3ff",
-          "title": "生产力工具",
-          "icon": "Book",
-          "description": "",
-          "enabled": true,
-          "items": []
-        },
-        {
           "id": "21bf96f3-acb0-4e28-aaa8-2759ac55d278",
           "title": "MCP Server",
           "icon": "Edit",
