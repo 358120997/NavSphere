@@ -516,6 +516,14 @@
           "description": "专注iOS应用分享，以及苹果科技教程软件，APPLE编程教程",
           "icon": "/assets/favicon_1754739467120.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1754892882841_7kmaoprgc",
+          "title": "零度博客 - 专注分享免费实用软件、AI黑科技、有趣网站及电脑系统相关安装教程！",
+          "href": "https://www.freedidi.com/",
+          "description": "零度博客，专注于分享免费实用软件、AI 开源工具、电脑系统安装教程及实用网站推荐，帮助用户发现有趣且实用的最新科技资源。",
+          "icon": "/assets/favicon_1754892868982.png",
+          "enabled": true
         }
       ],
       "subCategories": [],
