@@ -246,6 +246,14 @@
           "description": "Ventoy is an open source tool to create bootable USB drive for ISO files. With ventoy, you don",
           "icon": "/assets/favicon_1754738318087.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1756090410484_rm3mpjut5",
+          "title": "OAF-应用过滤",
+          "href": "https://www.openappfilter.com",
+          "description": "openwrt应用过滤插件",
+          "icon": "/assets/favicon_1756090329225.png",
+          "enabled": true
         }
       ],
       "subCategories": [],
