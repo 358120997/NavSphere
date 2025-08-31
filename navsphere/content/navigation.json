@@ -532,6 +532,14 @@
           "description": "零度博客，专注于分享免费实用软件、AI 开源工具、电脑系统安装教程及实用网站推荐，帮助用户发现有趣且实用的最新科技资源。",
           "icon": "/assets/favicon_1754892868982.png",
           "enabled": true
+        },
+        {
+          "id": "site_1756682723907_j9j12i3ru",
+          "title": "ScriptCat - 分享你的用户脚本",
+          "href": "https://scriptcat.org/zh-CN",
+          "description": "脚本猫脚本站,在这里你可以与全世界分享你的用户脚本",
+          "icon": "/assets/favicon_1756682709155.ico",
+          "enabled": true
         }
       ],
       "subCategories": [],
