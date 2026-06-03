@@ -1,5 +1,5 @@
 import NextAuth from 'next-auth'
-import GithubProvider from 'next-auth/providers/github'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import type { DefaultSession, NextAuthConfig } from 'next-auth'
 
 declare module 'next-auth' {
@@ -18,18 +18,40 @@ declare module 'next-auth' {
 
 const config = {
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
-      authorization: {
-        params: { scope: 'repo' }
-      }
-    })
+    CredentialsProvider({
+      name: 'Local Account',
+      credentials: {
+        username: { label: 'Username', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        const username = String(credentials?.username || '')
+        const password = String(credentials?.password || '')
+        const adminUsername = process.env.ADMIN_USERNAME
+        const adminPassword = process.env.ADMIN_PASSWORD
+
+        if (!adminUsername || !adminPassword) {
+          return null
+        }
+
+        if (username !== adminUsername || password !== adminPassword) {
+          return null
+        }
+
+        return {
+          id: 'local-admin',
+          name: process.env.ADMIN_NAME || adminUsername,
+          email: process.env.ADMIN_EMAIL || '',
+          image: null,
+          accessToken: process.env.GITHUB_TOKEN || '',
+        }
+      },
+    }),
   ],
   callbacks: {
-    async jwt({ token, account }) {
-      if (account?.access_token) {
-        token.accessToken = account.access_token
+    async jwt({ token, user }) {
+      if (user?.accessToken) {
+        token.accessToken = user.accessToken
       }
       return token
     },
@@ -38,15 +60,21 @@ const config = {
         session.user.accessToken = token.accessToken as string
       }
       return session
-    }
+    },
   },
   pages: {
-    signIn: '/auth/signin'
+    signIn: '/auth/signin',
   },
-  secret: process.env.GITHUB_SECRET
+  secret:
+    process.env.NEXTAUTH_SECRET ||
+    process.env.AUTH_SECRET ||
+    process.env.SESSION_SECRET ||
+    process.env.GITHUB_SECRET,
 } satisfies NextAuthConfig
 
 const handler = NextAuth(config)
 
 export const auth = handler.auth
-export const { handlers: { GET, POST } } = handler
+export const {
+  handlers: { GET, POST },
+} = handler
