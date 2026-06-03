@@ -60,34 +60,34 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
   }
 
   return (
-    <div className={cn('w-64 border-r bg-background/95 backdrop-blur', className)}>
-      <div className="flex h-16 items-center border-b px-4">
-        <Link href="/" className="flex min-w-0 items-center gap-3 font-semibold">
+    <div className={cn('w-32 bg-background/95 backdrop-blur', className)}>
+      <div className="flex h-16 items-center px-3">
+        <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold">
           {siteInfo.appearance.logo ? (
             <Image
               src={siteInfo.appearance.logo}
               alt={siteInfo.basic.title}
               width={32}
               height={32}
-              className="h-8 w-8 rounded-lg object-contain"
+              className="h-7 w-7 rounded-lg object-contain"
             />
           ) : (
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary/10 text-primary">
               <LucideIcons.Globe className="h-5 w-5" />
             </div>
           )}
-          <span className="truncate">{siteInfo.basic.title}</span>
+          <span className="truncate text-sm">{siteInfo.basic.title}</span>
         </Link>
       </div>
 
       <ScrollArea className="h-[calc(100vh-4rem)] px-3 py-3">
-        <div className="space-y-1.5">
+        <div className="space-y-2">
           {navigationData.navigationItems.map((category) => (
             <div key={category.id} className="py-1">
               <div className="flex items-center">
                 <Button
                   variant="ghost"
-                  className="flex-1 justify-start gap-2 rounded-lg px-3 font-medium text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
+                  className="min-w-0 flex-1 justify-start gap-2 rounded-lg px-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground"
                   onClick={() => scrollToSection(category.id)}
                 >
                   {renderIcon(category.icon)}
@@ -98,7 +98,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="ml-1 rounded-lg px-2 hover:bg-accent/50"
+                    className="ml-0.5 h-8 rounded-lg px-1.5 hover:bg-accent/60"
                     onClick={() => toggleCategory(category.id)}
                     aria-label="Toggle category"
                   >
@@ -114,7 +114,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
               {category.subCategories && category.subCategories.length > 0 && (
                 <div
                   className={cn(
-                    'ml-4 mt-1 space-y-1 overflow-hidden border-l pl-2 transition-all duration-200 ease-in-out',
+                    'mt-1 space-y-1 overflow-hidden pl-6 transition-all duration-200 ease-in-out',
                     expandedCategories[category.id] ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
                   )}
                 >
@@ -122,7 +122,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
                     <Button
                       key={subCategory.id}
                       variant="ghost"
-                      className="w-full justify-start rounded-lg px-3 text-sm text-muted-foreground/80 transition-colors hover:bg-accent/40 hover:text-foreground"
+                      className="w-full justify-start rounded-lg px-2 text-xs text-muted-foreground/80 transition-colors hover:bg-accent/50 hover:text-foreground"
                       onClick={() => scrollToSection(subCategory.id)}
                     >
                       <span className="truncate">{subCategory.title}</span>

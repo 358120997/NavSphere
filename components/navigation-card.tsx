@@ -17,7 +17,7 @@ export function NavigationCard({ item }: NavigationCardProps) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className="group overflow-hidden rounded-lg border-border/70 bg-card/95 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/25 hover:bg-accent/30 hover:shadow-md">
+          <Card className="group overflow-hidden rounded-lg border-border/70 bg-card/95 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/45 hover:bg-primary/10 hover:shadow-lg hover:ring-1 hover:ring-primary/20">
             <Link
               href={item.href}
               target="_blank"
@@ -27,7 +27,7 @@ export function NavigationCard({ item }: NavigationCardProps) {
               <CardHeader className="p-4 sm:p-5">
                 <div className="flex items-center gap-3 sm:gap-4">
                   {item.icon && (
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-muted/60 p-2 ring-1 ring-border/50 transition-colors duration-200 group-hover:bg-background/80 sm:h-11 sm:w-11">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-muted/60 p-2 ring-1 ring-border/50 transition-colors duration-200 group-hover:bg-background sm:h-11 sm:w-11">
                       <img
                         src={item.icon}
                         alt={`${item.title} icon`}

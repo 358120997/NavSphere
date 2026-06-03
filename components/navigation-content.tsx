@@ -22,7 +22,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen flex-col bg-muted/10 sm:flex-row">
+    <div className="flex min-h-screen flex-col bg-background sm:flex-row">
       <div className="hidden sm:block">
         <Sidebar
           navigationData={navigationData}
@@ -39,20 +39,21 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       >
         <div
           className={cn(
-            'fixed inset-y-0 right-0 w-3/4 max-w-xs transform bg-background shadow-lg transition-transform duration-200 ease-in-out sm:left-0',
+            'fixed inset-y-0 right-0 w-40 transform bg-background shadow-lg transition-transform duration-200 ease-in-out sm:left-0',
             isSidebarOpen ? 'translate-x-0' : 'translate-x-full sm:-translate-x-full'
           )}
         >
           <Sidebar
             navigationData={navigationData}
             siteInfo={siteData}
+            className="h-full w-full"
             onClose={() => setIsSidebarOpen(false)}
           />
         </div>
       </div>
 
       <main className="flex-1">
-        <div className="sticky top-0 z-30 border-b bg-background/85 px-3 py-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:px-6">
+        <div className="sticky top-0 z-30 bg-background/85 px-3 py-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:px-6">
           <div className="mx-auto flex max-w-[1500px] items-center gap-3">
             <div className="min-w-0 flex-1">
               <SearchBar />
@@ -86,13 +87,13 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
           </div>
         </div>
 
-        <div className="mx-auto max-w-[1500px] px-3 py-5 sm:px-6 sm:py-8">
+        <div className="mx-auto max-w-[1540px] px-3 py-6 sm:px-6 sm:py-8">
           <div className="space-y-9">
             {navigationData.navigationItems.map((category) => (
               <section key={category.id} id={category.id} className="scroll-m-24">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="h-5 w-1 rounded-full bg-primary/70" />
+                    <div className="h-5 w-1 rounded-full bg-foreground/55" />
                     <h2 className="text-base font-semibold tracking-tight text-foreground sm:text-lg">
                       {category.title}
                     </h2>
