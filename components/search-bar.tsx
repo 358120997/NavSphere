@@ -1,6 +1,6 @@
 'use client'
 
-import { FormEvent, useEffect, useRef, useState } from 'react'
+import { FormEvent, useRef, useState } from 'react'
 import { Search, X } from 'lucide-react'
 import { Button } from '@/registry/new-york/ui/button'
 import { Input } from '@/registry/new-york/ui/input'
@@ -16,7 +16,7 @@ type SearchEngine = 'baidu' | 'bing'
 
 const SEARCH_ENGINES: Record<SearchEngine, { label: string; buildUrl: (query: string) => string }> = {
   baidu: {
-    label: 'Baidu',
+    label: '百度',
     buildUrl: (query) => `https://www.baidu.com/s?wd=${encodeURIComponent(query)}`,
   },
   bing: {
@@ -29,22 +29,6 @@ export function SearchBar() {
   const [query, setQuery] = useState('')
   const [engine, setEngine] = useState<SearchEngine>('baidu')
   const inputRef = useRef<HTMLInputElement>(null)
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        inputRef.current?.blur()
-      }
-
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-        event.preventDefault()
-        inputRef.current?.focus()
-      }
-    }
-
-    document.addEventListener('keydown', handleKeyDown)
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [])
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -69,11 +53,11 @@ export function SearchBar() {
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           ref={inputRef}
-          placeholder={`Search with ${SEARCH_ENGINES[engine].label}...`}
+          placeholder="搜索网页"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          className="h-10 rounded-lg border pl-10 pr-16 shadow-sm"
-          aria-label="Search keywords"
+          className="h-10 rounded-lg border pl-10 pr-20 shadow-sm"
+          aria-label="搜索网页"
         />
         <div className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1">
           {query && (
@@ -83,19 +67,25 @@ export function SearchBar() {
               size="sm"
               onClick={clearSearch}
               className="h-6 w-6 p-0 hover:bg-muted"
-              aria-label="Clear search"
+              aria-label="清空搜索"
             >
               <X className="h-3 w-3" />
             </Button>
           )}
-          <kbd className="hidden h-5 select-none items-center rounded border bg-muted px-1.5 font-mono text-xs text-muted-foreground sm:flex">
-            Ctrl K
-          </kbd>
+          <Button
+            type="submit"
+            variant="ghost"
+            size="sm"
+            className="h-7 w-7 p-0 hover:bg-muted"
+            aria-label="搜索"
+          >
+            <Search className="h-4 w-4" />
+          </Button>
         </div>
       </div>
 
       <Select value={engine} onValueChange={(value) => setEngine(value as SearchEngine)}>
-        <SelectTrigger className="h-10 w-[86px] rounded-lg shadow-sm sm:w-[104px]" aria-label="Select search engine">
+        <SelectTrigger className="h-10 w-[86px] rounded-lg shadow-sm sm:w-[104px]" aria-label="选择搜索引擎">
           <SelectValue />
         </SelectTrigger>
         <SelectContent align="end">
@@ -107,9 +97,6 @@ export function SearchBar() {
         </SelectContent>
       </Select>
 
-      <Button type="submit" size="icon" className="h-10 w-10 shrink-0 rounded-lg" aria-label="Search">
-        <Search className="h-4 w-4" />
-      </Button>
     </form>
   )
 }

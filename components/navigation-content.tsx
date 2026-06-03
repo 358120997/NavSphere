@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Github, HelpCircle, Menu } from 'lucide-react'
+import { Github, Menu } from 'lucide-react'
 import type { NavigationData } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
 import { Footer } from '@/components/footer'
@@ -52,7 +52,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       </div>
 
       <main className="flex-1">
-        <div className="sticky top-0 z-30 bg-background/90 px-3 py-2 backdrop-blur-sm sm:px-6">
+        <div className="sticky top-0 z-30 bg-background/90 px-3 py-4 backdrop-blur-sm sm:px-6">
           <div className="flex items-center gap-3">
             <div className="min-w-0 flex-1">
               <SearchBar />
@@ -71,20 +71,6 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   className="hover:bg-accent hover:text-accent-foreground"
                 >
                   <Github className="h-5 w-5" />
-                </Button>
-              </Link>
-              <Link
-                href="https://mp.weixin.qq.com/s/90LUmKilfLZfc5L63Ej3Sg"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="查看帮助文档"
-              >
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="hover:bg-accent hover:text-accent-foreground"
-                >
-                  <HelpCircle className="h-5 w-5" />
                 </Button>
               </Link>
               <Button
