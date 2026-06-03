@@ -39,7 +39,7 @@ export function SearchBar() {
       return
     }
 
-    window.location.href = SEARCH_ENGINES[engine].buildUrl(keyword)
+    window.open(SEARCH_ENGINES[engine].buildUrl(keyword), '_blank', 'noopener,noreferrer')
   }
 
   const clearSearch = () => {
