@@ -56,7 +56,7 @@ export function SearchBar() {
           placeholder="搜索网页"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          className="h-10 rounded-lg border pl-10 pr-20 shadow-sm"
+          className="h-10 rounded-lg border-border/70 bg-background/95 pl-10 pr-20 shadow-sm transition-colors focus-visible:bg-background"
           aria-label="搜索网页"
         />
         <div className="absolute right-2 top-1/2 flex -translate-y-1/2 items-center gap-1">
@@ -66,7 +66,7 @@ export function SearchBar() {
               variant="ghost"
               size="sm"
               onClick={clearSearch}
-              className="h-6 w-6 p-0 hover:bg-muted"
+              className="h-6 w-6 rounded-md p-0 hover:bg-muted"
               aria-label="清空搜索"
             >
               <X className="h-3 w-3" />
@@ -76,7 +76,7 @@ export function SearchBar() {
             type="submit"
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 hover:bg-muted"
+            className="h-7 w-7 rounded-md p-0 hover:bg-primary/10 hover:text-primary"
             aria-label="搜索"
           >
             <Search className="h-4 w-4" />
@@ -85,7 +85,7 @@ export function SearchBar() {
       </div>
 
       <Select value={engine} onValueChange={(value) => setEngine(value as SearchEngine)}>
-        <SelectTrigger className="h-10 w-[86px] rounded-lg shadow-sm sm:w-[104px]" aria-label="选择搜索引擎">
+        <SelectTrigger className="h-10 w-[86px] rounded-lg border-border/70 bg-background/95 shadow-sm sm:w-[104px]" aria-label="选择搜索引擎">
           <SelectValue />
         </SelectTrigger>
         <SelectContent align="end">
@@ -96,7 +96,6 @@ export function SearchBar() {
           ))}
         </SelectContent>
       </Select>
-
     </form>
   )
 }

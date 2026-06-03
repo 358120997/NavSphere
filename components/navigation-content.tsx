@@ -22,7 +22,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen flex-col sm:flex-row">
+    <div className="flex min-h-screen flex-col bg-muted/10 sm:flex-row">
       <div className="hidden sm:block">
         <Sidebar
           navigationData={navigationData}
@@ -52,8 +52,8 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       </div>
 
       <main className="flex-1">
-        <div className="sticky top-0 z-30 bg-background/90 px-3 py-4 backdrop-blur-sm sm:px-6">
-          <div className="flex items-center gap-3">
+        <div className="sticky top-0 z-30 border-b bg-background/85 px-3 py-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:px-6">
+          <div className="mx-auto flex max-w-[1500px] items-center gap-3">
             <div className="min-w-0 flex-1">
               <SearchBar />
             </div>
@@ -68,7 +68,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="hover:bg-accent hover:text-accent-foreground"
+                  className="rounded-lg hover:bg-accent hover:text-accent-foreground"
                 >
                   <Github className="h-5 w-5" />
                 </Button>
@@ -76,7 +76,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
               <Button
                 variant="ghost"
                 size="icon"
-                className="sm:hidden"
+                className="rounded-lg sm:hidden"
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 aria-label="打开导航菜单"
               >
@@ -86,22 +86,25 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
           </div>
         </div>
 
-        <div className="px-3 py-3 sm:px-6 sm:py-6">
-          <div className="space-y-6">
+        <div className="mx-auto max-w-[1500px] px-3 py-5 sm:px-6 sm:py-8">
+          <div className="space-y-9">
             {navigationData.navigationItems.map((category) => (
-              <section key={category.id} id={category.id} className="scroll-m-16">
+              <section key={category.id} id={category.id} className="scroll-m-24">
                 <div className="space-y-4">
-                  <h2 className="text-base font-medium tracking-tight">
-                    {category.title}
-                  </h2>
+                  <div className="flex items-center gap-3">
+                    <div className="h-5 w-1 rounded-full bg-primary/70" />
+                    <h2 className="text-base font-semibold tracking-tight text-foreground sm:text-lg">
+                      {category.title}
+                    </h2>
+                  </div>
 
                   {category.subCategories && category.subCategories.length > 0 ? (
                     category.subCategories.map((subCategory) => (
-                      <div key={subCategory.id} id={subCategory.id} className="space-y-3">
-                        <h3 className="text-sm font-medium text-muted-foreground">
+                      <div key={subCategory.id} id={subCategory.id} className="space-y-3 scroll-m-24">
+                        <h3 className="pl-4 text-sm font-medium text-muted-foreground">
                           {subCategory.title}
                         </h3>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                           {(subCategory.items || []).map((item) => (
                             <NavigationCard key={item.id} item={item} />
                           ))}
@@ -109,7 +112,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                       </div>
                     ))
                   ) : (
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                       {(category.items || []).map((item) => (
                         <NavigationCard key={item.id} item={item} />
                       ))}
