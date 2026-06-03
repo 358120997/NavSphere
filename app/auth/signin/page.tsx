@@ -1,36 +1,50 @@
 'use client'
 
+import { FormEvent, useState } from 'react'
 import { signIn } from 'next-auth/react'
-import { useSearchParams } from 'next/navigation'
-import { Button } from "@/components/ui/button"
-import { Icons } from "@/components/icons"
-import { useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from '@/components/ui/card'
+import { Icons } from '@/components/icons'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 export default function SignInPage() {
+  const router = useRouter()
   const searchParams = useSearchParams()
   const callbackUrl = searchParams?.get('callbackUrl') || '/admin'
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleSignIn = async () => {
-    try {
-      setIsLoading(true)
-      await signIn('github', {
-        callbackUrl,
-        redirect: true,
-        scope: 'repo'
-      })
-    } catch (error) {
-      setIsLoading(false)
-      console.error('登录失败:', error)
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setError('')
+    setIsLoading(true)
+
+    const result = await signIn('credentials', {
+      username,
+      password,
+      callbackUrl,
+      redirect: false,
+    })
+
+    setIsLoading(false)
+
+    if (result?.error) {
+      setError('用户名或密码不正确')
+      return
     }
+
+    router.push(result?.url || callbackUrl)
+    router.refresh()
   }
 
   return (
@@ -39,12 +53,8 @@ export default function SignInPage() {
         <div className="absolute inset-0 bg-zinc-900" />
         <div className="relative z-20 flex items-center text-lg font-medium">
           <div className="flex items-center gap-2">
-            <div className="relative w-8 h-8 overflow-hidden rounded-md">
-              <img 
-                src="/assets/images/alogo.png" 
-                alt="Logo"
-                className="object-cover"
-              />
+            <div className="relative h-8 w-8 overflow-hidden rounded-md">
+              <img src="/assets/images/alogo.png" alt="Logo" className="object-cover" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-semibold leading-none tracking-tight text-white">
@@ -56,63 +66,69 @@ export default function SignInPage() {
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
-              "这是一个专为程序员设计的导航网站，集成了常用的开发工具、学习资源和技术社区。"
+              管理你的导航站点、资源和页面配置。
             </p>
-            <footer className="text-sm">NavSphere Team</footer>
+            <footer className="text-sm">NavSphere Admin</footer>
           </blockquote>
         </div>
       </div>
+
       <div className="lg:p-8">
         <div className="mx-auto flex h-full w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <Card>
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl text-center">
+              <CardTitle className="text-center text-2xl">
                 登录管理后台
               </CardTitle>
               <CardDescription className="text-center">
-                使用 GitHub 账号登录以访问管理功能
+                使用本地管理员账号登录
               </CardDescription>
             </CardHeader>
-            <CardContent className="grid gap-4">
-              <Button
-                onClick={handleSignIn}
-                className="w-full bg-[#24292F] hover:bg-[#24292F]/90 text-white"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-                    登录中...
-                  </>
-                ) : (
-                  <>
-                    <Icons.github className="mr-2 h-4 w-4" />
-                    GitHub 账号登录
-                  </>
+            <CardContent>
+              <form onSubmit={handleSubmit} className="grid gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="username">用户名</Label>
+                  <Input
+                    id="username"
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value)}
+                    autoComplete="username"
+                    disabled={isLoading}
+                    required
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="password">密码</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    autoComplete="current-password"
+                    disabled={isLoading}
+                    required
+                  />
+                </div>
+                {error && (
+                  <p className="text-sm text-destructive" role="alert">
+                    {error}
+                  </p>
                 )}
-              </Button>
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                  {isLoading ? (
+                    <>
+                      <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+                      登录中...
+                    </>
+                  ) : (
+                    '登录'
+                  )}
+                </Button>
+              </form>
             </CardContent>
-            <CardFooter className="flex flex-wrap items-center justify-center gap-2">
-              <div className="text-sm text-muted-foreground">
-                通过登录，即表示您同意我们的{" "}
-                <a
-                  href="/terms"
-                  className="underline underline-offset-4 hover:text-primary"
-                >
-                  服务条款
-                </a>{" "}
-                和{" "}
-                <a
-                  href="/privacy"
-                  className="underline underline-offset-4 hover:text-primary"
-                >
-                  隐私政策
-                </a>
-              </div>
-            </CardFooter>
           </Card>
         </div>
       </div>
     </div>
   )
-} 
+}
