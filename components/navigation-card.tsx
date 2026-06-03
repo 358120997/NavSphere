@@ -1,7 +1,5 @@
 import Link from 'next/link'
-import Image from 'next/image'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/registry/new-york/ui/card'
-import { Icons } from '@/components/icons'
+import { Card, CardHeader, CardTitle, CardDescription } from '@/registry/new-york/ui/card'
 import type { NavigationSubItem } from '@/types/navigation'
 import {
   Tooltip,
@@ -15,41 +13,34 @@ interface NavigationCardProps {
 }
 
 export function NavigationCard({ item }: NavigationCardProps) {
-  const isExternalIcon = item.icon?.startsWith('http')
-  const isLocalIcon = item.icon && !isExternalIcon
-
-  const iconPath = isLocalIcon && item.icon
-    ? item.icon.startsWith('/') 
-      ? item.icon 
-      : `/${item.icon}`
-    : item.icon || '/placeholder-icon.png'
-
   return (
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Card className="overflow-hidden transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
+          <Card className="group overflow-hidden rounded-lg border-border/70 bg-card/95 shadow-sm transition-all duration-200 ease-out hover:-translate-y-0.5 hover:border-primary/25 hover:bg-accent/30 hover:shadow-md">
             <Link
               href={item.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="block h-full"
+              className="block h-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <CardHeader>
-                <div className="flex items-start gap-2 sm:gap-4">
+              <CardHeader className="p-4 sm:p-5">
+                <div className="flex items-center gap-3 sm:gap-4">
                   {item.icon && (
-                    <div className="flex-shrink-0 w-8 h-8 sm:w-11 sm:h-11">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-muted/60 p-2 ring-1 ring-border/50 transition-colors duration-200 group-hover:bg-background/80 sm:h-11 sm:w-11">
                       <img
                         src={item.icon}
                         alt={`${item.title} icon`}
-                        className="w-full h-full object-contain"
+                        className="h-full w-full object-contain"
                       />
                     </div>
                   )}
-                  <div className="space-y-0.5 sm:space-y-1">
-                    <CardTitle className="text-sm sm:text-base">{item.title}</CardTitle>
+                  <div className="min-w-0 flex-1 space-y-1">
+                    <CardTitle className="truncate text-sm font-medium leading-tight transition-colors duration-200 group-hover:text-primary sm:text-base">
+                      {item.title}
+                    </CardTitle>
                     {item.description && (
-                      <CardDescription className="text-xs sm:text-sm line-clamp-1">
+                      <CardDescription className="line-clamp-1 text-xs leading-relaxed text-muted-foreground/85 sm:text-sm">
                         {item.description}
                       </CardDescription>
                     )}
