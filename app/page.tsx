@@ -6,7 +6,6 @@ import { NavigationContent } from '@/components/navigation-content'
 import { headers } from 'next/headers'
 import { Metadata, ResolvingMetadata } from 'next/types'
 import { ScrollToTop } from '@/components/ScrollToTop'
-import { Container } from '@/components/ui/container'
 
 
 async function getData() {
@@ -95,9 +94,9 @@ export default async function HomePage() {
   })
 
   return (
-    <Container>
+    <>
       <NavigationContent navigationData={navigationData} siteData={siteData} />
       <ScrollToTop />
-    </Container>
+    </>
   )
 }
