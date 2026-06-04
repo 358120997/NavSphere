@@ -3,7 +3,7 @@
 export const runtime = 'edge'
 
 import { useState, useEffect, useRef } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from "@/registry/new-york/ui/button"
 import { useToast } from "@/registry/new-york/hooks/use-toast"
 import { Icons } from "@/components/icons"
@@ -82,7 +82,8 @@ interface Site {
 export default function SiteListPage() {
   console.log('Component rendering')
 
-
+  const searchParams = useSearchParams()
+  const router = useRouter()
   const { toast } = useToast()
   const [sites, setSites] = useState<Site[]>([])
   const [searchQuery, setSearchQuery] = useState("")
@@ -129,6 +130,22 @@ export default function SiteListPage() {
     console.log('useEffect triggered')
     fetchSites()
   }, [])
+
+  useEffect(() => {
+    if (searchParams?.get('add') !== '1') return
+
+    const url = searchParams.get('url') || ''
+    setNewSite({
+      name: '',
+      url,
+      description: '',
+      icon: '',
+      categoryId: '',
+      subCategoryId: ''
+    })
+    lastFetchedAddUrl.current = ''
+    setShowAddDialog(true)
+  }, [searchParams])
 
   // 监听添加站点URL变化，自动获取网站信息
   useEffect(() => {
@@ -1080,6 +1097,9 @@ export default function SiteListPage() {
                 setShowAddDialog(true)
               } else if (!isAddingSubmitting) {
                 setShowAddDialog(false)
+                if (searchParams?.get('add') === '1') {
+                  router.replace('/admin/sitelist')
+                }
               }
             }}>
               <DialogTrigger asChild>

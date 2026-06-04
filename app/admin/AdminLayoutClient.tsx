@@ -19,6 +19,7 @@ import {
   Sun,
   Monitor,
   Database,
+  PlusCircle,
 } from "lucide-react"
 import { cn } from '@/lib/utils'
 import {
@@ -45,6 +46,11 @@ const menuItems = [
     title: "仪表盘",
     href: "/admin",
     icon: LayoutDashboard
+  },
+  {
+    title: "添加网址",
+    href: "/admin/sitelist?add=1",
+    icon: PlusCircle
   },
   {
     title: "导航管理",
