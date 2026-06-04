@@ -484,6 +484,14 @@
           "description": "与Poki (宝玩)一起探索免费在线游戏的世界！即刻玩耍，无需下载，享受与所有设备兼容的游戏。",
           "icon": "/assets/favicon_1754739020273.png",
           "enabled": true
+        },
+        {
+          "id": "site_1780558045627_d3ruqj7y3",
+          "title": "VR中文库-专注于SteamVR&amp;Quest游戏汉化平台",
+          "href": "https://www.vrzwk.com/",
+          "description": "VR中文库-专注于SteamVR&amp;Quest游戏汉化平台",
+          "icon": "/assets/favicon_1780558027938.png",
+          "enabled": true
         }
       ],
       "subCategories": []
