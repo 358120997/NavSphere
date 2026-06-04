@@ -10,7 +10,7 @@ export function Footer({ siteInfo }: FooterProps) {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="mt-4 border-t bg-background/70 py-6 md:py-0">
+    <footer className="mt-4 border-t border-black/5 bg-[#e9edf1]/70 py-6 dark:border-white/5 dark:bg-[#25282b]/70 md:py-0">
       <div className="container flex flex-col items-center gap-4 md:h-16 md:flex-row md:justify-center">
         <div className="flex flex-col items-center gap-4 px-8 md:flex-row md:gap-2 md:px-0">
           <p className="text-center text-sm leading-loose text-muted-foreground">

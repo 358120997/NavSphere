@@ -2,11 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Github, Menu } from 'lucide-react'
+import { Github, LayoutDashboard, Menu } from 'lucide-react'
 import type { NavigationData } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
 import { Footer } from '@/components/footer'
-import { ModeToggle } from '@/components/mode-toggle'
 import { NavigationCard } from '@/components/navigation-card'
 import { SearchBar } from '@/components/search-bar'
 import { Sidebar } from '@/components/sidebar'
@@ -22,7 +21,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen flex-col bg-background sm:flex-row">
+    <div className="flex min-h-screen flex-col bg-[#f1f3f5] text-foreground/90 dark:bg-[#202326] sm:flex-row">
       <div className="hidden sm:block">
         <Sidebar
           navigationData={navigationData}
@@ -39,7 +38,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       >
         <div
           className={cn(
-            'fixed inset-y-0 right-0 w-40 transform bg-background shadow-lg transition-transform duration-200 ease-in-out sm:left-0',
+            'fixed inset-y-0 right-0 w-40 transform bg-[#e9edf1] shadow-lg transition-transform duration-200 ease-in-out dark:bg-[#25282b] sm:left-0',
             isSidebarOpen ? 'translate-x-0' : 'translate-x-full sm:-translate-x-full'
           )}
         >
@@ -53,13 +52,21 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       </div>
 
       <main className="flex-1">
-        <div className="sticky top-0 z-30 bg-background/85 px-3 py-4 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-background/75 sm:px-6">
+        <div className="sticky top-0 z-30 bg-[#e9edf1]/95 px-3 py-4 shadow-sm backdrop-blur dark:bg-[#25282b]/95 sm:px-6">
           <div className="mx-auto flex max-w-[1500px] items-center gap-3">
             <div className="min-w-0 flex-1">
               <SearchBar />
             </div>
             <div className="flex items-center gap-1">
-              <ModeToggle />
+              <Link href="/admin" aria-label="进入管理后台">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-lg text-foreground/70 hover:bg-black/5 hover:text-foreground"
+                >
+                  <LayoutDashboard className="h-5 w-5" />
+                </Button>
+              </Link>
               <Link
                 href="https://github.com/358120997/NavSphere"
                 target="_blank"
@@ -69,7 +76,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-lg hover:bg-accent hover:text-accent-foreground"
+                  className="rounded-lg text-foreground/70 hover:bg-black/5 hover:text-foreground"
                 >
                   <Github className="h-5 w-5" />
                 </Button>
@@ -93,8 +100,8 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
               <section key={category.id} id={category.id} className="scroll-m-24">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="h-5 w-1 rounded-full bg-foreground/55" />
-                    <h2 className="text-base font-semibold tracking-tight text-foreground sm:text-lg">
+                    <div className="h-5 w-1 rounded-full bg-foreground/35" />
+                    <h2 className="text-base font-semibold tracking-tight text-foreground/85 sm:text-lg">
                       {category.title}
                     </h2>
                   </div>
