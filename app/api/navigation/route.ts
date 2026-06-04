@@ -62,12 +62,16 @@ async function validateAndSaveNavigationData(data: any, accessToken: string) {
 export async function POST(request: Request) {
   try {
     const session = await auth()
-    if (!session?.user?.accessToken) {
-      return new Response('Unauthorized', { status: 401 })
+    const accessToken = process.env.GITHUB_TOKEN || session?.user?.accessToken
+    if (!accessToken) {
+      return NextResponse.json(
+        { error: '未配置 GITHUB_TOKEN，无法保存到 GitHub 仓库' },
+        { status: 401 }
+      )
     }
 
     const data = await request.json()
-    await validateAndSaveNavigationData(data, session.user.accessToken)
+    await validateAndSaveNavigationData(data, accessToken)
 
     return NextResponse.json({ success: true })
   } catch (error) {
@@ -85,12 +89,16 @@ export async function POST(request: Request) {
 export async function PUT(request: Request) {
   try {
     const session = await auth()
-    if (!session?.user?.accessToken) {
-      return new Response('Unauthorized', { status: 401 })
+    const accessToken = process.env.GITHUB_TOKEN || session?.user?.accessToken
+    if (!accessToken) {
+      return NextResponse.json(
+        { error: '未配置 GITHUB_TOKEN，无法保存到 GitHub 仓库' },
+        { status: 401 }
+      )
     }
 
     const data = await request.json()
-    await validateAndSaveNavigationData(data, session.user.accessToken)
+    await validateAndSaveNavigationData(data, accessToken)
 
     return NextResponse.json({ success: true })
   } catch (error) {

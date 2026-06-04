@@ -431,7 +431,10 @@ export default function SiteListPage() {
         }),
       })
 
-      if (!response.ok) throw new Error('Failed to save')
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null)
+        throw new Error(errorData?.details || errorData?.error || `保存失败 (${response.status})`)
+      }
 
       toast({
         title: "成功",
@@ -542,7 +545,7 @@ export default function SiteListPage() {
       console.error('Add site error:', error)
       toast({
         title: "错误",
-        description: "添加站点失败",
+        description: error instanceof Error ? error.message : "添加站点失败",
         variant: "destructive"
       })
     } finally {
@@ -679,7 +682,10 @@ export default function SiteListPage() {
         }),
       })
 
-      if (!response.ok) throw new Error('Failed to save')
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null)
+        throw new Error(errorData?.details || errorData?.error || `保存失败 (${response.status})`)
+      }
 
       toast({
         title: "成功",
@@ -704,7 +710,7 @@ export default function SiteListPage() {
       console.error('Edit site error:', error)
       toast({
         title: "错误",
-        description: "更新站点失败",
+        description: error instanceof Error ? error.message : "更新站点失败",
         variant: "destructive"
       })
     } finally {

@@ -50,14 +50,15 @@ const config = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user?.accessToken) {
-        token.accessToken = user.accessToken
+      const accessToken = process.env.GITHUB_TOKEN || user?.accessToken
+      if (accessToken) {
+        token.accessToken = accessToken
       }
       return token
     },
     async session({ session, token }) {
       if (session?.user) {
-        session.user.accessToken = token.accessToken as string
+        session.user.accessToken = process.env.GITHUB_TOKEN || (token.accessToken as string)
       }
       return session
     },

@@ -1,13 +1,17 @@
 import { auth } from '@/lib/auth'
 
 export async function getFileContent(path: string) {
-  const owner = process.env.GITHUB_OWNER!
-  const repo = process.env.GITHUB_REPO!
+  const owner = process.env.GITHUB_OWNER
+  const repo = process.env.GITHUB_REPO
   const branch = process.env.GITHUB_BRANCH || 'main'
 
   try {
     const session = await auth()
-    const token = session?.user?.accessToken
+    const token = process.env.GITHUB_TOKEN || session?.user?.accessToken
+
+    if (!owner || !repo) {
+      throw new Error('Missing GITHUB_OWNER or GITHUB_REPO environment variable')
+    }
 
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`
     const response = await fetch(apiUrl, {
@@ -48,9 +52,18 @@ export async function commitFile(
   token: string,
   retryCount = 3
 ) {
-  const owner = process.env.GITHUB_OWNER!
-  const repo = process.env.GITHUB_REPO!
+  const owner = process.env.GITHUB_OWNER
+  const repo = process.env.GITHUB_REPO
   const branch = process.env.GITHUB_BRANCH || 'main'
+  const accessToken = process.env.GITHUB_TOKEN || token
+
+  if (!owner || !repo) {
+    throw new Error('Missing GITHUB_OWNER or GITHUB_REPO environment variable')
+  }
+
+  if (!accessToken) {
+    throw new Error('Missing GITHUB_TOKEN environment variable')
+  }
 
   const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
@@ -60,7 +73,7 @@ export async function commitFile(
       const currentFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`
       const currentFileResponse = await fetch(currentFileUrl, {
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `Bearer ${accessToken}`,
           Accept: 'application/vnd.github.v3+json',
           'User-Agent': 'NavSphere',
         },
@@ -78,7 +91,7 @@ export async function commitFile(
       const response = await fetch(updateUrl, {
         method: 'PUT',
         headers: {
-          Authorization: `token ${token}`,
+          Authorization: `Bearer ${accessToken}`,
           Accept: 'application/vnd.github.v3+json',
           'Content-Type': 'application/json',
           'User-Agent': 'NavSphere',
