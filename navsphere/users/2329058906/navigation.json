@@ -1,0 +1,616 @@
+{
+  "navigationItems": [
+    {
+      "id": "1",
+      "title": "常用推荐",
+      "icon": "Star",
+      "items": [
+        {
+          "id": "1_2",
+          "title": "百度一下，你就知道",
+          "href": "https://www.baidu.com",
+          "description": "全球领先的中文搜索引擎、致力于让网民更便捷地获取信息，找到所求。百度超过千亿的中文网页数据库，可以瞬间找到相关的搜索结果。",
+          "icon": "/assets/favicon_1754807612469.ico",
+          "enabled": true
+        },
+        {
+          "id": "1_1",
+          "title": "万里汇",
+          "href": "https://portal.worldfirst.com.cn/dashboard",
+          "description": "",
+          "icon": "/assets/favicon_1754706200731.png",
+          "enabled": true
+        },
+        {
+          "id": "1_3",
+          "title": "PayPal",
+          "href": "https://www.paypal.com/",
+          "description": "Gebruik je PayPal-rekening om geld uit te geven, over te maken en te beheren. Of maak een zakelijke rekening aan voor je bedrijf. En nog veel meer. Ontdek hier alle details.",
+          "icon": "/assets/favicon_1754706249824.png",
+          "enabled": true
+        },
+        {
+          "id": "1_4",
+          "title": "PingPong",
+          "href": "https://us.pingpongx.com/dashboard/account",
+          "description": "PingPong是跨境行业的创新推动者，业务现已覆盖全球超200个国家和地区，旗下拥有跨境收款、外贸B2B收付款、全球收单、供应链融资、SaaS等产品和服务",
+          "icon": "/assets/favicon_1754706289570.ico",
+          "enabled": true
+        },
+        {
+          "id": "1_5",
+          "title": "卖家之家-跨境电商一站式资讯和服务平台",
+          "href": "https://mjzj.com/",
+          "description": "卖家之家是国内领先的出口跨境电商卖家服务平台，为卖家提供最新跨境电商资讯、跨境电商运营工具以及测评黑名单，从而为电跨境电商卖家带来卓越用户体验。卖家之家整合跨境电商平台、服务商、工厂及众多卖家等，全力打造跨境电商新生态。",
+          "icon": "/assets/favicon_1754706324732.ico",
+          "enabled": true
+        },
+        {
+          "id": "1_6",
+          "title": "AMZ123亚马逊",
+          "href": "https://www.amz123.com/minitools",
+          "description": "亚马逊卖家必备运营工具，显著提高亚马逊运营效率，一起来看看吧!",
+          "icon": "/assets/favicon_1754737033904.png",
+          "enabled": true
+        },
+        {
+          "id": "1_7",
+          "title": "DeepSeek | 深度求索",
+          "href": "https://www.deepseek.com/",
+          "description": "深度求索（DeepSeek），成立于2023年，专注于研究世界领先的通用人工智能底层模型与技术，挑战人工智能前沿性难题。基于自研训练框架、自建智算集群和万卡算力等资源，深度求索团队仅用半年时间便已发布并开源多个百亿级参数大模型，如DeepSeek-LLM通用大语言模型、DeepSeek-Coder代码大模型，并在2024年1月率先开源国内首个MoE大模型（DeepSeek-MoE），各大模型在公开评测榜单及真实样本外的泛化效果均有超越同级别模型的出色表现。和 DeepSeek AI 对话，轻松接入 API。",
+          "icon": "/assets/favicon_1754737068903.ico",
+          "enabled": true
+        },
+        {
+          "id": "1735119857233",
+          "title": "万能视频下载",
+          "href": "https://www.datatool.vip/",
+          "description": "DataTool.vip is your All-in-One platform for video downloader, covering TikTok, Instagram, Twitter, Facebook, Dailymotion, Vimeo, and nearly all websites. Fast, watermark-free, and supporting up to 4K resolution. Download any video you want!",
+          "icon": "/assets/favicon_1754737088658.ico",
+          "enabled": true
+        },
+        {
+          "id": "1741747111596",
+          "title": "Payoneer",
+          "href": "https://myaccount.payoneer.com/ma/",
+          "description": "",
+          "icon": "/assets/favicon_1754737125289.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754740212529_x9au2t9vg",
+          "title": "提示词优化器",
+          "href": "https://prompt.always200.com",
+          "description": "提示词优化器",
+          "icon": "/assets/favicon_1754740202689.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754740236345_r2uj3zxy6",
+          "title": "NextChat",
+          "href": "https://gpt.guojubb.top",
+          "description": "Your personal ChatGPT Chat Bot.",
+          "icon": "/assets/favicon_1754740229762.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754740258625_1dny85vz0",
+          "title": "橘子TV - 免费在线视频搜索与观看平台",
+          "href": "http://guojubb.top:3000/",
+          "description": "橘子TV是一个免费的在线视频搜索平台，无广告、安全，提供来自多个视频源的内容搜索与观看服务，无需注册即可使用。",
+          "icon": "/assets/favicon_1754740249589.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754740301377_g1r9o5bvx",
+          "title": "记录",
+          "href": "https://blog.guojubb.top/",
+          "description": "个人笔记",
+          "icon": "/assets/img_1754797516281.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754740326305_unuvo019s",
+          "title": "Temp Email - 临时邮箱",
+          "href": "https://yx.guojubb.top/",
+          "description": "Temp Email",
+          "icon": "/assets/favicon_1754740314834.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754807536320_ujre8cji9",
+          "title": "海外仓 oms.shipout.com",
+          "href": "https://oms.shipout.com/login#/",
+          "description": "oms.shipout.com",
+          "icon": "/assets/favicon_1754807628956.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1780654857975_epahtlkhv",
+          "title": "百度一下，你就知道",
+          "href": "https://www.baidu.com",
+          "description": "全球领先的中文搜索引擎、致力于让网民更便捷地获取信息，找到所求。百度超过千亿的中文网页数据库，可以瞬间找到相关的搜索结果。",
+          "icon": "/assets/favicon_1780654789717.ico",
+          "enabled": true
+        }
+      ],
+      "subCategories": [],
+      "description": "",
+      "enabled": true
+    },
+    {
+      "id": "9",
+      "title": "APP",
+      "icon": "Brain",
+      "items": [
+        {
+          "id": "item-1754218579319",
+          "title": "代刷",
+          "href": "https://lengqiu.tacyzs.com/",
+          "description": "",
+          "icon": "/assets/img_1754807958196.png",
+          "enabled": true
+        },
+        {
+          "id": "9_1",
+          "title": "JavRocket | 一个优雅的开车app",
+          "href": "https://www.javrocket.top/",
+          "description": "一个优雅的开车app",
+          "icon": "/assets/img_1754807850386.png",
+          "enabled": true
+        },
+        {
+          "id": "9_2",
+          "title": "源仓库",
+          "href": "https://www.yckceo.com/",
+          "description": "源仓库",
+          "icon": "/assets/img_1754737756764.png",
+          "enabled": true
+        },
+        {
+          "id": "9_3",
+          "title": "All-in-One 搞机手册 | All-in-One 搞机手册",
+          "href": "https://allinone.quickso.cn/",
+          "description": "",
+          "icon": "/assets/favicon_1754737796762.svg",
+          "enabled": true
+        },
+        {
+          "id": "9_4",
+          "title": "恩山无线论坛 -  Powered by Discuz!",
+          "href": "https://www.right.com.cn/forum/forum.php",
+          "description": "恩山无线论坛-无线路由器爱好者的乐园",
+          "icon": "/assets/favicon_1754737830608.ico",
+          "enabled": true
+        },
+        {
+          "id": "1739871926277",
+          "title": "欧歌线路",
+          "href": "http://tv.nxog.top",
+          "description": "",
+          "icon": "/assets/img_1754737977538.png",
+          "enabled": true
+        },
+        {
+          "id": "1736418296509",
+          "title": "美国身份证生成",
+          "href": "https://www.shenfendaquan.com/",
+          "description": "",
+          "icon": "/assets/img_1736418335098.png",
+          "enabled": true
+        },
+        {
+          "id": "1736911347619",
+          "title": "洛雪音乐 | Link3",
+          "href": "https://link3.cc/lxmusic",
+          "description": "一个免费的音乐软件！",
+          "icon": "/assets/favicon_1754738043543.ico",
+          "enabled": true
+        },
+        {
+          "id": "1752554261491",
+          "title": "风灵月影 - PC Game Cheats and Mods",
+          "href": "https://flingtrainer.com/",
+          "description": "PC Game Cheats and Mods",
+          "icon": "/assets/favicon_1754738065017.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738127667_rvnaqoxjl",
+          "title": "美国身份生成 | User Identity, Account and Profile Generator",
+          "href": "https://www.fakepersongenerator.com/",
+          "description": "Generate random person(identity) from US, include name,address,phone,email,employment,family,personal information like interest, online profile, brower, and more. Use for testing as database.",
+          "icon": "https://www.fakepersongenerator.com/Public/img/favicon.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738163435_v4m5bhlm3",
+          "title": "AI换脸、AI数字人 DeepFaceLab资源站",
+          "href": "https://deepface.cc/",
+          "description": "AI换脸软件、AI数字人、AI绘画、AI语音克隆 - AI直播换脸、AI实时换脸 - DeepFaceLab软件下载、DeepFaceLab教程；AI直播换脸软件 - DeepFaceLive下载、DeepFaceLive教程-AI资源站",
+          "icon": "/assets/favicon_1754738149064.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738226011_8ezpagyik",
+          "title": "剑二十七 - 精品软件下载",
+          "href": "https://www.jian27.com/",
+          "description": "开源软件 手机app 电视盒子app 下载分享 免费下载，本站没有收费项目，没有套路",
+          "icon": "/assets/favicon_1754738220344.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738255971_0to8xhgjd",
+          "title": "有趣的开源社区 - HelloGitHub",
+          "href": "https://hellogithub.com/",
+          "description": "HelloGitHub 开源社区，专注于发现和分享有趣、入门级的开源项目。在这里，探索开源技术解决方案，体验开源的乐趣，自荐或推荐开源项目，开启你的开源之旅。",
+          "icon": "/assets/favicon_1754738239679.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738335099_z81yayisb",
+          "title": "Ventoy - PE启动盘",
+          "href": "https://www.ventoy.net/cn/",
+          "description": "Ventoy is an open source tool to create bootable USB drive for ISO files. With ventoy, you don",
+          "icon": "/assets/favicon_1754738318087.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1756090410484_rm3mpjut5",
+          "title": "OAF-应用过滤",
+          "href": "https://www.openappfilter.com",
+          "description": "openwrt应用过滤插件",
+          "icon": "/assets/favicon_1756090329225.png",
+          "enabled": true
+        }
+      ],
+      "subCategories": [],
+      "description": "",
+      "enabled": true
+    },
+    {
+      "id": "1735265493940",
+      "title": "网单",
+      "icon": "LayoutGrid",
+      "description": "",
+      "enabled": true,
+      "items": [
+        {
+          "id": "site_1754738355107_uyg61sd3k",
+          "title": "彩虹引擎工作室",
+          "href": "https://old.ch3bbs.com/",
+          "description": "",
+          "icon": "/assets/img_1754797494447.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738441091_rthq35hw5",
+          "title": "热血侠",
+          "href": "http://www.rexuexia.com/forum.php?mod=forumdisplay&fid=2&filter=author&orderby=dateline",
+          "description": "",
+          "icon": "/assets/favicon_1754738420811.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738480699_2md9jspuv",
+          "title": "藏宝弯 -  Powered by Discuz!",
+          "href": "https://www.iopq.net/forum.php?mod=forumdisplay&fid=79&filter=author&orderby=dateline",
+          "description": "",
+          "icon": "/assets/favicon_1754738463227.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738497779_c6i32mfc7",
+          "title": "九零一起玩资源网",
+          "href": "https://www.dwymw.com/",
+          "description": "九零一起玩资源网（帝王源码网）,是分享Web互联网资源的博客，偶尔分享个人建站心得，汇聚各优质资源站，建站资源、建站经验教程、游戏源代码资源等,让学习变的更便捷.永久域名为九零一起玩的谐音90175.com",
+          "icon": "/assets/favicon_1754738493486.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738511763_7w6ziew2g",
+          "title": "七玩网-全网首发游戏资源库｜全端游戏资源库·大型单机/MOD/补丁｜日更500+",
+          "href": "https://www.7chaowan.com/",
+          "description": "七玩网|网游单机|游戏攻略|综合工具|社区论坛拥有专业网游单机游戏攻略和综合工具等资源。",
+          "icon": "/assets/favicon_1754738509789.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738560539_m4qj04gps",
+          "title": "菜狗游戏小窝",
+          "href": "https://cggm.cc",
+          "description": "",
+          "icon": "/assets/img_1754738556183.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738599667_22rv6l1f1",
+          "title": "星河游戏程序下载-www.2xh.cn",
+          "href": "http://www.2xh.cn/",
+          "description": "",
+          "icon": "/assets/favicon_1754738594412.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738624043_tivhnwvtp",
+          "title": "星河引擎简介 | 星河引擎官网",
+          "href": "http://www.agg5.com:3000/docs/introduct/",
+          "description": "",
+          "icon": "/assets/favicon_1754738615609.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738660882_5o5wmivkj",
+          "title": "传奇部落",
+          "href": "https://www.gmbuluo.net/",
+          "description": "",
+          "icon": "/assets/favicon_1754738637682.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738675363_xyhmr6ezl",
+          "title": "521GM游戏网-分享快乐的游戏网站",
+          "href": "https://521gm.cn/",
+          "description": "",
+          "icon": "/assets/favicon_1754738671781.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738691107_r0jjevbmm",
+          "title": "狗凯之家免费源码网-提供程序源代码和网站模板主题",
+          "href": "https://www.bygoukai.com/",
+          "description": "一个免费资源网站源码分享平台，每天更新技术教程、精品源码、实用软件等，分享最具价值的内容，致力打造全网秀的免费资源网、资源网、源码资源网，提供丰富的优质源码,网站模板并且大部分经过测试。欢迎各位源码爱好者前来下载 狗凯之家源码网是一个专注于收集精品源码的专业性网站！",
+          "icon": "/assets/favicon_1754738686662.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739545818_xwuneiu2i",
+          "title": "168版本库",
+          "href": "https://www.168bbk.com/forum.php",
+          "description": "168版本库",
+          "icon": "/assets/img_1754739538387.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739576682_14s62aa9n",
+          "title": "思维资源网",
+          "href": "https://swzyw.com/",
+          "description": "思维资源网",
+          "icon": "/assets/img_1754739572591.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739604442_crk7a52jd",
+          "title": "小悠源码网",
+          "href": "https://vip.skt3.com/",
+          "description": "小悠源码网",
+          "icon": "/assets/img_1754739601322.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739649082_kfmtxxo82",
+          "title": "吾爱懒猫-游戏源码与架设资源平台｜手游/端游/页游源码下载｜游戏架设教程",
+          "href": "https://www.52lanm.com/",
+          "description": "【吾爱懒猫】专业游戏资源平台，提供最新手游源码、端游服务端、页游开服工具包下载。包含传奇/战神引擎等热门游戏源码、私服架设教程、GM管理工具及破解资源。所有资源经过站长实测验证，配套详细视频教程+图文指南，每日更新维护。免费获取手游服务端、游戏开服工具包等专业资源，立即访问开启您的游戏GM之旅！",
+          "icon": "/assets/favicon_1754739646495.png",
+          "enabled": true
+        }
+      ],
+      "subCategories": []
+    },
+    {
+      "id": "1735433560958",
+      "title": "游戏",
+      "icon": "LayoutGrid",
+      "description": "",
+      "enabled": true,
+      "items": [
+        {
+          "id": "site_1754738768546_4tthah5wy",
+          "title": "switch618",
+          "href": "https://www.switch618.com/",
+          "description": "",
+          "icon": "/assets/img_1754738762753.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738790442_gbsox0ge4",
+          "title": "switch520",
+          "href": "https://laoquzhang.com/",
+          "description": "",
+          "icon": "/assets/img_1754797430609.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738812354_k849ojdif",
+          "title": "Smash Karts 🏎️ 小游戏",
+          "href": "https://www.crazygames.com/game/smash-karts",
+          "description": "Smash Karts is a 3D multiplayer IO kart battle game. Drive your go-kart, pick up weapons, and blow up other karts to win! Keep playing to level up and unlock new characters and prizes.",
+          "icon": "/assets/favicon_1754738799721.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738827714_98qbwpk2x",
+          "title": "小妖怪分享|兴趣使然的资源搬运Blog",
+          "href": "https://www.xyg688.com/",
+          "description": "小妖怪分享网,每天为大家更新国内外单机PJ游戏，安卓PJ软件，WIN软件下载，CAD 3DMAX的实用教程，收录最新最全的STEAM单机破解游戏，本站游戏免解压免安装，下载即玩。",
+          "icon": "/assets/favicon_1754738824319.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738843099_r90z7gw8v",
+          "title": "GKinto 游戏大桶",
+          "href": "https://www.gkinto.com/",
+          "description": "",
+          "icon": "/assets/favicon_1754738837738.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738862419_h41tozb0c",
+          "title": "flysheep资源避难所",
+          "href": "http://flysheep.ysepan.com",
+          "description": "",
+          "icon": "/assets/favicon_1754738856952.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738875075_145ygl2hv",
+          "title": "小叽资源 - Free Share",
+          "href": "https://steamzg.com/",
+          "description": "免费单机游戏电影动漫软件分享",
+          "icon": "/assets/favicon_1754738872212.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738945002_plfhu5h60",
+          "title": "品技 - 论坛",
+          "href": "https://www.tekqart.com/forum.php?mod=forumdisplay&fid=141&filter=author&orderby=dateline",
+          "description": "",
+          "icon": "/assets/img_1754738934565.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738961210_nvw6clpio",
+          "title": "每周都有免费游戏 | Epic游戏商城",
+          "href": "https://store.epicgames.com/zh-CN/free-games",
+          "description": "立即下载免费游戏或加入免费游戏社区吧！",
+          "icon": "/assets/favicon_1754738956846.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739010570_m20y5ikg7",
+          "title": "咸鱼单机发布页",
+          "href": "https://www.game7.vip/",
+          "description": "咸鱼单机发布页",
+          "icon": "/assets/img_1754739002647.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739025203_ne7isng1m",
+          "title": "Poki (宝玩) - 免费在线小游戏 - 马上玩！",
+          "href": "https://poki.com/zh",
+          "description": "与Poki (宝玩)一起探索免费在线游戏的世界！即刻玩耍，无需下载，享受与所有设备兼容的游戏。",
+          "icon": "/assets/favicon_1754739020273.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1780558045627_d3ruqj7y3",
+          "title": "VR中文库-专注于SteamVR&amp;Quest游戏汉化平台",
+          "href": "https://www.vrzwk.com/",
+          "description": "VR中文库-专注于SteamVR&amp;Quest游戏汉化平台",
+          "icon": "/assets/favicon_1780558027938.png",
+          "enabled": true
+        }
+      ],
+      "subCategories": []
+    },
+    {
+      "id": "2",
+      "title": "资源",
+      "icon": "LayoutGrid",
+      "items": [
+        {
+          "id": "site_1754739054666_sipv660hr",
+          "title": "小昕资源网盘",
+          "href": "https://pan.iosxin.top/",
+          "description": "",
+          "icon": "/assets/favicon_1754739047630.svg",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739158210_gpe035wxm",
+          "title": "HelloWindows.cn - 精校 完整 极致 Windows系统下载仓储站",
+          "href": "https://hellowindows.cn/",
+          "description": "HelloWindows是一个完整极致的Windows纯净系统下载站，不夹带任何私货，系统全部来源于微软官方原版，本站只是收录官方发布的系统以及工具，方便大家下载，请放心使用。永久在线：www.hellowindows.cn",
+          "icon": "/assets/favicon_1754739152210.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739179226_m1ai039fc",
+          "title": "MSDN - 山己几子木",
+          "href": "https://msdn.sjjzm.com/",
+          "description": "本站提供 Windows 11、Windows 10、Windows 8.1、Windows 8、Windows 7、Windows XP 的 MSDN 镜像资源展示。",
+          "icon": "/assets/img_1754797609302.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739240082_mfqre61rl",
+          "title": "软仓",
+          "href": "https://www.ruancang.net",
+          "description": "",
+          "icon": "/assets/img_1754739234780.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739255274_vil5fpe1m",
+          "title": "易破解 - 给你所需要的内容",
+          "href": "https://www.ypojie.com/",
+          "description": "亿破姐『易破解』网站专注无流氓绿色软件分享、游戏下载、电脑技术、经验教程为一体的站点、安全、纯净、放心、十年磨一剑，不忘初心只为给你最需要的内容。",
+          "icon": "/assets/favicon_1754739252859.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739451938_c50n17ydm",
+          "title": "乐玩ioa资源站",
+          "href": "https://pan.lewsky.top/",
+          "description": "",
+          "icon": "/assets/img_1754739436228.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739470274_17n0xs2xf",
+          "title": "清烟资源库丨致力打造全网最全资源",
+          "href": "https://pan.qlam.cc/",
+          "description": "专注iOS应用分享，以及苹果科技教程软件，APPLE编程教程",
+          "icon": "/assets/favicon_1754739467120.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754892882841_7kmaoprgc",
+          "title": "零度博客 - 专注分享免费实用软件、AI黑科技、有趣网站及电脑系统相关安装教程！",
+          "href": "https://www.freedidi.com/",
+          "description": "零度博客，专注于分享免费实用软件、AI 开源工具、电脑系统安装教程及实用网站推荐，帮助用户发现有趣且实用的最新科技资源。",
+          "icon": "/assets/favicon_1754892868982.png",
+          "enabled": true
+        },
+        {
+          "id": "site_1756682723907_j9j12i3ru",
+          "title": "ScriptCat - 分享你的用户脚本",
+          "href": "https://scriptcat.org/zh-CN",
+          "description": "脚本猫脚本站,在这里你可以与全世界分享你的用户脚本",
+          "icon": "/assets/favicon_1756682709155.ico",
+          "enabled": true
+        }
+      ],
+      "subCategories": [],
+      "description": "",
+      "enabled": true
+    },
+    {
+      "id": "8",
+      "title": "签到",
+      "icon": "LayoutGrid",
+      "items": [
+        {
+          "id": "site_1754739502058_q52ck8vls",
+          "title": "传世单机网",
+          "href": "https://www.wooolc.com/plugin.php?id=k_misign:sign",
+          "description": "传世单机网",
+          "icon": "/assets/favicon_1754739483107.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754739632594_redrl3iu3",
+          "title": "咸鱼单机",
+          "href": "https://www.xianyudanji.to/",
+          "description": "咸鱼单机",
+          "icon": "/assets/img_1754739623784.png",
+          "enabled": true
+        }
+      ],
+      "subCategories": [],
+      "description": "",
+      "enabled": true
+    }
+  ]
+}
