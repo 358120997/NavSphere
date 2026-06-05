@@ -7,6 +7,7 @@ export interface StoredAccount {
   name?: string
   email?: string
   createdAt?: string
+  source?: 'legacy' | 'registered'
 }
 
 interface AccountsFile {
@@ -36,7 +37,7 @@ function getGitHubConfig() {
   return { owner, repo, branch, token }
 }
 
-function getLegacyAccounts(): StoredAccount[] {
+export function getLegacyAccounts(): StoredAccount[] {
   const accountsJson = process.env.ADMIN_USERS
 
   if (accountsJson) {
@@ -51,6 +52,7 @@ function getLegacyAccounts(): StoredAccount[] {
             password: account.password,
             name: account.name,
             email: account.email,
+            source: 'legacy' as const,
           }))
       }
     } catch (error) {
@@ -66,11 +68,20 @@ function getLegacyAccounts(): StoredAccount[] {
         password: process.env.ADMIN_PASSWORD,
         name: process.env.ADMIN_NAME,
         email: process.env.ADMIN_EMAIL,
+        source: 'legacy',
       },
     ]
   }
 
   return []
+}
+
+export function getAdminAccountIds() {
+  return getLegacyAccounts().map((account) => account.id)
+}
+
+export function isAdminAccountId(accountId?: string | null) {
+  return !!accountId && getAdminAccountIds().includes(accountId)
 }
 
 export async function hashPassword(password: string, salt: string) {
@@ -129,7 +140,11 @@ export async function readRegisteredAccounts(): Promise<StoredAccount[]> {
 }
 
 export async function readAccounts(): Promise<StoredAccount[]> {
-  return [...getLegacyAccounts(), ...(await readRegisteredAccounts())]
+  const registeredAccounts = (await readRegisteredAccounts()).map((account) => ({
+    ...account,
+    source: 'registered' as const,
+  }))
+  return [...getLegacyAccounts(), ...registeredAccounts]
 }
 
 function encodeBase64(content: string) {
@@ -188,6 +203,61 @@ export async function saveRegisteredAccounts(users: StoredAccount[]) {
   if (!response.ok) {
     const error = await response.json()
     throw new Error(`Failed to save accounts: ${error.message}`)
+  }
+
+  return response.json()
+}
+
+export async function deleteRepositoryFile(path: string, message: string) {
+  const { owner, repo, branch, token } = getGitHubConfig()
+
+  if (!token) {
+    throw new Error('Missing GITHUB_TOKEN environment variable')
+  }
+
+  const currentFileResponse = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}?ref=${branch}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github.v3+json',
+        'User-Agent': 'NavSphere',
+      },
+      cache: 'no-store',
+    }
+  )
+
+  if (currentFileResponse.status === 404) {
+    return null
+  }
+
+  if (!currentFileResponse.ok) {
+    const error = await currentFileResponse.json()
+    throw new Error(`Failed to read file before delete: ${error.message}`)
+  }
+
+  const currentFile = await currentFileResponse.json()
+  const response = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}/contents/${path}`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json',
+        'User-Agent': 'NavSphere',
+      },
+      body: JSON.stringify({
+        message,
+        sha: currentFile.sha,
+        branch,
+      }),
+    }
+  )
+
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(`Failed to delete file: ${error.message}`)
   }
 
   return response.json()

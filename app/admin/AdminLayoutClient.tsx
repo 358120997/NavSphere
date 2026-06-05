@@ -20,6 +20,7 @@ import {
   Monitor,
   Database,
   PlusCircle,
+  Users,
 } from "lucide-react"
 import { cn } from '@/lib/utils'
 import {
@@ -41,7 +42,18 @@ interface AdminLayoutClientProps {
   user: any
 }
 
-const menuItems = [
+interface MenuItem {
+  title: string
+  href: string
+  icon: React.ComponentType<{ className?: string }>
+  subItems?: Array<{
+    title: string
+    href: string
+  }>
+  onClick?: undefined
+}
+
+const baseMenuItems: MenuItem[] = [
   {
     title: "仪表盘",
     href: "/admin",
@@ -91,11 +103,20 @@ const menuItems = [
   }
 ]
 
+const adminOnlyMenuItems: MenuItem[] = [
+  {
+    title: "账号管理",
+    href: "/admin/accounts",
+    icon: Users
+  }
+]
+
 export function AdminLayoutClient({ children, user }: AdminLayoutClientProps) {
   const pathname = usePathname()
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false)
   const [expandedItems, setExpandedItems] = useState<string[]>([])
   const { setTheme } = useTheme()
+  const menuItems = user.isAdmin ? [...baseMenuItems, ...adminOnlyMenuItems] : baseMenuItems
 
   const toggleMenuItem = (href: string) => {
     setExpandedItems(prev =>

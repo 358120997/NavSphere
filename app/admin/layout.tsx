@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { AdminLayoutClient } from './AdminLayoutClient'
 import { Toaster } from "@/registry/new-york/ui/toaster"
 import { Metadata } from 'next'
+import { isAdminAccountId } from '@/lib/account-store'
 
 export const metadata: Metadata = {
   title: 'NavSphere Admin',
@@ -31,7 +32,9 @@ export default async function AdminLayout({
         user={{
           name: session.user.name,
           email: session.user.email,
-          image: session.user.image
+          image: session.user.image,
+          accountId: (session.user as any).accountId,
+          isAdmin: isAdminAccountId((session.user as any).accountId),
         }}
       >
         {children}

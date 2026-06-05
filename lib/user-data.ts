@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth'
 import { getFileContent } from '@/lib/github'
-import { normalizeAccountId, readAccounts } from '@/lib/account-store'
+import { isAdminAccountId, normalizeAccountId, readAccounts } from '@/lib/account-store'
 
 export const DEFAULT_NAVIGATION_PATH = 'navsphere/content/navigation.json'
 export const DEFAULT_SITE_PATH = 'navsphere/content/site.json'
@@ -44,7 +44,8 @@ export async function getCurrentAccountId() {
 }
 
 export async function getCurrentNavigationPath() {
-  return getAccountNavigationPath(await getCurrentAccountId())
+  const accountId = await getCurrentAccountId()
+  return isAdminAccountId(accountId) ? DEFAULT_NAVIGATION_PATH : getAccountNavigationPath(accountId)
 }
 
 export async function getRequiredCurrentNavigationPath() {
@@ -54,7 +55,7 @@ export async function getRequiredCurrentNavigationPath() {
     throw new Error('当前登录账号缺少账号标识，无法保存个人导航数据')
   }
 
-  return getAccountNavigationPath(accountId)
+  return isAdminAccountId(accountId) ? DEFAULT_NAVIGATION_PATH : getAccountNavigationPath(accountId)
 }
 
 export async function getCurrentNavigationData() {
