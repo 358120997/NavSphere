@@ -1,6 +1,7 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import type { DefaultSession, NextAuthConfig } from 'next-auth'
+import { readAccounts, verifyPassword } from '@/lib/account-store'
 
 declare module 'next-auth' {
   interface Session {
@@ -22,49 +23,6 @@ declare module 'next-auth/jwt' {
   }
 }
 
-interface LocalAccount {
-  username: string
-  password: string
-  name?: string
-  email?: string
-}
-
-function normalizeAccountId(value: string) {
-  return value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9_-]+/g, '-')
-    .replace(/^-+|-+$/g, '') || 'user'
-}
-
-function getLocalAccounts(): LocalAccount[] {
-  const accountsJson = process.env.ADMIN_USERS
-
-  if (accountsJson) {
-    try {
-      const parsed = JSON.parse(accountsJson)
-      if (Array.isArray(parsed)) {
-        return parsed.filter((account) => account?.username && account?.password)
-      }
-    } catch (error) {
-      console.error('Invalid ADMIN_USERS JSON:', error)
-    }
-  }
-
-  if (process.env.ADMIN_USERNAME && process.env.ADMIN_PASSWORD) {
-    return [
-      {
-        username: process.env.ADMIN_USERNAME,
-        password: process.env.ADMIN_PASSWORD,
-        name: process.env.ADMIN_NAME,
-        email: process.env.ADMIN_EMAIL,
-      },
-    ]
-  }
-
-  return []
-}
-
 const config = {
   providers: [
     CredentialsProvider({
@@ -76,15 +34,14 @@ const config = {
       async authorize(credentials) {
         const username = String(credentials?.username || '')
         const password = String(credentials?.password || '')
-        const account = getLocalAccounts().find(
-          (item) => item.username === username && item.password === password
-        )
+        const accounts = await readAccounts()
+        const account = accounts.find((item) => item.username === username)
 
-        if (!account) {
+        if (!account || !(await verifyPassword(account, password))) {
           return null
         }
 
-        const accountId = normalizeAccountId(account.username)
+        const accountId = account.id
 
         return {
           id: accountId,

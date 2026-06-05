@@ -99,15 +99,26 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   </button>
                 </div>
               ) : (
-                <Link href="/auth/signin?callbackUrl=/" aria-label="登录">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="rounded-lg px-3 text-foreground/75 hover:bg-black/5 hover:text-foreground"
-                  >
-                    登录
-                  </Button>
-                </Link>
+                <div className="flex items-center gap-1">
+                  <Link href="/auth/signin?callbackUrl=/" aria-label="登录">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="rounded-lg px-3 text-foreground/75 hover:bg-black/5 hover:text-foreground"
+                    >
+                      登录
+                    </Button>
+                  </Link>
+                  <Link href="/auth/register?callbackUrl=/admin" aria-label="注册">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="hidden rounded-lg px-3 text-foreground/75 hover:bg-black/5 hover:text-foreground sm:inline-flex"
+                    >
+                      注册
+                    </Button>
+                  </Link>
+                </div>
               )}
               <Link
                 href="https://github.com/358120997/NavSphere"
