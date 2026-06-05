@@ -7,7 +7,22 @@ import { Metadata } from 'next/types'
 import { ScrollToTop } from '@/components/ScrollToTop'
 import navigationData from '@/navsphere/content/navigation.json'
 import siteData from '@/navsphere/content/site.json'
+import type { NavigationData } from '@/types/navigation'
+import type { SiteConfig } from '@/types/site'
 
+const defaultNavigationData: NavigationData = { navigationItems: [] }
+const defaultSiteData: SiteConfig = {
+  basic: {
+    title: 'NavSphere',
+    description: '',
+    keywords: ''
+  },
+  appearance: {
+    logo: '',
+    favicon: '',
+    theme: 'system'
+  }
+}
 
 async function getData() {
   try {
@@ -16,37 +31,15 @@ async function getData() {
     console.log('Site data received:', !!siteData)
 
     return { 
-      navigationData: navigationData || { navigationItems: [] }, 
-      siteData: siteData || {
-        basic: {
-          title: 'NavSphere',
-          description: '',
-          keywords: ''
-        },
-        appearance: {
-          logo: '',
-          favicon: '',
-          theme: 'system'
-        }
-      }
+      navigationData: (navigationData || defaultNavigationData) as NavigationData, 
+      siteData: (siteData || defaultSiteData) as SiteConfig
     }
   } catch (error) {
     console.error('Error in getData:', error)
     // 返回默认数据而不是空值
     return {
-      navigationData: { navigationItems: [] },
-      siteData: {
-        basic: {
-          title: 'NavSphere',
-          description: 'Default description',
-          keywords: 'default keywords'
-        },
-        appearance: {
-          logo: '',
-          favicon: '',
-          theme: 'system'
-        }
-      }
+      navigationData: defaultNavigationData,
+      siteData: defaultSiteData
     }
   }
 }

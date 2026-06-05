@@ -16,13 +16,6 @@ declare module 'next-auth' {
   }
 }
 
-declare module 'next-auth/jwt' {
-  interface JWT {
-    accessToken?: string
-    accountId?: string
-  }
-}
-
 const config = {
   providers: [
     CredentialsProvider({
@@ -58,17 +51,17 @@ const config = {
     async jwt({ token, user }) {
       const accessToken = process.env.GITHUB_TOKEN || user?.accessToken
       if (accessToken) {
-        token.accessToken = accessToken
+        ;(token as any).accessToken = accessToken
       }
       if (user?.accountId) {
-        token.accountId = user.accountId
+        ;(token as any).accountId = user.accountId
       }
       return token
     },
     async session({ session, token }) {
       if (session?.user) {
-        session.user.accessToken = process.env.GITHUB_TOKEN || (token.accessToken as string)
-        session.user.accountId = token.accountId as string
+        session.user.accessToken = process.env.GITHUB_TOKEN || ((token as any).accessToken as string)
+        session.user.accountId = (token as any).accountId as string
       }
       return session
     },

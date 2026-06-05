@@ -135,8 +135,8 @@ export async function readAccounts(): Promise<StoredAccount[]> {
 function encodeBase64(content: string) {
   const bytes = new TextEncoder().encode(content)
   let binary = ''
-  for (const byte of bytes) {
-    binary += String.fromCharCode(byte)
+  for (let index = 0; index < bytes.length; index += 1) {
+    binary += String.fromCharCode(bytes[index])
   }
   return btoa(binary)
 }
