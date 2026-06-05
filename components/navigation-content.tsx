@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Github, Menu } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
@@ -20,14 +20,40 @@ interface NavigationContentProps {
 
 export function NavigationContent({ navigationData, siteData }: NavigationContentProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [currentNavigationData, setCurrentNavigationData] = useState(navigationData)
   const { data: session, status } = useSession()
   const userName = session?.user?.name || session?.user?.email || session?.user?.accountId
+
+  useEffect(() => {
+    if (status === 'loading') {
+      return
+    }
+
+    let isMounted = true
+
+    fetch('/api/home/navigation', { cache: 'no-store' })
+      .then((response) => (response.ok ? response.json() : navigationData))
+      .then((data) => {
+        if (isMounted) {
+          setCurrentNavigationData(data?.navigationItems ? data : navigationData)
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setCurrentNavigationData(navigationData)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [navigationData, status])
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f1f3f5] text-foreground/90 dark:bg-[#202326] sm:flex-row">
       <div className="hidden sm:block">
         <Sidebar
-          navigationData={navigationData}
+          navigationData={currentNavigationData}
           siteInfo={siteData}
           className="sticky top-0 h-screen"
         />
@@ -46,7 +72,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
           )}
         >
           <Sidebar
-            navigationData={navigationData}
+            navigationData={currentNavigationData}
             siteInfo={siteData}
             className="h-full w-full"
             onClose={() => setIsSidebarOpen(false)}
@@ -112,7 +138,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
 
         <div className="mx-auto max-w-[1540px] px-3 py-6 sm:px-6 sm:py-8">
           <div className="space-y-9">
-            {navigationData.navigationItems.map((category) => (
+            {currentNavigationData.navigationItems.map((category) => (
               <section key={category.id} id={category.id} className="scroll-m-24">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">

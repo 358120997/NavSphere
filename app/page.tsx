@@ -5,17 +5,12 @@ export const revalidate = 3600 // Revalidate every hour
 import { NavigationContent } from '@/components/navigation-content'
 import { Metadata } from 'next/types'
 import { ScrollToTop } from '@/components/ScrollToTop'
-import { getFileContent } from '@/lib/github'
-import { DEFAULT_SITE_PATH, getCurrentNavigationData } from '@/lib/user-data'
+import navigationData from '@/navsphere/content/navigation.json'
+import siteData from '@/navsphere/content/site.json'
 
 
 async function getData() {
   try {
-    const [navigationData, siteData] = await Promise.all([
-      getCurrentNavigationData(),
-      getFileContent(DEFAULT_SITE_PATH)
-    ])
-
     // 添加数据验证日志
     console.log('Navigation data received:', !!navigationData)
     console.log('Site data received:', !!siteData)
