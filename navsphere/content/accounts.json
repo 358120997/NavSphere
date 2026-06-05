@@ -1,15 +1,6 @@
 {
   "users": [
     {
-      "id": "2329058906",
-      "username": "2329058906",
-      "passwordHash": "fb73c13804bad33a1ff753445ea13f84701f8840e03c90032f81b405ca962c42",
-      "salt": "da322d72f03f445c5961b7042281aceb",
-      "name": "2329058906",
-      "email": "2329058906@qq.com",
-      "createdAt": "2026-06-05T10:13:38.300Z"
-    },
-    {
       "id": "2329058905",
       "username": "2329058905",
       "passwordHash": "84425b2d8efa351ad14a1759e9d6f3d3625c8ed3a2a1b20c5036cd60c76342c5",
