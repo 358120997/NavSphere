@@ -1,13 +1,3 @@
 {
-  "users": [
-    {
-      "id": "2329058905",
-      "username": "2329058905",
-      "passwordHash": "84425b2d8efa351ad14a1759e9d6f3d3625c8ed3a2a1b20c5036cd60c76342c5",
-      "salt": "620664c43d103ac5b46b91ff2d55d7a0",
-      "name": "2329058905",
-      "email": "2329058905@qq.com",
-      "createdAt": "2026-06-05T10:49:10.363Z"
-    }
-  ]
+  "users": []
 }
