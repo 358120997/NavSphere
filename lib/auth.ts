@@ -7,7 +7,6 @@ declare module 'next-auth' {
   interface Session {
     user: {
       accessToken?: string
-      accountId?: string
     } & DefaultSession['user']
   }
   interface User {
@@ -61,7 +60,7 @@ const config = {
     async session({ session, token }) {
       if (session?.user) {
         session.user.accessToken = process.env.GITHUB_TOKEN || ((token as any).accessToken as string)
-        session.user.accountId = (token as any).accountId as string
+        ;(session.user as any).accountId = (token as any).accountId as string
       }
       return session
     },

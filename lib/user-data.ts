@@ -14,7 +14,7 @@ export function getAccountNavigationPath(accountId?: string | null) {
 
 export async function getCurrentAccountId() {
   const session = await auth()
-  return session?.user?.accountId || null
+  return (session?.user as any)?.accountId || null
 }
 
 export async function getCurrentNavigationPath() {

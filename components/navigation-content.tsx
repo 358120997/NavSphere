@@ -22,7 +22,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentNavigationData, setCurrentNavigationData] = useState(navigationData)
   const { data: session, status } = useSession()
-  const userName = session?.user?.name || session?.user?.email || session?.user?.accountId
+  const userName = session?.user?.name || session?.user?.email || (session?.user as any)?.accountId
 
   useEffect(() => {
     if (status === 'loading') {
