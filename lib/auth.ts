@@ -12,6 +12,7 @@ declare module 'next-auth' {
   interface User {
     accessToken?: string
     accountId?: string
+    username?: string
   }
 }
 
@@ -37,11 +38,12 @@ const config = {
 
         return {
           id: accountId,
-          name: account.name || account.username,
+          name: account.username,
           email: account.email || '',
           image: null,
           accessToken: process.env.GITHUB_TOKEN || '',
           accountId,
+          username: account.username,
         }
       },
     }),
@@ -52,15 +54,17 @@ const config = {
       if (accessToken) {
         ;(token as any).accessToken = accessToken
       }
-      if (user?.accountId) {
-        ;(token as any).accountId = user.accountId
+      if (user) {
+        ;(token as any).accountId = user.accountId || user.id || (token as any).accountId
+        ;(token as any).username = user.username || user.name || (token as any).username
       }
       return token
     },
     async session({ session, token }) {
       if (session?.user) {
         session.user.accessToken = process.env.GITHUB_TOKEN || ((token as any).accessToken as string)
-        ;(session.user as any).accountId = (token as any).accountId as string
+        ;(session.user as any).accountId = ((token as any).accountId || token.sub) as string
+        ;(session.user as any).username = (token as any).username as string
       }
       return session
     },

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { commitFile } from '@/lib/github'
-import { getCurrentNavigationData, getCurrentNavigationPath } from '@/lib/user-data'
+import { getCurrentNavigationData, getRequiredCurrentNavigationPath } from '@/lib/user-data'
 import type { NavigationData, NavigationItem } from '@/types/navigation'
 
 export const runtime = 'edge'
@@ -35,7 +35,7 @@ export async function PUT(
     }
 
     const updatedItem: NavigationItem = await request.json()
-    const navigationPath = await getCurrentNavigationPath()
+    const navigationPath = await getRequiredCurrentNavigationPath()
     const data = await getCurrentNavigationData() as NavigationData
     
     // 确保更新的导航项包含所有必需的字段
@@ -81,7 +81,7 @@ export async function DELETE(
       return new Response('Unauthorized', { status: 401 })
     }
 
-    const navigationPath = await getCurrentNavigationPath()
+    const navigationPath = await getRequiredCurrentNavigationPath()
     const data = await getCurrentNavigationData() as NavigationData
     const updatedItems = data.navigationItems.filter(item => item.id !== params.id)
 

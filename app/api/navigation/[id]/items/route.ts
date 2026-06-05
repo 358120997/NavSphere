@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { commitFile } from '@/lib/github'
-import { getCurrentNavigationData, getCurrentNavigationPath } from '@/lib/user-data'
+import { getCurrentNavigationData, getRequiredCurrentNavigationPath } from '@/lib/user-data'
 import type { NavigationData, NavigationSubItem } from '@/types/navigation'
 
 export const runtime = 'edge'
@@ -35,7 +35,7 @@ export async function POST(
     }
 
     const newItem: NavigationSubItem = await request.json()
-    const navigationPath = await getCurrentNavigationPath()
+    const navigationPath = await getRequiredCurrentNavigationPath()
     const data = await getCurrentNavigationData() as NavigationData
     
     const updatedItems = data.navigationItems.map(item => {
@@ -72,7 +72,7 @@ export async function PUT(
     }
 
     const { index, item }: { index: number, item: NavigationSubItem } = await request.json()
-    const navigationPath = await getCurrentNavigationPath()
+    const navigationPath = await getRequiredCurrentNavigationPath()
     const data = await getCurrentNavigationData() as NavigationData
     
     const navigation = data.navigationItems.find(nav => nav.id === params.id)
@@ -117,7 +117,7 @@ export async function DELETE(
     }
 
     const { index } = await request.json()
-    const navigationPath = await getCurrentNavigationPath()
+    const navigationPath = await getRequiredCurrentNavigationPath()
     const data = await getCurrentNavigationData() as NavigationData
     
     const navigation = data.navigationItems.find(nav => nav.id === params.id)

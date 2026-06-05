@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { commitFile } from '@/lib/github'
-import { getCurrentNavigationData, getCurrentNavigationPath } from '@/lib/user-data'
+import { getCurrentNavigationData, getRequiredCurrentNavigationPath } from '@/lib/user-data'
 import type { NavigationData, NavigationItem } from '@/types/navigation'
 
 export const runtime = 'edge'
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     }
 
     const data = await request.json()
-    await validateAndSaveNavigationData(data, accessToken, await getCurrentNavigationPath())
+    await validateAndSaveNavigationData(data, accessToken, await getRequiredCurrentNavigationPath())
 
     return NextResponse.json({ success: true })
   } catch (error) {
@@ -99,7 +99,7 @@ export async function PUT(request: Request) {
     }
 
     const data = await request.json()
-    await validateAndSaveNavigationData(data, accessToken, await getCurrentNavigationPath())
+    await validateAndSaveNavigationData(data, accessToken, await getRequiredCurrentNavigationPath())
 
     return NextResponse.json({ success: true })
   } catch (error) {

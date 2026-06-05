@@ -1,5 +1,6 @@
 import { auth } from '@/lib/auth'
 import { getFileContent } from '@/lib/github'
+import { normalizeAccountId, readAccounts } from '@/lib/account-store'
 
 export const DEFAULT_NAVIGATION_PATH = 'navsphere/content/navigation.json'
 export const DEFAULT_SITE_PATH = 'navsphere/content/site.json'
@@ -14,24 +15,48 @@ export function getAccountNavigationPath(accountId?: string | null) {
 
 export async function getCurrentAccountId() {
   const session = await auth()
-  return (session?.user as any)?.accountId || null
+  const user = session?.user as any
+
+  if (!user) {
+    return null
+  }
+
+  if (user.accountId) {
+    return user.accountId
+  }
+
+  if (user.username) {
+    return normalizeAccountId(user.username)
+  }
+
+  const accounts = await readAccounts()
+  const matchedAccount = accounts.find((account) => {
+    const sameEmail = user.email && account.email?.toLowerCase() === user.email.toLowerCase()
+    const sameUsername = user.name && account.username.toLowerCase() === user.name.toLowerCase()
+    return sameEmail || sameUsername
+  })
+
+  if (matchedAccount) {
+    return matchedAccount.id
+  }
+
+  return user.name ? normalizeAccountId(user.name) : null
 }
 
 export async function getCurrentNavigationPath() {
   return getAccountNavigationPath(await getCurrentAccountId())
 }
 
-export async function getCurrentNavigationData() {
-  const path = await getCurrentNavigationPath()
-  const data = await getFileContent(path)
+export async function getRequiredCurrentNavigationPath() {
+  const accountId = await getCurrentAccountId()
 
-  if (
-    path !== DEFAULT_NAVIGATION_PATH &&
-    Array.isArray(data?.navigationItems) &&
-    data.navigationItems.length === 0
-  ) {
-    return getFileContent(DEFAULT_NAVIGATION_PATH)
+  if (!accountId) {
+    throw new Error('当前登录账号缺少账号标识，无法保存个人导航数据')
   }
 
-  return data
+  return getAccountNavigationPath(accountId)
+}
+
+export async function getCurrentNavigationData() {
+  return getFileContent(await getCurrentNavigationPath())
 }
