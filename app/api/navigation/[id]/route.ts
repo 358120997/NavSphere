@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { commitFile, getFileContent } from '@/lib/github'
+import { commitFile } from '@/lib/github'
+import { getCurrentNavigationData, getCurrentNavigationPath } from '@/lib/user-data'
 import type { NavigationData, NavigationItem } from '@/types/navigation'
 
 export const runtime = 'edge'
@@ -10,7 +11,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const data = await getFileContent('navsphere/content/navigation.json') as NavigationData
+    const data = await getCurrentNavigationData() as NavigationData
     const item = data.navigationItems.find(item => item.id === params.id)
     
     if (!item) {
@@ -34,7 +35,8 @@ export async function PUT(
     }
 
     const updatedItem: NavigationItem = await request.json()
-    const data = await getFileContent('navsphere/content/navigation.json') as NavigationData
+    const navigationPath = await getCurrentNavigationPath()
+    const data = await getCurrentNavigationData() as NavigationData
     
     // 确保更新的导航项包含所有必需的字段
     const existingItem = data.navigationItems.find(item => item.id === params.id)
@@ -56,7 +58,7 @@ export async function PUT(
     )
 
     await commitFile(
-      'navsphere/content/navigation.json',
+      navigationPath,
       JSON.stringify({ navigationItems: updatedItems }, null, 2),
       'Update navigation item',
       session.user.accessToken
@@ -79,11 +81,12 @@ export async function DELETE(
       return new Response('Unauthorized', { status: 401 })
     }
 
-    const data = await getFileContent('navsphere/content/navigation.json') as NavigationData
+    const navigationPath = await getCurrentNavigationPath()
+    const data = await getCurrentNavigationData() as NavigationData
     const updatedItems = data.navigationItems.filter(item => item.id !== params.id)
 
     await commitFile(
-      'navsphere/content/navigation.json',
+      navigationPath,
       JSON.stringify({ navigationItems: updatedItems }, null, 2),
       'Delete navigation item',
       session.user.accessToken

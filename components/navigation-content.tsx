@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Github, LayoutDashboard, Menu } from 'lucide-react'
+import { Github, Menu } from 'lucide-react'
+import { signOut, useSession } from 'next-auth/react'
 import type { NavigationData } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
 import { Footer } from '@/components/footer'
@@ -19,6 +20,8 @@ interface NavigationContentProps {
 
 export function NavigationContent({ navigationData, siteData }: NavigationContentProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const { data: session, status } = useSession()
+  const userName = session?.user?.name || session?.user?.email || session?.user?.accountId
 
   return (
     <div className="flex min-h-screen flex-col bg-[#f1f3f5] text-foreground/90 dark:bg-[#202326] sm:flex-row">
@@ -58,15 +61,28 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
               <SearchBar />
             </div>
             <div className="flex items-center gap-1">
-              <Link href="/admin" aria-label="进入管理后台">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-lg text-foreground/70 hover:bg-black/5 hover:text-foreground"
-                >
-                  <LayoutDashboard className="h-5 w-5" />
-                </Button>
-              </Link>
+              {status === 'authenticated' ? (
+                <div className="flex items-center gap-2 rounded-lg bg-white/45 px-2.5 py-1.5 text-sm text-foreground/75 shadow-sm ring-1 ring-black/5 dark:bg-white/5 dark:ring-white/10">
+                  <span className="hidden max-w-24 truncate sm:inline">{userName}</span>
+                  <button
+                    type="button"
+                    className="font-medium text-foreground/80 transition hover:text-foreground"
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                  >
+                    退出
+                  </button>
+                </div>
+              ) : (
+                <Link href="/auth/signin?callbackUrl=/" aria-label="登录">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="rounded-lg px-3 text-foreground/75 hover:bg-black/5 hover:text-foreground"
+                  >
+                    登录
+                  </Button>
+                </Link>
+              )}
               <Link
                 href="https://github.com/358120997/NavSphere"
                 target="_blank"

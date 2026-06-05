@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server'
-import navigationData from '@/navsphere/content/navigation.json'
+import { getCurrentNavigationData } from '@/lib/user-data'
 
 export const runtime = 'edge'
 
 export async function GET() {
   try {
+    const navigationData = await getCurrentNavigationData()
+
     return NextResponse.json(navigationData, {
       headers: {
         'Cache-Control': 's-maxage=3600, stale-while-revalidate',

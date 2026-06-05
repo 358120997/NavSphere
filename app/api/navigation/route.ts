@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { commitFile, getFileContent } from '@/lib/github'
+import { commitFile } from '@/lib/github'
+import { getCurrentNavigationData, getCurrentNavigationPath } from '@/lib/user-data'
 import type { NavigationData, NavigationItem } from '@/types/navigation'
 
 export const runtime = 'edge'
 
 export async function GET() {
   try {
-    const data = await getFileContent('navsphere/content/navigation.json')
+    const data = await getCurrentNavigationData()
     return NextResponse.json(data)
   } catch (error) {
     console.error('Failed to fetch navigation data:', error)
@@ -18,7 +19,7 @@ export async function GET() {
   }
 }
 
-async function validateAndSaveNavigationData(data: any, accessToken: string) {
+async function validateAndSaveNavigationData(data: any, accessToken: string, path: string) {
   // 详细的数据结构验证和日志
   console.log('Received navigation data:', JSON.stringify(data, null, 2))
   
@@ -52,7 +53,7 @@ async function validateAndSaveNavigationData(data: any, accessToken: string) {
   }
 
   await commitFile(
-    'navsphere/content/navigation.json',
+    path,
     JSON.stringify(data, null, 2),
     'Update navigation data',
     accessToken
@@ -71,7 +72,7 @@ export async function POST(request: Request) {
     }
 
     const data = await request.json()
-    await validateAndSaveNavigationData(data, accessToken)
+    await validateAndSaveNavigationData(data, accessToken, await getCurrentNavigationPath())
 
     return NextResponse.json({ success: true })
   } catch (error) {
@@ -98,7 +99,7 @@ export async function PUT(request: Request) {
     }
 
     const data = await request.json()
-    await validateAndSaveNavigationData(data, accessToken)
+    await validateAndSaveNavigationData(data, accessToken, await getCurrentNavigationPath())
 
     return NextResponse.json({ success: true })
   } catch (error) {

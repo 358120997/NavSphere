@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { commitFile, getFileContent } from '@/lib/github'
-import type { NavigationData, NavigationItem, NavigationSubItem } from '@/types/navigation'
+import { commitFile } from '@/lib/github'
+import { getCurrentNavigationData, getCurrentNavigationPath } from '@/lib/user-data'
+import type { NavigationData, NavigationSubItem } from '@/types/navigation'
 
 export const runtime = 'edge'
 
@@ -10,7 +11,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const data = await getFileContent('navsphere/content/navigation.json') as NavigationData
+    const data = await getCurrentNavigationData() as NavigationData
     const item = data.navigationItems.find(item => item.id === params.id)
     
     if (!item) {
@@ -34,7 +35,8 @@ export async function POST(
     }
 
     const newItem: NavigationSubItem = await request.json()
-    const data = await getFileContent('navsphere/content/navigation.json') as NavigationData
+    const navigationPath = await getCurrentNavigationPath()
+    const data = await getCurrentNavigationData() as NavigationData
     
     const updatedItems = data.navigationItems.map(item => {
       if (item.id === params.id) {
@@ -47,7 +49,7 @@ export async function POST(
     })
 
     await commitFile(
-      'navsphere/content/navigation.json',
+      navigationPath,
       JSON.stringify({ navigationItems: updatedItems }, null, 2),
       'Add navigation item',
       session.user.accessToken
@@ -70,7 +72,8 @@ export async function PUT(
     }
 
     const { index, item }: { index: number, item: NavigationSubItem } = await request.json()
-    const data = await getFileContent('navsphere/content/navigation.json') as NavigationData
+    const navigationPath = await getCurrentNavigationPath()
+    const data = await getCurrentNavigationData() as NavigationData
     
     const navigation = data.navigationItems.find(nav => nav.id === params.id)
     if (!navigation) {
@@ -91,7 +94,7 @@ export async function PUT(
     })
 
     await commitFile(
-      'navsphere/content/navigation.json',
+      navigationPath,
       JSON.stringify({ navigationItems: updatedNavigations }, null, 2),
       'Update navigation item',
       session.user.accessToken
@@ -114,7 +117,8 @@ export async function DELETE(
     }
 
     const { index } = await request.json()
-    const data = await getFileContent('navsphere/content/navigation.json') as NavigationData
+    const navigationPath = await getCurrentNavigationPath()
+    const data = await getCurrentNavigationData() as NavigationData
     
     const navigation = data.navigationItems.find(nav => nav.id === params.id)
     if (!navigation) {
@@ -133,7 +137,7 @@ export async function DELETE(
     })
 
     await commitFile(
-      'navsphere/content/navigation.json',
+      navigationPath,
       JSON.stringify({ navigationItems: updatedNavigations }, null, 2),
       'Delete navigation item',
       session.user.accessToken

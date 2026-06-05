@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { getFileContent } from '@/lib/github'
+import { getCurrentNavigationData } from '@/lib/user-data'
 import type { NavigationData } from '@/types/navigation'
 
 export const runtime = 'edge'
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
     }
 
     // 获取导航数据
-    const navigationData = await getFileContent('navsphere/content/navigation.json') as NavigationData
+    const navigationData = await getCurrentNavigationData() as NavigationData
     
     // 获取站点配置数据
     const siteData = await getFileContent('navsphere/content/site.json') as any

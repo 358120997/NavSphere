@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
-import { commitFile, getFileContent } from '@/lib/github'
-import type { NavigationData, NavigationItem } from '@/types/navigation'
+import { commitFile } from '@/lib/github'
+import { getCurrentNavigationData, getCurrentNavigationPath } from '@/lib/user-data'
+import type { NavigationData } from '@/types/navigation'
 
 export const runtime = 'edge'
 
@@ -12,10 +13,11 @@ export async function POST(request: Request) {
       return new Response('Unauthorized', { status: 401 })
     }
 
-    const { sourceIndex, destinationIndex, itemId } = await request.json()
+    const { sourceIndex, destinationIndex } = await request.json()
     
     // 获取当前导航数据
-    const data = await getFileContent('navsphere/content/navigation.json') as NavigationData
+    const navigationPath = await getCurrentNavigationPath()
+    const data = await getCurrentNavigationData() as NavigationData
     
     // 确保导航项存在
     if (!data.navigationItems || !Array.isArray(data.navigationItems)) {
@@ -36,7 +38,7 @@ export async function POST(request: Request) {
 
     // 提交更改到 GitHub
     await commitFile(
-      'navsphere/content/navigation.json', 
+      navigationPath, 
       JSON.stringify(data, null, 2), 
       `重新排序导航项 - ${new Date().toISOString()}`,
       session.user.accessToken

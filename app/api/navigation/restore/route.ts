@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { commitFile, getFileContent } from '@/lib/github'
+import { getCurrentNavigationPath } from '@/lib/user-data'
 
 export const runtime = 'edge'
 
@@ -28,7 +29,7 @@ export async function POST() {
       
       // 将默认数据写入到navigation.json
       await commitFile(
-        'navsphere/content/navigation.json',
+        await getCurrentNavigationPath(),
         JSON.stringify(defaultData, null, 2),
         'Restore navigation data to default',
         session.user.accessToken

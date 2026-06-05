@@ -3,29 +3,17 @@ export const dynamic = 'force-dynamic'
 export const revalidate = 3600 // Revalidate every hour
 
 import { NavigationContent } from '@/components/navigation-content'
-import { headers } from 'next/headers'
-import { Metadata, ResolvingMetadata } from 'next/types'
+import { Metadata } from 'next/types'
 import { ScrollToTop } from '@/components/ScrollToTop'
+import { getFileContent } from '@/lib/github'
+import { DEFAULT_SITE_PATH, getCurrentNavigationData } from '@/lib/user-data'
 
 
 async function getData() {
   try {
-    // 使用绝对 URL，确保构建时可以访问
-    const baseUrl = process.env.NEXT_PUBLIC_API_URL
-    console.log('Building with base URL:', baseUrl) // 添加构建日志
-
-    const [navigationRes, siteRes] = await Promise.all([
-      fetch(new URL('/api/home/navigation', baseUrl).toString()),
-      fetch(new URL('/api/home/site', baseUrl).toString())
-    ])
-
-    if (!navigationRes.ok || !siteRes.ok) {
-      throw new Error(`Failed to fetch data: Navigation ${navigationRes.status}, Site ${siteRes.status}`)
-    }
-
     const [navigationData, siteData] = await Promise.all([
-      navigationRes.json(),
-      siteRes.json()
+      getCurrentNavigationData(),
+      getFileContent(DEFAULT_SITE_PATH)
     ])
 
     // 添加数据验证日志
