@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import type { DefaultSession, NextAuthConfig } from 'next-auth'
-import { readAccounts, verifyPassword } from '@/lib/account-store'
+import { isAdminAccountId, readAccounts, verifyPassword } from '@/lib/account-store'
 
 declare module 'next-auth' {
   interface Session {
@@ -57,6 +57,7 @@ const config = {
       if (user) {
         ;(token as any).accountId = user.accountId || user.id || (token as any).accountId
         ;(token as any).username = user.username || user.name || (token as any).username
+        ;(token as any).isAdmin = isAdminAccountId((token as any).accountId)
       }
       return token
     },
@@ -65,6 +66,7 @@ const config = {
         session.user.accessToken = process.env.GITHUB_TOKEN || ((token as any).accessToken as string)
         ;(session.user as any).accountId = ((token as any).accountId || token.sub) as string
         ;(session.user as any).username = (token as any).username as string
+        ;(session.user as any).isAdmin = isAdminAccountId((session.user as any).accountId)
       }
       return session
     },
