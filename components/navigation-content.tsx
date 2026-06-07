@@ -365,7 +365,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
   }, [navigationData, status])
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f1f3f5] text-foreground/90 dark:bg-[#202326] sm:flex-row">
+    <div className="flex min-h-screen flex-col bg-[#d9dee3] text-[#20262c] dark:bg-[#202326] sm:flex-row">
       <div className="hidden sm:block">
         <Sidebar
           navigationData={currentNavigationData}
@@ -382,7 +382,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       >
         <div
           className={cn(
-            'fixed inset-y-0 right-0 w-40 transform bg-[#e9edf1] shadow-lg transition-transform duration-200 ease-in-out dark:bg-[#25282b] sm:left-0',
+            'fixed inset-y-0 right-0 w-40 transform bg-[#cbd3da] shadow-[0_18px_45px_rgba(28,34,40,0.24)] transition-transform duration-200 ease-in-out dark:bg-[#25282b] sm:left-0',
             isSidebarOpen ? 'translate-x-0' : 'translate-x-full sm:-translate-x-full'
           )}
         >
@@ -396,18 +396,18 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       </div>
 
       <main className="flex-1">
-        <div className="sticky top-0 z-30 bg-[#e9edf1]/95 px-3 py-4 shadow-sm backdrop-blur dark:bg-[#25282b]/95 sm:px-6">
+        <div className="sticky top-0 z-30 border-b border-[#aeb8c1]/35 bg-[#cbd3da]/88 px-3 py-4 shadow-[0_10px_30px_rgba(40,48,56,0.10)] backdrop-blur-xl dark:bg-[#25282b]/95 sm:px-6">
           <div className="mx-auto flex max-w-[1500px] items-center gap-3">
             <div className="min-w-0 flex-1">
               <SearchBar />
             </div>
             <div className="flex items-center gap-1">
               {status === 'authenticated' ? (
-                <div className="flex items-center gap-2 rounded-lg bg-white/45 px-2.5 py-1.5 text-sm text-foreground/75 shadow-sm ring-1 ring-black/5 dark:bg-white/5 dark:ring-white/10">
+                <div className="flex items-center gap-2 rounded-lg bg-[#eef2f4]/58 px-2.5 py-1.5 text-sm text-[#3a444d] shadow-[0_8px_22px_rgba(50,58,66,0.10)] ring-1 ring-[#aeb8c1]/45 dark:bg-white/5 dark:ring-white/10">
                   <span className="hidden max-w-24 truncate sm:inline">{userName}</span>
                   <button
                     type="button"
-                    className="flex items-center gap-1 font-medium text-foreground/80 transition hover:text-foreground"
+                    className="flex items-center gap-1 font-medium text-[#303943] transition hover:text-[#10161b]"
                     onClick={() => {
                       setQuickAddMessage('')
                       setIsQuickAddOpen(true)
@@ -418,7 +418,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   </button>
                   <button
                     type="button"
-                    className="font-medium text-foreground/80 transition hover:text-foreground"
+                    className="font-medium text-[#303943] transition hover:text-[#10161b]"
                     onClick={() => signOut({ callbackUrl: '/' })}
                   >
                     退出
@@ -430,7 +430,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="rounded-lg px-3 text-foreground/75 hover:bg-black/5 hover:text-foreground"
+                      className="rounded-lg px-3 text-[#3a444d] hover:bg-[#bcc7d0] hover:text-[#10161b]"
                     >
                       登录
                     </Button>
@@ -439,7 +439,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="hidden rounded-lg px-3 text-foreground/75 hover:bg-black/5 hover:text-foreground sm:inline-flex"
+                      className="hidden rounded-lg px-3 text-[#3a444d] hover:bg-[#bcc7d0] hover:text-[#10161b] sm:inline-flex"
                     >
                       注册
                     </Button>
@@ -455,7 +455,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-lg text-foreground/70 hover:bg-black/5 hover:text-foreground"
+                  className="rounded-lg text-[#3f4a54] hover:bg-[#bcc7d0] hover:text-[#10161b]"
                 >
                   <Github className="h-5 w-5" />
                 </Button>
@@ -678,8 +678,8 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
               <section key={category.id} id={category.id} className="scroll-m-24">
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="h-5 w-1 rounded-full bg-foreground/35" />
-                    <h2 className="text-base font-semibold tracking-tight text-foreground/85 sm:text-lg">
+                    <div className="h-5 w-1 rounded-full bg-[#6f7d88]" />
+                    <h2 className="text-base font-semibold tracking-tight text-[#151b20] sm:text-lg">
                       {category.title}
                     </h2>
                   </div>
@@ -687,7 +687,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   {category.subCategories && category.subCategories.length > 0 ? (
                     category.subCategories.map((subCategory) => (
                       <div key={subCategory.id} id={subCategory.id} className="space-y-3 scroll-m-24">
-                        <h3 className="pl-4 text-sm font-medium text-muted-foreground">
+                        <h3 className="pl-4 text-sm font-medium text-[#59636d]">
                           {subCategory.title}
                         </h3>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">

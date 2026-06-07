@@ -138,7 +138,7 @@ export function SearchBar() {
           onChange={(event) => setQuery(event.target.value)}
           onFocus={() => setIsSuggestionsOpen(suggestions.length > 0)}
           onKeyDown={handleKeyDown}
-          className="h-10 rounded-lg border-black/5 bg-[#f8f9fa] pl-10 pr-20 shadow-sm transition-colors placeholder:text-foreground/40 focus-visible:bg-white/90 dark:border-white/5 dark:bg-[#292d30] dark:focus-visible:bg-[#303438]"
+          className="h-10 rounded-lg border-[#aeb8c1]/60 bg-[#eef2f4]/85 pl-10 pr-20 shadow-[0_8px_22px_rgba(50,58,66,0.10)] transition-colors placeholder:text-[#6f7882]/70 focus-visible:bg-[#f7f9fa] dark:border-white/5 dark:bg-[#292d30] dark:focus-visible:bg-[#303438]"
           aria-label="搜索网页"
           autoComplete="off"
         />
@@ -149,7 +149,7 @@ export function SearchBar() {
               variant="ghost"
               size="sm"
               onClick={clearSearch}
-              className="h-6 w-6 rounded-md p-0 text-foreground/50 hover:bg-black/5 hover:text-foreground"
+              className="h-6 w-6 rounded-md p-0 text-[#5c6670] hover:bg-[#cbd3da] hover:text-[#172027]"
               aria-label="清空搜索"
             >
               <X className="h-3 w-3" />
@@ -159,7 +159,7 @@ export function SearchBar() {
             type="submit"
             variant="ghost"
             size="sm"
-            className="h-7 w-7 rounded-md p-0 text-foreground/60 hover:bg-black/5 hover:text-foreground"
+            className="h-7 w-7 rounded-md p-0 text-[#4f5963] hover:bg-[#cbd3da] hover:text-[#172027]"
             aria-label="搜索"
           >
             <Search className="h-4 w-4" />
@@ -167,14 +167,14 @@ export function SearchBar() {
         </div>
 
         {isSuggestionsOpen && (
-          <div className="absolute left-0 right-0 top-12 z-50 overflow-hidden rounded-lg border border-black/5 bg-white/95 shadow-lg backdrop-blur dark:border-white/10 dark:bg-[#292d30]/95">
+          <div className="absolute left-0 right-0 top-12 z-50 overflow-hidden rounded-lg border border-[#9faab4]/55 bg-[#eef2f4]/95 shadow-[0_18px_45px_rgba(38,46,54,0.20)] backdrop-blur dark:border-white/10 dark:bg-[#292d30]/95">
             {suggestions.map((suggestion, index) => (
               <button
                 key={`${suggestion}-${index}`}
                 type="button"
                 className={cn(
-                  'flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-foreground/80 transition hover:bg-black/[0.04] hover:text-foreground dark:hover:bg-white/10',
-                  activeIndex === index && 'bg-black/[0.04] text-foreground dark:bg-white/10'
+                  'flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-[#303943] transition hover:bg-[#d7dee4] hover:text-[#10161b] dark:hover:bg-white/10',
+                  activeIndex === index && 'bg-[#d7dee4] text-[#10161b] dark:bg-white/10'
                 )}
                 onMouseDown={(event) => event.preventDefault()}
                 onClick={() => {
@@ -201,7 +201,7 @@ export function SearchBar() {
           setIsSuggestionsOpen(false)
         }}
       >
-        <SelectTrigger className="h-10 w-[86px] rounded-lg border-black/5 bg-[#f8f9fa] text-foreground/75 shadow-sm dark:border-white/5 dark:bg-[#292d30] sm:w-[104px]" aria-label="选择搜索引擎">
+        <SelectTrigger className="h-10 w-[86px] rounded-lg border-[#aeb8c1]/60 bg-[#eef2f4]/85 text-[#303943] shadow-[0_8px_22px_rgba(50,58,66,0.10)] dark:border-white/5 dark:bg-[#292d30] sm:w-[104px]" aria-label="选择搜索引擎">
           <SelectValue />
         </SelectTrigger>
         <SelectContent align="end">

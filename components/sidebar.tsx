@@ -60,7 +60,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
   }
 
   return (
-    <div className={cn('w-32 bg-[#e9edf1] text-foreground/85 dark:bg-[#25282b]', className)}>
+    <div className={cn('w-32 bg-[#cbd3da] text-[#263039] dark:bg-[#25282b]', className)}>
       <div className="flex h-16 items-center px-3">
         <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold">
           {siteInfo.appearance.logo ? (
@@ -72,7 +72,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
               className="h-7 w-7 rounded-lg object-contain"
             />
           ) : (
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-black/5 text-foreground/70">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#b8c2cb] text-[#263039]">
               <LucideIcons.Globe className="h-5 w-5" />
             </div>
           )}
@@ -87,7 +87,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
               <div className="flex items-center">
                 <Button
                   variant="ghost"
-                  className="min-w-0 flex-1 justify-start gap-2 rounded-lg px-2 text-sm font-medium text-foreground/55 transition-colors hover:bg-black/[0.07] hover:text-foreground/90 dark:hover:bg-white/[0.07]"
+                  className="min-w-0 flex-1 justify-start gap-2 rounded-lg px-2 text-sm font-medium text-[#3f4a54] transition-colors hover:bg-[#b9c4cd] hover:text-[#151b20] dark:hover:bg-white/[0.07]"
                   onClick={() => scrollToSection(category.id)}
                 >
                   {renderIcon(category.icon)}
@@ -98,7 +98,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="ml-0.5 h-8 rounded-lg px-1.5 text-foreground/50 hover:bg-black/[0.07] hover:text-foreground/90 dark:hover:bg-white/[0.07]"
+                    className="ml-0.5 h-8 rounded-lg px-1.5 text-[#4d5862] hover:bg-[#b9c4cd] hover:text-[#151b20] dark:hover:bg-white/[0.07]"
                     onClick={() => toggleCategory(category.id)}
                     aria-label="Toggle category"
                   >
@@ -122,7 +122,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
                     <Button
                       key={subCategory.id}
                       variant="ghost"
-                      className="w-full justify-start rounded-lg px-2 text-xs text-foreground/50 transition-colors hover:bg-black/[0.07] hover:text-foreground/85 dark:hover:bg-white/[0.07]"
+                      className="w-full justify-start rounded-lg px-2 text-xs text-[#56616b] transition-colors hover:bg-[#b9c4cd] hover:text-[#1c2329] dark:hover:bg-white/[0.07]"
                       onClick={() => scrollToSection(subCategory.id)}
                     >
                       <span className="truncate">{subCategory.title}</span>

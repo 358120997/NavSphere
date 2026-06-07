@@ -17,24 +17,24 @@ interface NavigationCardProps {
 
 const pastelStyles = [
   {
-    card: 'bg-[#f8f4f4] hover:bg-[#eee1e1]',
-    icon: 'bg-[#f1e9e9]',
+    card: 'bg-[#ddd6d4] hover:bg-[#cdc1bf]',
+    icon: 'bg-[#d1c7c5]',
   },
   {
-    card: 'bg-[#f3f7f5] hover:bg-[#e1ece6]',
-    icon: 'bg-[#e8f0ec]',
+    card: 'bg-[#d6ded9] hover:bg-[#c3d0c8]',
+    icon: 'bg-[#c8d2cd]',
   },
   {
-    card: 'bg-[#f3f5f8] hover:bg-[#e1e7ef]',
-    icon: 'bg-[#e8edf3]',
+    card: 'bg-[#d5dbe2] hover:bg-[#c1cbd5]',
+    icon: 'bg-[#c7d0da]',
   },
   {
-    card: 'bg-[#f7f5f1] hover:bg-[#ece6da]',
-    icon: 'bg-[#f0ebe2]',
+    card: 'bg-[#dedbd2] hover:bg-[#cec7b8]',
+    icon: 'bg-[#d2ccbf]',
   },
   {
-    card: 'bg-[#f5f3f8] hover:bg-[#e8e1ef]',
-    icon: 'bg-[#ede8f3]',
+    card: 'bg-[#d9d6df] hover:bg-[#c9c1d1]',
+    icon: 'bg-[#cdc7d6]',
   },
 ] as const
 
@@ -53,10 +53,10 @@ export function NavigationCard({ item }: NavigationCardProps) {
         <TooltipTrigger asChild>
           <Card
             className={[
-              'group overflow-hidden rounded-lg border-black/5 shadow-sm transition-all duration-200 ease-out',
-              'hover:-translate-y-0.5 hover:border-black/15 hover:shadow-md hover:ring-1 hover:ring-black/10',
+              'group overflow-hidden rounded-lg border border-[#b6bec6]/65 shadow-[0_8px_24px_rgba(48,56,64,0.08)] transition-all duration-200 ease-out',
+              'hover:-translate-y-0.5 hover:border-[#8f9aa5] hover:shadow-[0_14px_32px_rgba(38,46,54,0.16)] hover:ring-1 hover:ring-[#7f8a94]/35',
               'dark:border-white/5 dark:bg-[#292d30] dark:hover:border-white/15 dark:hover:bg-[#353a3e] dark:hover:ring-white/10',
-              pastel?.card || 'bg-[#f8f9fa] hover:bg-[#e2e7eb]',
+              pastel?.card || 'bg-[#d6dce2] hover:bg-[#c2ccd5]',
             ].join(' ')}
           >
             <Link
@@ -71,9 +71,9 @@ export function NavigationCard({ item }: NavigationCardProps) {
                     <div
                       className={[
                         'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg p-2',
-                        'ring-1 ring-black/5 transition-colors duration-200 group-hover:bg-white/80',
+                        'ring-1 ring-[#9aa4ad]/35 transition-colors duration-200 group-hover:bg-[#eef1f3]/80',
                         'dark:bg-[#202427] dark:ring-white/5 dark:group-hover:bg-[#24282b] sm:h-11 sm:w-11',
-                        pastel?.icon || 'bg-[#eef1f3]',
+                        pastel?.icon || 'bg-[#c9d1d8]',
                       ].join(' ')}
                     >
                       <img
@@ -84,11 +84,11 @@ export function NavigationCard({ item }: NavigationCardProps) {
                     </div>
                   )}
                   <div className="min-w-0 flex-1 space-y-1">
-                    <CardTitle className="truncate text-sm font-medium leading-tight text-foreground/85 transition-colors duration-200 group-hover:text-foreground sm:text-base">
+                    <CardTitle className="truncate text-sm font-medium leading-tight text-[#20262c] transition-colors duration-200 group-hover:text-[#0f1418] sm:text-base">
                       {item.title}
                     </CardTitle>
                     {item.description && (
-                      <CardDescription className="line-clamp-1 text-xs leading-relaxed text-foreground/50 sm:text-sm">
+                      <CardDescription className="line-clamp-1 text-xs leading-relaxed text-[#59636d] sm:text-sm">
                         {item.description}
                       </CardDescription>
                     )}
