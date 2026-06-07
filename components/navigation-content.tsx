@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from 'react'
 import Link from 'next/link'
-import { Github, Loader2, Menu, Plus } from 'lucide-react'
+import { Github, Loader2, Menu, Plus, RefreshCw } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
 import type { NavigationData, NavigationItem, NavigationSubItem } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
@@ -12,6 +12,15 @@ import { SearchBar } from '@/components/search-bar'
 import { Sidebar } from '@/components/sidebar'
 import { Button } from '@/registry/new-york/ui/button'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/registry/new-york/ui/select'
 import {
   Dialog,
   DialogContent,
@@ -27,16 +36,39 @@ interface NavigationContentProps {
   siteData: SiteConfig
 }
 
+interface QuickAddSite {
+  url: string
+  title: string
+  description: string
+  icon: string
+  categoryId: string
+  subCategoryId: string
+}
+
+const emptyQuickAddSite: QuickAddSite = {
+  url: '',
+  title: '',
+  description: '',
+  icon: '',
+  categoryId: '',
+  subCategoryId: '',
+}
+
 export function NavigationContent({ navigationData, siteData }: NavigationContentProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentNavigationData, setCurrentNavigationData] = useState(navigationData)
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false)
-  const [quickAddUrl, setQuickAddUrl] = useState('')
+  const [quickAddSite, setQuickAddSite] = useState<QuickAddSite>(emptyQuickAddSite)
   const [quickAddMessage, setQuickAddMessage] = useState('')
   const [isQuickAdding, setIsQuickAdding] = useState(false)
+  const [isFetchingQuickMetadata, setIsFetchingQuickMetadata] = useState(false)
+  const [lastFetchedQuickUrl, setLastFetchedQuickUrl] = useState('')
   const { data: session, status } = useSession()
   const userName = session?.user?.name || session?.user?.email || (session?.user as any)?.accountId
   const isAdmin = !!(session?.user as any)?.isAdmin
+  const selectedQuickCategory = currentNavigationData.navigationItems.find(
+    (category) => category.id === quickAddSite.categoryId
+  )
 
   const normalizeUrl = (value: string) => {
     const trimmed = value.trim()
@@ -44,7 +76,14 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
     return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
   }
 
-  const addItemToNavigation = (data: NavigationData, item: NavigationSubItem): NavigationData => {
+  const getDefaultQuickCategoryId = (data: NavigationData) => data.navigationItems?.[0]?.id || ''
+
+  const addItemToNavigation = (
+    data: NavigationData,
+    item: NavigationSubItem,
+    categoryId: string,
+    subCategoryId: string
+  ): NavigationData => {
     const navigationItems = [...(data.navigationItems || [])] as NavigationItem[]
 
     if (navigationItems.length === 0) {
@@ -60,20 +99,20 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       }
     }
 
-    const updatedItems = navigationItems.map((category, index) => {
-      if (index !== 0) return category
+    const updatedItems = navigationItems.map((category) => {
+      if (category.id !== categoryId) return category
 
-      if (category.subCategories && category.subCategories.length > 0) {
-        const firstSubCategory = category.subCategories[0]
+      if (subCategoryId && category.subCategories && category.subCategories.length > 0) {
         return {
           ...category,
-          subCategories: [
-            {
-              ...firstSubCategory,
-              items: [...(firstSubCategory.items || []), item],
-            },
-            ...category.subCategories.slice(1),
-          ],
+          subCategories: category.subCategories.map((subCategory) => (
+            subCategory.id === subCategoryId
+              ? {
+                  ...subCategory,
+                  items: [...(subCategory.items || []), item],
+                }
+              : subCategory
+          )),
         }
       }
 
@@ -86,9 +125,8 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
     return { navigationItems: updatedItems }
   }
 
-  const handleQuickAdd = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const url = normalizeUrl(quickAddUrl)
+  const fetchQuickMetadata = async (forceUpdate = false) => {
+    const url = normalizeUrl(quickAddSite.url)
 
     try {
       new URL(url)
@@ -97,41 +135,106 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       return
     }
 
+    if (!forceUpdate && lastFetchedQuickUrl === url) {
+      return
+    }
+
+    setIsFetchingQuickMetadata(true)
+    setQuickAddMessage('正在识别网站信息...')
+
+    try {
+      const response = await fetch('/api/website-metadata', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null)
+        throw new Error(error?.error || '获取网站信息失败')
+      }
+
+      const metadata = await response.json()
+      setQuickAddSite((site) => ({
+        ...site,
+        url,
+        title: forceUpdate || !site.title ? metadata.title || new URL(url).hostname : site.title,
+        description: forceUpdate || !site.description ? metadata.description || '' : site.description,
+        icon: (forceUpdate || !site.icon) && metadata.icon ? metadata.icon : site.icon,
+      }))
+      setLastFetchedQuickUrl(url)
+      setQuickAddMessage('已识别网站信息')
+    } catch (error) {
+      setQuickAddMessage(error instanceof Error ? error.message : '识别失败')
+    } finally {
+      setIsFetchingQuickMetadata(false)
+    }
+  }
+
+  const handleQuickAdd = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const url = normalizeUrl(quickAddSite.url)
+
+    try {
+      new URL(url)
+    } catch {
+      setQuickAddMessage('请输入有效的网址，例如 example.com')
+      return
+    }
+
+    if (!quickAddSite.categoryId) {
+      setQuickAddMessage('请选择分类')
+      return
+    }
+
     setIsQuickAdding(true)
     setQuickAddMessage('')
 
     try {
-      const [navigationResponse, metadataResponse] = await Promise.all([
-        fetch('/api/navigation', { cache: 'no-store' }),
-        fetch('/api/website-metadata', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ url }),
-        }),
-      ])
+      const navigationResponse = await fetch('/api/navigation', { cache: 'no-store' })
 
       if (!navigationResponse.ok) {
         throw new Error('读取导航数据失败')
       }
 
-      if (!metadataResponse.ok) {
-        const error = await metadataResponse.json().catch(() => null)
-        throw new Error(error?.error || '获取网站信息失败')
+      const navigation = await navigationResponse.json() as NavigationData
+      let title = quickAddSite.title
+      let description = quickAddSite.description
+      let icon = quickAddSite.icon
+
+      if (!title || !description || !icon) {
+        const metadataResponse = await fetch('/api/website-metadata', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url }),
+        })
+
+        if (metadataResponse.ok) {
+          const metadata = await metadataResponse.json()
+          title = title || metadata.title || new URL(url).hostname
+          description = description || metadata.description || ''
+          icon = icon || metadata.icon || ''
+        }
       }
 
-      const navigation = await navigationResponse.json() as NavigationData
-      const metadata = await metadataResponse.json()
       const newItem: NavigationSubItem = {
         id: `site_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-        title: metadata.title || new URL(url).hostname,
+        title: title || new URL(url).hostname,
         href: url,
-        description: metadata.description || '',
-        icon: metadata.icon || '',
+        description,
+        icon,
         enabled: true,
       }
-      const updatedNavigation = addItemToNavigation(navigation, newItem)
+      const updatedNavigation = addItemToNavigation(
+        navigation,
+        newItem,
+        quickAddSite.categoryId,
+        quickAddSite.subCategoryId
+      )
       const saveResponse = await fetch('/api/navigation', {
         method: 'POST',
         headers: {
@@ -146,7 +249,12 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       }
 
       setCurrentNavigationData(updatedNavigation)
-      setQuickAddUrl('')
+      setQuickAddSite({
+        ...emptyQuickAddSite,
+        categoryId: quickAddSite.categoryId,
+        subCategoryId: quickAddSite.subCategoryId,
+      })
+      setLastFetchedQuickUrl('')
       setQuickAddMessage('添加成功，Cloudflare 会自动同步部署。')
     } catch (error) {
       setQuickAddMessage(error instanceof Error ? error.message : '添加失败')
@@ -154,6 +262,40 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       setIsQuickAdding(false)
     }
   }
+
+  useEffect(() => {
+    if (!isQuickAddOpen) {
+      return
+    }
+
+    setQuickAddSite((site) => ({
+      ...site,
+      categoryId: site.categoryId || getDefaultQuickCategoryId(currentNavigationData),
+    }))
+  }, [currentNavigationData, isQuickAddOpen])
+
+  useEffect(() => {
+    if (!isQuickAddOpen || isQuickAdding || isFetchingQuickMetadata) {
+      return
+    }
+
+    const url = normalizeUrl(quickAddSite.url)
+    if (!quickAddSite.url.includes('.') || lastFetchedQuickUrl === url) {
+      return
+    }
+
+    try {
+      new URL(url)
+    } catch {
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      fetchQuickMetadata(false)
+    }, 900)
+
+    return () => window.clearTimeout(timer)
+  }, [isFetchingQuickMetadata, isQuickAddOpen, isQuickAdding, lastFetchedQuickUrl, quickAddSite.url])
 
   useEffect(() => {
     if (status === 'loading') {
@@ -292,28 +434,173 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
         </div>
 
         <Dialog open={isQuickAddOpen} onOpenChange={setIsQuickAddOpen}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-[520px]">
             <DialogHeader>
               <DialogTitle>快速添加网址</DialogTitle>
               <DialogDescription>
-                输入网址后会自动获取标题、描述和图标，并添加到第一个可见分类。
+                输入网址后自动识别网站信息，选择分类后直接添加到前台导航。
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleQuickAdd} className="space-y-4">
-              <Input
-                value={quickAddUrl}
-                onChange={(event) => {
-                  setQuickAddUrl(event.target.value)
-                  setQuickAddMessage('')
-                }}
-                placeholder="example.com"
-                disabled={isQuickAdding}
-                autoFocus
-              />
+              <div className="space-y-2">
+                <Label htmlFor="quick-url">网址 *</Label>
+                <div className="flex items-center gap-2">
+                  <div className="relative flex-1">
+                    <Input
+                      id="quick-url"
+                      value={quickAddSite.url}
+                      onChange={(event) => {
+                        setQuickAddSite((site) => ({ ...site, url: event.target.value }))
+                        setQuickAddMessage('')
+                      }}
+                      onBlur={() => {
+                        if (quickAddSite.url.trim()) {
+                          fetchQuickMetadata(false)
+                        }
+                      }}
+                      placeholder="example.com"
+                      disabled={isQuickAdding}
+                      autoFocus
+                    />
+                    {isFetchingQuickMetadata && (
+                      <Loader2 className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
+                    )}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    disabled={!quickAddSite.url || isFetchingQuickMetadata || isQuickAdding}
+                    onClick={() => fetchQuickMetadata(true)}
+                    aria-label="重新识别网站信息"
+                  >
+                    {isFetchingQuickMetadata ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  输入后会自动识别，也可以点击右侧按钮重新识别。
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="quick-title">站点名称 *</Label>
+                  <Input
+                    id="quick-title"
+                    value={quickAddSite.title}
+                    onChange={(event) => {
+                      setQuickAddSite((site) => ({ ...site, title: event.target.value }))
+                    }}
+                    placeholder="自动获取网站标题"
+                    disabled={isQuickAdding}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="quick-icon">站点图标</Label>
+                  <div className="relative">
+                    <Input
+                      id="quick-icon"
+                      value={quickAddSite.icon}
+                      onChange={(event) => {
+                        setQuickAddSite((site) => ({ ...site, icon: event.target.value }))
+                      }}
+                      placeholder="自动获取图标"
+                      disabled={isQuickAdding}
+                    />
+                    {quickAddSite.icon && (
+                      <img
+                        src={quickAddSite.icon}
+                        alt=""
+                        className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 object-contain"
+                        onError={(event) => {
+                          event.currentTarget.style.display = 'none'
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>分类 *</Label>
+                  <Select
+                    value={quickAddSite.categoryId}
+                    onValueChange={(value) => {
+                      setQuickAddSite((site) => ({
+                        ...site,
+                        categoryId: value,
+                        subCategoryId: '',
+                      }))
+                      setQuickAddMessage('')
+                    }}
+                    disabled={isQuickAdding || currentNavigationData.navigationItems.length === 0}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择分类" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {currentNavigationData.navigationItems.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>子分类</Label>
+                  <Select
+                    value={quickAddSite.subCategoryId || 'none'}
+                    onValueChange={(value) => {
+                      setQuickAddSite((site) => ({
+                        ...site,
+                        subCategoryId: value === 'none' ? '' : value,
+                      }))
+                    }}
+                    disabled={isQuickAdding || !selectedQuickCategory?.subCategories?.length}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择子分类" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">无子分类</SelectItem>
+                      {selectedQuickCategory?.subCategories?.map((subCategory) => (
+                        <SelectItem key={subCategory.id} value={subCategory.id}>
+                          {subCategory.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="quick-description">描述</Label>
+                <Textarea
+                  id="quick-description"
+                  value={quickAddSite.description}
+                  onChange={(event) => {
+                    setQuickAddSite((site) => ({ ...site, description: event.target.value }))
+                  }}
+                  placeholder="自动获取网站描述"
+                  className="min-h-[84px] resize-none"
+                  disabled={isQuickAdding}
+                />
+              </div>
+
               {quickAddMessage && (
                 <p className={cn(
                   'text-sm',
-                  quickAddMessage.includes('成功') ? 'text-emerald-600' : 'text-destructive'
+                  quickAddMessage.includes('成功') || quickAddMessage.includes('已识别')
+                    ? 'text-emerald-600'
+                    : quickAddMessage.includes('正在')
+                      ? 'text-muted-foreground'
+                      : 'text-destructive'
                 )}>
                   {quickAddMessage}
                 </p>
