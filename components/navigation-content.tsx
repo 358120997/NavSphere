@@ -54,6 +54,8 @@ const emptyQuickAddSite: QuickAddSite = {
   subCategoryId: '',
 }
 
+const DEFAULT_CATEGORY_TITLE = '常用推荐'
+
 export function NavigationContent({ navigationData, siteData }: NavigationContentProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentNavigationData, setCurrentNavigationData] = useState(navigationData)
@@ -65,7 +67,6 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
   const [lastFetchedQuickUrl, setLastFetchedQuickUrl] = useState('')
   const { data: session, status } = useSession()
   const userName = session?.user?.name || session?.user?.email || (session?.user as any)?.accountId
-  const isAdmin = !!(session?.user as any)?.isAdmin
   const selectedQuickCategory = currentNavigationData.navigationItems.find(
     (category) => category.id === quickAddSite.categoryId
   )
@@ -76,7 +77,18 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
     return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
   }
 
+  const getFirstSubCategoryId = (category?: NavigationItem) => (
+    category?.subCategories?.[0]?.id || ''
+  )
+
   const getDefaultQuickCategoryId = (data: NavigationData) => data.navigationItems?.[0]?.id || ''
+
+  const createDefaultCategory = (item: NavigationSubItem): NavigationItem => ({
+    id: `category_${Date.now()}`,
+    title: DEFAULT_CATEGORY_TITLE,
+    enabled: true,
+    items: [item],
+  })
 
   const addItemToNavigation = (
     data: NavigationData,
@@ -88,25 +100,23 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
 
     if (navigationItems.length === 0) {
       return {
-        navigationItems: [
-          {
-            id: `category_${Date.now()}`,
-            title: '常用推荐',
-            enabled: true,
-            items: [item],
-          },
-        ],
+        navigationItems: [createDefaultCategory(item)],
       }
     }
+
+    const targetCategory = navigationItems.find((category) => category.id === categoryId)
+    const targetSubCategoryId = targetCategory?.subCategories?.length
+      ? subCategoryId || targetCategory.subCategories[0].id
+      : ''
 
     const updatedItems = navigationItems.map((category) => {
       if (category.id !== categoryId) return category
 
-      if (subCategoryId && category.subCategories && category.subCategories.length > 0) {
+      if (targetSubCategoryId && category.subCategories && category.subCategories.length > 0) {
         return {
           ...category,
           subCategories: category.subCategories.map((subCategory) => (
-            subCategory.id === subCategoryId
+            subCategory.id === targetSubCategoryId
               ? {
                   ...subCategory,
                   items: [...(subCategory.items || []), item],
@@ -167,7 +177,20 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       setLastFetchedQuickUrl(url)
       setQuickAddMessage('已识别网站信息')
     } catch (error) {
-      setQuickAddMessage(error instanceof Error ? error.message : '识别失败')
+      const hostname = (() => {
+        try {
+          return new URL(url).hostname.replace(/^www\./i, '')
+        } catch {
+          return ''
+        }
+      })()
+
+      setQuickAddSite((site) => ({
+        ...site,
+        url,
+        title: site.title || hostname,
+      }))
+      setQuickAddMessage(error instanceof Error ? error.message : '识别失败，可手动填写后添加')
     } finally {
       setIsFetchingQuickMetadata(false)
     }
@@ -184,8 +207,13 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       return
     }
 
-    if (!quickAddSite.categoryId) {
+    if (currentNavigationData.navigationItems.length > 0 && !quickAddSite.categoryId) {
       setQuickAddMessage('请选择分类')
+      return
+    }
+
+    if (selectedQuickCategory?.subCategories?.length && !quickAddSite.subCategoryId) {
+      setQuickAddMessage('请选择子分类')
       return
     }
 
@@ -223,7 +251,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
 
       const newItem: NavigationSubItem = {
         id: `site_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`,
-        title: title || new URL(url).hostname,
+        title: title || new URL(url).hostname.replace(/^www\./i, ''),
         href: url,
         description,
         icon,
@@ -232,7 +260,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       const updatedNavigation = addItemToNavigation(
         navigation,
         newItem,
-        quickAddSite.categoryId,
+        quickAddSite.categoryId || getDefaultQuickCategoryId(navigation),
         quickAddSite.subCategoryId
       )
       const saveResponse = await fetch('/api/navigation', {
@@ -248,14 +276,19 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
         throw new Error(error?.details || error?.error || '保存失败')
       }
 
+      const nextCategoryId = quickAddSite.categoryId || getDefaultQuickCategoryId(updatedNavigation)
+      const nextCategory = updatedNavigation.navigationItems.find((category) => category.id === nextCategoryId)
+      const nextSubCategoryId = getFirstSubCategoryId(nextCategory)
+
       setCurrentNavigationData(updatedNavigation)
       setQuickAddSite({
         ...emptyQuickAddSite,
-        categoryId: quickAddSite.categoryId,
-        subCategoryId: quickAddSite.subCategoryId,
+        categoryId: nextCategoryId,
+        subCategoryId: nextSubCategoryId,
       })
       setLastFetchedQuickUrl('')
       setQuickAddMessage('添加成功，Cloudflare 会自动同步部署。')
+      window.setTimeout(() => setIsQuickAddOpen(false), 500)
     } catch (error) {
       setQuickAddMessage(error instanceof Error ? error.message : '添加失败')
     } finally {
@@ -268,10 +301,19 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       return
     }
 
-    setQuickAddSite((site) => ({
-      ...site,
-      categoryId: site.categoryId || getDefaultQuickCategoryId(currentNavigationData),
-    }))
+    setQuickAddSite((site) => {
+      const categoryId = site.categoryId || getDefaultQuickCategoryId(currentNavigationData)
+      const category = currentNavigationData.navigationItems.find((item) => item.id === categoryId)
+      const subCategoryId = category?.subCategories?.length
+        ? site.subCategoryId || category.subCategories[0].id
+        : ''
+
+      return {
+        ...site,
+        categoryId,
+        subCategoryId,
+      }
+    })
   }, [currentNavigationData, isQuickAddOpen])
 
   useEffect(() => {
@@ -363,19 +405,17 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
               {status === 'authenticated' ? (
                 <div className="flex items-center gap-2 rounded-lg bg-white/45 px-2.5 py-1.5 text-sm text-foreground/75 shadow-sm ring-1 ring-black/5 dark:bg-white/5 dark:ring-white/10">
                   <span className="hidden max-w-24 truncate sm:inline">{userName}</span>
-                  {isAdmin && (
-                    <button
-                      type="button"
-                      className="flex items-center gap-1 font-medium text-foreground/80 transition hover:text-foreground"
-                      onClick={() => {
-                        setQuickAddMessage('')
-                        setIsQuickAddOpen(true)
-                      }}
-                    >
-                      <Plus className="h-3.5 w-3.5" />
-                      <span className="hidden sm:inline">添加</span>
-                    </button>
-                  )}
+                  <button
+                    type="button"
+                    className="flex items-center gap-1 font-medium text-foreground/80 transition hover:text-foreground"
+                    onClick={() => {
+                      setQuickAddMessage('')
+                      setIsQuickAddOpen(true)
+                    }}
+                  >
+                    <Plus className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">添加</span>
+                  </button>
                   <button
                     type="button"
                     className="font-medium text-foreground/80 transition hover:text-foreground"
@@ -438,7 +478,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
             <DialogHeader>
               <DialogTitle>快速添加网址</DialogTitle>
               <DialogDescription>
-                输入网址后自动识别网站信息，选择分类后直接添加到前台导航。
+                输入网址后自动识别网站信息，选择分类后直接添加到当前账号的前台导航。
               </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleQuickAdd} className="space-y-4">
@@ -482,7 +522,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   </Button>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  输入后会自动识别，也可以点击右侧按钮重新识别。
+                  输入后会自动识别。遇到网站限制访问时，也可以手动填写后添加。
                 </p>
               </div>
 
@@ -531,17 +571,18 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   <Select
                     value={quickAddSite.categoryId}
                     onValueChange={(value) => {
+                      const category = currentNavigationData.navigationItems.find((item) => item.id === value)
                       setQuickAddSite((site) => ({
                         ...site,
                         categoryId: value,
-                        subCategoryId: '',
+                        subCategoryId: getFirstSubCategoryId(category),
                       }))
                       setQuickAddMessage('')
                     }}
                     disabled={isQuickAdding || currentNavigationData.navigationItems.length === 0}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="选择分类" />
+                      <SelectValue placeholder={currentNavigationData.navigationItems.length ? '选择分类' : '将自动创建常用推荐'} />
                     </SelectTrigger>
                     <SelectContent>
                       {currentNavigationData.navigationItems.map((category) => (
@@ -555,20 +596,19 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                 <div className="space-y-2">
                   <Label>子分类</Label>
                   <Select
-                    value={quickAddSite.subCategoryId || 'none'}
+                    value={quickAddSite.subCategoryId}
                     onValueChange={(value) => {
                       setQuickAddSite((site) => ({
                         ...site,
-                        subCategoryId: value === 'none' ? '' : value,
+                        subCategoryId: value,
                       }))
                     }}
                     disabled={isQuickAdding || !selectedQuickCategory?.subCategories?.length}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="选择子分类" />
+                      <SelectValue placeholder={selectedQuickCategory?.subCategories?.length ? '选择子分类' : '无子分类'} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="none">无子分类</SelectItem>
                       {selectedQuickCategory?.subCategories?.map((subCategory) => (
                         <SelectItem key={subCategory.id} value={subCategory.id}>
                           {subCategory.title}
@@ -618,7 +658,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   {isQuickAdding ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      添加中
+                      添加中...
                     </>
                   ) : (
                     <>

@@ -1,218 +1,169 @@
 import { NextResponse } from 'next/server'
-import { auth } from '@/lib/auth'
-import { commitFile } from '@/lib/github'
 
 export const runtime = 'edge'
 
 interface WebsiteMetadata {
-    title: string
-    description: string
-    icon: string
+  title: string
+  description: string
+  icon: string
 }
 
 export async function POST(request: Request) {
-    try {
-        const session = await auth()
-        if (!session?.user?.accessToken) {
-            return new Response('Unauthorized', { status: 401 })
-        }
+  try {
+    const { url: rawUrl } = await request.json()
+    const url = normalizeUrl(String(rawUrl || ''))
 
-        const { url } = await request.json()
-
-        if (!url || !isValidUrl(url)) {
-            return NextResponse.json({ error: '请提供有效的网站链接' }, { status: 400 })
-        }
-
-        const metadata = await fetchWebsiteMetadata(url)
-
-        // 如果获取到了 favicon，下载并上传到 GitHub
-        if (metadata.icon) {
-            try {
-                const iconUrl = await downloadAndUploadIcon(metadata.icon, session.user.accessToken)
-                metadata.icon = iconUrl
-            } catch (error) {
-                console.warn('Failed to download icon:', error)
-                // 如果图标下载失败，保持原始 URL
-            }
-        }
-
-        return NextResponse.json(metadata)
-    } catch (error) {
-        console.error('Failed to fetch website metadata:', error)
-        return NextResponse.json(
-            { error: error instanceof Error ? error.message : '获取网站信息失败' },
-            { status: 500 }
-        )
+    if (!url) {
+      return NextResponse.json({ error: '请提供有效的网站链接' }, { status: 400 })
     }
+
+    return NextResponse.json(await fetchWebsiteMetadata(url))
+  } catch (error) {
+    console.error('Failed to fetch website metadata:', error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : '获取网站信息失败' },
+      { status: 500 }
+    )
+  }
 }
 
-function isValidUrl(string: string): boolean {
-    try {
-        new URL(string)
-        return true
-    } catch (_) {
-        return false
-    }
+function normalizeUrl(value: string) {
+  const trimmed = value.trim()
+  if (!trimmed) return ''
+
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+
+  try {
+    return new URL(withProtocol).toString()
+  } catch {
+    return ''
+  }
 }
 
 async function fetchWebsiteMetadata(url: string): Promise<WebsiteMetadata> {
+  const fallback = getFallbackMetadata(url)
+
+  try {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), 8000)
+
     const response = await fetch(url, {
-        headers: {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
+      headers: {
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.7',
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36',
+      },
+      redirect: 'follow',
+      signal: controller.signal,
     })
 
+    clearTimeout(timer)
+
     if (!response.ok) {
-        throw new Error(`无法访问网站: ${response.status}`)
+      return fallback
+    }
+
+    const contentType = response.headers.get('content-type') || ''
+    if (contentType && !contentType.includes('text/html') && !contentType.includes('application/xhtml')) {
+      return fallback
     }
 
     const html = await response.text()
+    const title =
+      extractMetaContent(html, 'og:title') ||
+      extractMetaContent(html, 'twitter:title') ||
+      extractTitle(html) ||
+      fallback.title
 
-    // 解析 HTML 获取元数据
-    const title = extractMetaContent(html, 'title') ||
-        extractMetaContent(html, 'og:title') ||
-        extractMetaContent(html, 'twitter:title') ||
-        new URL(url).hostname
-
-    const description = extractMetaContent(html, 'description') ||
-        extractMetaContent(html, 'og:description') ||
-        extractMetaContent(html, 'twitter:description') ||
-        ''
-
-    // 获取 favicon
-    let icon = extractFavicon(html, url)
+    const description =
+      extractMetaContent(html, 'description') ||
+      extractMetaContent(html, 'og:description') ||
+      extractMetaContent(html, 'twitter:description') ||
+      ''
 
     return {
-        title: title.trim(),
-        description: description.trim(),
-        icon: icon || ''
+      title: cleanText(title) || fallback.title,
+      description: cleanText(description),
+      icon: extractFavicon(html, url) || fallback.icon,
     }
+  } catch (error) {
+    console.warn('Website metadata fallback used:', error)
+    return fallback
+  }
 }
 
-function extractMetaContent(html: string, name: string): string | null {
-    // 匹配 title 标签
-    if (name === 'title') {
-        const titleMatch = html.match(/<title[^>]*>([^<]*)<\/title>/i)
-        return titleMatch ? titleMatch[1] : null
-    }
+function getFallbackMetadata(url: string): WebsiteMetadata {
+  const parsed = new URL(url)
+  const hostname = parsed.hostname.replace(/^www\./i, '')
 
-    // 匹配 meta 标签
-    const patterns = [
-        new RegExp(`<meta[^>]*name=["']${name}["'][^>]*content=["']([^"']*)["']`, 'i'),
-        new RegExp(`<meta[^>]*content=["']([^"']*)["'][^>]*name=["']${name}["']`, 'i'),
-        new RegExp(`<meta[^>]*property=["']${name}["'][^>]*content=["']([^"']*)["']`, 'i'),
-        new RegExp(`<meta[^>]*content=["']([^"']*)["'][^>]*property=["']${name}["']`, 'i')
-    ]
-
-    for (const pattern of patterns) {
-        const match = html.match(pattern)
-        if (match) {
-            return match[1]
-        }
-    }
-
-    return null
+  return {
+    title: hostname,
+    description: '',
+    icon: `${parsed.origin}/favicon.ico`,
+  }
 }
 
-function extractFavicon(html: string, baseUrl: string): string | null {
-    const base = new URL(baseUrl)
-
-    // 尝试从 HTML 中提取 favicon
-    const faviconPatterns = [
-        /<link[^>]*rel=["']icon["'][^>]*href=["']([^"']*)["']/i,
-        /<link[^>]*href=["']([^"']*)["'][^>]*rel=["']icon["']/i,
-        /<link[^>]*rel=["']shortcut icon["'][^>]*href=["']([^"']*)["']/i,
-        /<link[^>]*href=["']([^"']*)["'][^>]*rel=["']shortcut icon["']/i,
-        /<link[^>]*rel=["']apple-touch-icon["'][^>]*href=["']([^"']*)["']/i,
-        /<link[^>]*href=["']([^"']*)["'][^>]*rel=["']apple-touch-icon["']/i
-    ]
-
-    for (const pattern of faviconPatterns) {
-        const match = html.match(pattern)
-        if (match) {
-            const href = match[1]
-            if (href.startsWith('http')) {
-                return href
-            } else if (href.startsWith('//')) {
-                return base.protocol + href
-            } else if (href.startsWith('/')) {
-                return base.origin + href
-            } else {
-                return base.origin + '/' + href
-            }
-        }
-    }
-
-    // 如果没有找到，尝试默认的 favicon.ico
-    return base.origin + '/favicon.ico'
+function extractTitle(html: string) {
+  const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)
+  return titleMatch?.[1] || ''
 }
 
-async function downloadAndUploadIcon(iconUrl: string, token: string): Promise<string> {
-    try {
-        // 下载图标
-        const response = await fetch(iconUrl)
-        if (!response.ok) {
-            throw new Error(`Failed to download icon: ${response.status}`)
-        }
+function extractMetaContent(html: string, name: string) {
+  const tagPattern = /<meta\s+[^>]*>/gi
+  const tags = html.match(tagPattern) || []
 
-        const arrayBuffer = await response.arrayBuffer()
-        const binaryData = new Uint8Array(arrayBuffer)
+  for (const tag of tags) {
+    const key =
+      getAttribute(tag, 'name') ||
+      getAttribute(tag, 'property') ||
+      getAttribute(tag, 'itemprop')
 
-        // 上传到 GitHub
-        const { path } = await uploadImageToGitHub(binaryData, token, getFileExtension(iconUrl))
-        return path
-    } catch (error) {
-        console.error('Failed to download and upload icon:', error)
-        throw error
+    if (key?.toLowerCase() === name.toLowerCase()) {
+      return getAttribute(tag, 'content') || ''
     }
+  }
+
+  return ''
 }
 
-function getFileExtension(url: string): string {
-    try {
-        const pathname = new URL(url).pathname
-        const extension = pathname.split('.').pop()?.toLowerCase()
+function extractFavicon(html: string, baseUrl: string) {
+  const tags = html.match(/<link\s+[^>]*>/gi) || []
+  const relPriority = ['apple-touch-icon', 'shortcut icon', 'icon']
 
-        if (extension && ['png', 'jpg', 'jpeg', 'gif', 'svg', 'ico'].includes(extension)) {
-            return extension
-        }
-        return 'png' // 默认扩展名
-    } catch {
-        return 'png'
-    }
-}
-
-async function uploadImageToGitHub(binaryData: Uint8Array, token: string, extension: string = 'png'): Promise<{ path: string, commitHash: string }> {
-    const owner = process.env.GITHUB_OWNER!
-    const repo = process.env.GITHUB_REPO!
-    const branch = process.env.GITHUB_BRANCH || 'main'
-    const path = `/assets/favicon_${Date.now()}.${extension}`
-    const githubPath = 'public' + path
-
-    // Convert Uint8Array to Base64
-    const base64String = Buffer.from(binaryData).toString('base64')
-    const currentFileUrl = `https://api.github.com/repos/${owner}/${repo}/contents/${githubPath}?ref=${branch}`
-
-    const response = await fetch(currentFileUrl, {
-        method: 'PUT',
-        headers: {
-            'Authorization': `token ${token}`,
-            'Accept': 'application/vnd.github.v3+json',
-        },
-        body: JSON.stringify({
-            message: `Upload favicon ${githubPath}`,
-            content: base64String,
-            branch: branch,
-        }),
+  for (const relName of relPriority) {
+    const matchedTag = tags.find((tag) => {
+      const rel = getAttribute(tag, 'rel')?.toLowerCase() || ''
+      return rel.split(/\s+/).join(' ').includes(relName)
     })
 
-    if (!response.ok) {
-        const errorData = await response.json()
-        console.error('Failed to upload image to GitHub:', errorData)
-        throw new Error(`Failed to upload image to GitHub: ${errorData.message || 'Unknown error'}`)
+    const href = matchedTag ? getAttribute(matchedTag, 'href') : ''
+    if (href) {
+      return new URL(href, baseUrl).toString()
     }
+  }
 
-    const responseData = await response.json()
-    const commitHash = responseData.commit.sha
+  return getFallbackMetadata(baseUrl).icon
+}
 
-    return { path, commitHash }
+function getAttribute(tag: string, attribute: string) {
+  const escaped = attribute.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const pattern = new RegExp(`${escaped}\\s*=\\s*(["'])(.*?)\\1`, 'i')
+  return tag.match(pattern)?.[2] || ''
+}
+
+function cleanText(value: string) {
+  return decodeHtmlEntities(value)
+    .replace(/\s+/g, ' ')
+    .trim()
+}
+
+function decodeHtmlEntities(value: string) {
+  return value
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/&amp;/gi, '&')
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;/gi, "'")
+    .replace(/&lt;/gi, '<')
+    .replace(/&gt;/gi, '>')
 }
