@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from 'react'
 import Link from 'next/link'
-import { Github, Loader2, Menu, Plus, RefreshCw, Save, Trash2 } from 'lucide-react'
+import { Github, Loader2, Menu, Pencil, Plus, RefreshCw, Save, Trash2 } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
 import type { NavigationData, NavigationItem, NavigationSubItem } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
@@ -77,11 +77,16 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
   const [isSavingEdit, setIsSavingEdit] = useState(false)
   const [deletingCard, setDeletingCard] = useState<ManageCardContext | null>(null)
   const [isDeletingCard, setIsDeletingCard] = useState(false)
+  const [isCardEditMode, setIsCardEditMode] = useState(false)
   const { data: session, status } = useSession()
   const userName = session?.user?.name || session?.user?.email || (session?.user as any)?.accountId
-  const canManageCards = status === 'authenticated'
+  const isAuthenticated = status === 'authenticated'
+  const canManageCards = isAuthenticated && isCardEditMode
   const selectedQuickCategory = currentNavigationData.navigationItems.find(
     (category) => category.id === quickAddSite.categoryId
+  )
+  const selectedEditCategory = currentNavigationData.navigationItems.find(
+    (category) => category.id === editSite.categoryId
   )
 
   const normalizeUrl = (value: string) => {
@@ -208,6 +213,17 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       }
     }),
   })
+
+  const moveOrUpdateItemInNavigation = (
+    data: NavigationData,
+    context: ManageCardContext,
+    nextItem: NavigationSubItem,
+    nextCategoryId: string,
+    nextSubCategoryId: string
+  ): NavigationData => {
+    const sourceRemoved = deleteItemFromNavigation(data, context)
+    return addItemToNavigation(sourceRemoved, nextItem, nextCategoryId, nextSubCategoryId)
+  }
 
   const saveNavigation = async (data: NavigationData, errorMessage = '保存失败') => {
     const response = await fetch('/api/navigation', {
@@ -459,6 +475,17 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       return
     }
 
+    if (!editSite.categoryId) {
+      setEditMessage('请选择分类')
+      return
+    }
+
+    const targetCategory = currentNavigationData.navigationItems.find((category) => category.id === editSite.categoryId)
+    if (targetCategory?.subCategories?.length && !editSite.subCategoryId) {
+      setEditMessage('请选择子分类')
+      return
+    }
+
     setIsSavingEdit(true)
     setEditMessage('')
 
@@ -471,7 +498,18 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
         icon: editSite.icon.trim(),
         enabled: editingCard.item.enabled ?? true,
       }
-      const updatedNavigation = updateItemInNavigation(currentNavigationData, editingCard, nextItem)
+      const sameLocation =
+        editSite.categoryId === editingCard.categoryId &&
+        editSite.subCategoryId === editingCard.subCategoryId
+      const updatedNavigation = sameLocation
+        ? updateItemInNavigation(currentNavigationData, editingCard, nextItem)
+        : moveOrUpdateItemInNavigation(
+            currentNavigationData,
+            editingCard,
+            nextItem,
+            editSite.categoryId,
+            editSite.subCategoryId
+          )
 
       await saveNavigation(updatedNavigation, '更新失败')
       setCurrentNavigationData(updatedNavigation)
@@ -613,6 +651,20 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
               {status === 'authenticated' ? (
                 <div className="flex items-center gap-2 rounded-lg bg-[#eef2f4]/58 px-2.5 py-1.5 text-sm text-[#3a444d] shadow-[0_8px_22px_rgba(50,58,66,0.10)] ring-1 ring-[#aeb8c1]/45 dark:bg-white/5 dark:ring-white/10">
                   <span className="hidden max-w-24 truncate sm:inline">{userName}</span>
+                  <button
+                    type="button"
+                    className={cn(
+                      'flex items-center gap-1 rounded-md px-1.5 py-0.5 font-medium transition',
+                      isCardEditMode
+                        ? 'bg-[#c4cdd5] text-[#10161b]'
+                        : 'text-[#303943] hover:bg-[#d7dee4] hover:text-[#10161b]'
+                    )}
+                    onClick={() => setIsCardEditMode((value) => !value)}
+                    aria-pressed={isCardEditMode}
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    <span className="hidden sm:inline">{isCardEditMode ? '完成' : '编辑'}</span>
+                  </button>
                   <button
                     type="button"
                     className="flex items-center gap-1 font-medium text-[#303943] transition hover:text-[#10161b]"
@@ -955,6 +1007,61 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                       />
                     )}
                   </div>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label>分类 *</Label>
+                  <Select
+                    value={editSite.categoryId}
+                    onValueChange={(value) => {
+                      const category = currentNavigationData.navigationItems.find((item) => item.id === value)
+                      setEditSite((site) => ({
+                        ...site,
+                        categoryId: value,
+                        subCategoryId: getFirstSubCategoryId(category),
+                      }))
+                      setEditMessage('')
+                    }}
+                    disabled={isSavingEdit || currentNavigationData.navigationItems.length === 0}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="选择分类" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {currentNavigationData.navigationItems.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>子分类</Label>
+                  <Select
+                    value={editSite.subCategoryId}
+                    onValueChange={(value) => {
+                      setEditSite((site) => ({
+                        ...site,
+                        subCategoryId: value,
+                      }))
+                      setEditMessage('')
+                    }}
+                    disabled={isSavingEdit || !selectedEditCategory?.subCategories?.length}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder={selectedEditCategory?.subCategories?.length ? '选择子分类' : '无子分类'} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {selectedEditCategory?.subCategories?.map((subCategory) => (
+                        <SelectItem key={subCategory.id} value={subCategory.id}>
+                          {subCategory.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
