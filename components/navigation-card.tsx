@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { Pencil, Trash2 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/registry/new-york/ui/card'
 import type { NavigationSubItem } from '@/types/navigation'
 import {
@@ -13,6 +14,9 @@ import {
 
 interface NavigationCardProps {
   item: NavigationSubItem
+  canManage?: boolean
+  onEdit?: (item: NavigationSubItem) => void
+  onDelete?: (item: NavigationSubItem) => void
 }
 
 const pastelStyles = [
@@ -90,7 +94,7 @@ const pastelStyles = [
   },
 ] as const
 
-export function NavigationCard({ item }: NavigationCardProps) {
+export function NavigationCard({ item, canManage = false, onEdit, onDelete }: NavigationCardProps) {
   const [pastelIndex, setPastelIndex] = useState<number | null>(null)
 
   useEffect(() => {
@@ -112,6 +116,34 @@ export function NavigationCard({ item }: NavigationCardProps) {
             ].join(' ')}
           >
             <div className="pointer-events-none absolute inset-0 bg-white/0 transition-colors duration-200 group-hover:bg-white/14" />
+            {canManage && (
+              <div className="absolute right-2 top-2 z-20 flex items-center gap-1 opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100">
+                <button
+                  type="button"
+                  className="flex h-7 w-7 items-center justify-center rounded-md bg-[#eef2f4]/90 text-[#2f3a43] shadow-[0_6px_16px_rgba(32,40,48,0.18)] ring-1 ring-[#9da8b1]/55 backdrop-blur transition hover:bg-[#d7dee4] hover:text-[#10161b]"
+                  aria-label={`编辑 ${item.title}`}
+                  onClick={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    onEdit?.(item)
+                  }}
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+                <button
+                  type="button"
+                  className="flex h-7 w-7 items-center justify-center rounded-md bg-[#f0e2df]/90 text-[#8d3f36] shadow-[0_6px_16px_rgba(32,40,48,0.18)] ring-1 ring-[#b98c86]/55 backdrop-blur transition hover:bg-[#e7cbc6] hover:text-[#69261f]"
+                  aria-label={`删除 ${item.title}`}
+                  onClick={(event) => {
+                    event.preventDefault()
+                    event.stopPropagation()
+                    onDelete?.(item)
+                  }}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            )}
             <Link
               href={item.href}
               target="_blank"

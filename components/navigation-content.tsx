@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from 'react'
 import Link from 'next/link'
-import { Github, Loader2, Menu, Plus, RefreshCw } from 'lucide-react'
+import { Github, Loader2, Menu, Plus, RefreshCw, Save, Trash2 } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
 import type { NavigationData, NavigationItem, NavigationSubItem } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
@@ -45,6 +45,12 @@ interface QuickAddSite {
   subCategoryId: string
 }
 
+interface ManageCardContext {
+  item: NavigationSubItem
+  categoryId: string
+  subCategoryId: string
+}
+
 const emptyQuickAddSite: QuickAddSite = {
   url: '',
   title: '',
@@ -65,8 +71,15 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
   const [isQuickAdding, setIsQuickAdding] = useState(false)
   const [isFetchingQuickMetadata, setIsFetchingQuickMetadata] = useState(false)
   const [lastFetchedQuickUrl, setLastFetchedQuickUrl] = useState('')
+  const [editingCard, setEditingCard] = useState<ManageCardContext | null>(null)
+  const [editSite, setEditSite] = useState<QuickAddSite>(emptyQuickAddSite)
+  const [editMessage, setEditMessage] = useState('')
+  const [isSavingEdit, setIsSavingEdit] = useState(false)
+  const [deletingCard, setDeletingCard] = useState<ManageCardContext | null>(null)
+  const [isDeletingCard, setIsDeletingCard] = useState(false)
   const { data: session, status } = useSession()
   const userName = session?.user?.name || session?.user?.email || (session?.user as any)?.accountId
+  const canManageCards = status === 'authenticated'
   const selectedQuickCategory = currentNavigationData.navigationItems.find(
     (category) => category.id === quickAddSite.categoryId
   )
@@ -133,6 +146,82 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
     })
 
     return { navigationItems: updatedItems }
+  }
+
+  const updateItemInNavigation = (
+    data: NavigationData,
+    context: ManageCardContext,
+    nextItem: NavigationSubItem
+  ): NavigationData => ({
+    navigationItems: (data.navigationItems || []).map((category) => {
+      if (category.id !== context.categoryId) return category
+
+      if (context.subCategoryId && category.subCategories?.length) {
+        return {
+          ...category,
+          subCategories: category.subCategories.map((subCategory) => (
+            subCategory.id === context.subCategoryId
+              ? {
+                  ...subCategory,
+                  items: (subCategory.items || []).map((item) => (
+                    item.id === context.item.id ? nextItem : item
+                  )),
+                }
+              : subCategory
+          )),
+        }
+      }
+
+      return {
+        ...category,
+        items: (category.items || []).map((item) => (
+          item.id === context.item.id ? nextItem : item
+        )),
+      }
+    }),
+  })
+
+  const deleteItemFromNavigation = (
+    data: NavigationData,
+    context: ManageCardContext
+  ): NavigationData => ({
+    navigationItems: (data.navigationItems || []).map((category) => {
+      if (category.id !== context.categoryId) return category
+
+      if (context.subCategoryId && category.subCategories?.length) {
+        return {
+          ...category,
+          subCategories: category.subCategories.map((subCategory) => (
+            subCategory.id === context.subCategoryId
+              ? {
+                  ...subCategory,
+                  items: (subCategory.items || []).filter((item) => item.id !== context.item.id),
+                }
+              : subCategory
+          )),
+        }
+      }
+
+      return {
+        ...category,
+        items: (category.items || []).filter((item) => item.id !== context.item.id),
+      }
+    }),
+  })
+
+  const saveNavigation = async (data: NavigationData, errorMessage = '保存失败') => {
+    const response = await fetch('/api/navigation', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => null)
+      throw new Error(error?.details || error?.error || errorMessage)
+    }
   }
 
   const fetchQuickMetadata = async (forceUpdate = false) => {
@@ -293,6 +382,125 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       setQuickAddMessage(error instanceof Error ? error.message : '添加失败')
     } finally {
       setIsQuickAdding(false)
+    }
+  }
+
+  const openEditCard = (context: ManageCardContext) => {
+    setEditingCard(context)
+    setEditSite({
+      url: context.item.href,
+      title: context.item.title,
+      description: context.item.description || '',
+      icon: context.item.icon || '',
+      categoryId: context.categoryId,
+      subCategoryId: context.subCategoryId,
+    })
+    setEditMessage('')
+  }
+
+  const fetchEditMetadata = async () => {
+    const url = normalizeUrl(editSite.url)
+
+    try {
+      new URL(url)
+    } catch {
+      setEditMessage('请输入有效的网址，例如 example.com')
+      return
+    }
+
+    setIsSavingEdit(true)
+    setEditMessage('正在识别网站信息...')
+
+    try {
+      const response = await fetch('/api/website-metadata', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ url }),
+      })
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => null)
+        throw new Error(error?.error || '获取网站信息失败')
+      }
+
+      const metadata = await response.json()
+      setEditSite((site) => ({
+        ...site,
+        url,
+        title: metadata.title || site.title,
+        description: metadata.description || site.description,
+        icon: metadata.icon || site.icon,
+      }))
+      setEditMessage('已识别网站信息')
+    } catch (error) {
+      setEditMessage(error instanceof Error ? error.message : '识别失败，可手动填写后保存')
+    } finally {
+      setIsSavingEdit(false)
+    }
+  }
+
+  const handleEditCard = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!editingCard) return
+
+    const url = normalizeUrl(editSite.url)
+
+    try {
+      new URL(url)
+    } catch {
+      setEditMessage('请输入有效的网址，例如 example.com')
+      return
+    }
+
+    if (!editSite.title.trim()) {
+      setEditMessage('请输入站点名称')
+      return
+    }
+
+    setIsSavingEdit(true)
+    setEditMessage('')
+
+    try {
+      const nextItem: NavigationSubItem = {
+        ...editingCard.item,
+        title: editSite.title.trim(),
+        href: url,
+        description: editSite.description.trim(),
+        icon: editSite.icon.trim(),
+        enabled: editingCard.item.enabled ?? true,
+      }
+      const updatedNavigation = updateItemInNavigation(currentNavigationData, editingCard, nextItem)
+
+      await saveNavigation(updatedNavigation, '更新失败')
+      setCurrentNavigationData(updatedNavigation)
+      setEditMessage('更新成功')
+      window.setTimeout(() => {
+        setEditingCard(null)
+        setEditMessage('')
+      }, 450)
+    } catch (error) {
+      setEditMessage(error instanceof Error ? error.message : '更新失败')
+    } finally {
+      setIsSavingEdit(false)
+    }
+  }
+
+  const handleDeleteCard = async () => {
+    if (!deletingCard) return
+
+    setIsDeletingCard(true)
+
+    try {
+      const updatedNavigation = deleteItemFromNavigation(currentNavigationData, deletingCard)
+      await saveNavigation(updatedNavigation, '删除失败')
+      setCurrentNavigationData(updatedNavigation)
+      setDeletingCard(null)
+    } catch (error) {
+      alert(error instanceof Error ? error.message : '删除失败')
+    } finally {
+      setIsDeletingCard(false)
     }
   }
 
@@ -672,6 +880,177 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
           </DialogContent>
         </Dialog>
 
+        <Dialog open={!!editingCard} onOpenChange={(open) => !open && setEditingCard(null)}>
+          <DialogContent className="border-[#9faab4]/55 bg-[#eef2f4] text-[#20262c] shadow-[0_22px_60px_rgba(28,34,40,0.28)] sm:max-w-[520px]">
+            <DialogHeader>
+              <DialogTitle>编辑网址</DialogTitle>
+              <DialogDescription>
+                直接在前台修改站点信息，保存后会同步到当前账号的数据。
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleEditCard} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="edit-url">网址 *</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="edit-url"
+                    value={editSite.url}
+                    onChange={(event) => {
+                      setEditSite((site) => ({ ...site, url: event.target.value }))
+                      setEditMessage('')
+                    }}
+                    placeholder="example.com"
+                    disabled={isSavingEdit}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    disabled={!editSite.url || isSavingEdit}
+                    onClick={fetchEditMetadata}
+                    aria-label="重新识别网站信息"
+                  >
+                    {isSavingEdit ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <RefreshCw className="h-4 w-4" />
+                    )}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
+                  <Label htmlFor="edit-title">站点名称 *</Label>
+                  <Input
+                    id="edit-title"
+                    value={editSite.title}
+                    onChange={(event) => {
+                      setEditSite((site) => ({ ...site, title: event.target.value }))
+                    }}
+                    placeholder="站点名称"
+                    disabled={isSavingEdit}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="edit-icon">站点图标</Label>
+                  <div className="relative">
+                    <Input
+                      id="edit-icon"
+                      value={editSite.icon}
+                      onChange={(event) => {
+                        setEditSite((site) => ({ ...site, icon: event.target.value }))
+                      }}
+                      placeholder="图标 URL"
+                      disabled={isSavingEdit}
+                    />
+                    {editSite.icon && (
+                      <img
+                        src={editSite.icon}
+                        alt=""
+                        className="absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 object-contain"
+                        onError={(event) => {
+                          event.currentTarget.style.display = 'none'
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="edit-description">描述</Label>
+                <Textarea
+                  id="edit-description"
+                  value={editSite.description}
+                  onChange={(event) => {
+                    setEditSite((site) => ({ ...site, description: event.target.value }))
+                  }}
+                  placeholder="站点描述"
+                  className="min-h-[90px] resize-none"
+                  disabled={isSavingEdit}
+                />
+              </div>
+
+              {editMessage && (
+                <p className={cn(
+                  'text-sm',
+                  editMessage.includes('成功') || editMessage.includes('已识别')
+                    ? 'text-emerald-700'
+                    : editMessage.includes('正在')
+                      ? 'text-[#59636d]'
+                      : 'text-destructive'
+                )}>
+                  {editMessage}
+                </p>
+              )}
+
+              <DialogFooter>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => setEditingCard(null)}
+                  disabled={isSavingEdit}
+                >
+                  取消
+                </Button>
+                <Button type="submit" disabled={isSavingEdit}>
+                  {isSavingEdit ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      保存中...
+                    </>
+                  ) : (
+                    <>
+                      <Save className="mr-2 h-4 w-4" />
+                      保存修改
+                    </>
+                  )}
+                </Button>
+              </DialogFooter>
+            </form>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog open={!!deletingCard} onOpenChange={(open) => !open && setDeletingCard(null)}>
+          <DialogContent className="border-[#b98c86]/55 bg-[#f0e7e4] text-[#20262c] shadow-[0_22px_60px_rgba(28,34,40,0.28)] sm:max-w-[420px]">
+            <DialogHeader>
+              <DialogTitle>删除网址</DialogTitle>
+              <DialogDescription>
+                确定要删除“{deletingCard?.item.title}”吗？删除后会立即同步到当前账号的数据。
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={() => setDeletingCard(null)}
+                disabled={isDeletingCard}
+              >
+                取消
+              </Button>
+              <Button
+                type="button"
+                className="bg-[#9b453b] text-white hover:bg-[#7d342c]"
+                onClick={handleDeleteCard}
+                disabled={isDeletingCard}
+              >
+                {isDeletingCard ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    删除中...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    删除
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         <div className="mx-auto max-w-[1540px] px-3 py-6 sm:px-6 sm:py-8">
           <div className="space-y-9">
             {currentNavigationData.navigationItems.map((category) => (
@@ -692,7 +1071,21 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                         </h3>
                         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                           {(subCategory.items || []).map((item) => (
-                            <NavigationCard key={item.id} item={item} />
+                            <NavigationCard
+                              key={item.id}
+                              item={item}
+                              canManage={canManageCards}
+                              onEdit={() => openEditCard({
+                                item,
+                                categoryId: category.id,
+                                subCategoryId: subCategory.id,
+                              })}
+                              onDelete={() => setDeletingCard({
+                                item,
+                                categoryId: category.id,
+                                subCategoryId: subCategory.id,
+                              })}
+                            />
                           ))}
                         </div>
                       </div>
@@ -700,7 +1093,21 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   ) : (
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                       {(category.items || []).map((item) => (
-                        <NavigationCard key={item.id} item={item} />
+                        <NavigationCard
+                          key={item.id}
+                          item={item}
+                          canManage={canManageCards}
+                          onEdit={() => openEditCard({
+                            item,
+                            categoryId: category.id,
+                            subCategoryId: '',
+                          })}
+                          onDelete={() => setDeletingCard({
+                            item,
+                            categoryId: category.id,
+                            subCategoryId: '',
+                          })}
+                        />
                       ))}
                     </div>
                   )}
