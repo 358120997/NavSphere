@@ -500,6 +500,14 @@
           "description": "VR中文库-专注于SteamVR&amp;Quest游戏汉化平台",
           "icon": "/assets/favicon_1780558027938.png",
           "enabled": true
+        },
+        {
+          "id": "site_1781249717993_bdt7di8",
+          "title": "金手指psdb.cn",
+          "href": "https://psdb.cn/",
+          "description": "PSDB 是 PlayStation 游戏（PS5、PS4、PS3、PSP、PS Vita）的终极数据库，提供高清截图以及 SHN、MC4、JSON 格式的金手指代码下载。",
+          "icon": "https://psdb.cn/favicon.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
