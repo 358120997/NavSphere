@@ -124,6 +124,14 @@
           "description": "oms.shipout.com",
           "icon": "/assets/favicon_1754807628956.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1780823190950_7asr2o5",
+          "title": "PS4/PS5 金手指资源库",
+          "href": "https://jsz.guojubb.top/",
+          "description": "",
+          "icon": "https://jsz.guojubb.top/favicon.ico",
+          "enabled": true
         }
       ],
       "subCategories": [],
@@ -499,14 +507,6 @@
           "href": "https://psdb.cn/",
           "description": "PSDB 是 PlayStation 游戏（PS5、PS4、PS3、PSP、PS Vita）的终极数据库，提供高清截图以及 SHN、MC4、JSON 格式的金手指代码下载。",
           "icon": "https://psdb.cn/favicon.ico",
-          "enabled": true
-        },
-        {
-          "id": "site_1780823190950_7asr2o5",
-          "title": "PS4/PS5 金手指资源库",
-          "href": "https://jsz.guojubb.top/",
-          "description": "",
-          "icon": "https://jsz.guojubb.top/favicon.ico",
           "enabled": true
         }
       ],
