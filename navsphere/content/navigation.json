@@ -508,6 +508,14 @@
           "description": "PSDB 是 PlayStation 游戏（PS5、PS4、PS3、PSP、PS Vita）的终极数据库，提供高清截图以及 SHN、MC4、JSON 格式的金手指代码下载。",
           "icon": "https://psdb.cn/favicon.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1781249803958_4378dpg",
+          "title": "Yoncore金手指",
+          "href": "http://129.28.122.23:8696/",
+          "description": "",
+          "icon": "http://129.28.122.23:8696/favicon.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
