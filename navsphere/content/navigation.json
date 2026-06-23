@@ -270,6 +270,14 @@
           "description": "openwrt应用过滤插件",
           "icon": "/assets/favicon_1756090329225.png",
           "enabled": true
+        },
+        {
+          "id": "site_1782196760438_t0w45r2",
+          "title": "QVMConsole - 现代化 KVM 虚拟化管理平台",
+          "href": "https://www.qvmconsole.cn/",
+          "description": "QVMConsole 是基于 KVM/libvirt 的现代化开源虚拟化管理平台，支持虚拟机全生命周期管理、VPC 网络隔离、快照克隆、VNC 远程控制台、模板管理、智能调度等企业级功能。",
+          "icon": "https://www.qvmconsole.cn/images/1780572250823.png",
+          "enabled": true
         }
       ],
       "subCategories": [],
