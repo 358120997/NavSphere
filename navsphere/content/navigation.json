@@ -140,6 +140,14 @@
           "description": "",
           "icon": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23232f3e'/%3E%3Ctext x='20' y='42' font-size='34' font-family='Arial,sans-serif' font-weight='700' fill='white'%3Ea%3C/text%3E%3Cpath d='M17 47c10 7 23 7 34-1' fill='none' stroke='%23ff9900' stroke-width='4' stroke-linecap='round'/%3E%3Cpath d='M48 43l5 2-4 4' fill='none' stroke='%23ff9900' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E",
           "enabled": true
+        },
+        {
+          "id": "site_1785502131651_y2ww5ue",
+          "title": "Kitty Network — 机场",
+          "href": "https://kitty.fo/plans",
+          "description": "Kitty Network delivers blazing-fast connectivity across the globe — without the premium price tag. 30+ worldwide nodes, no speed limits, unlimited devices.",
+          "icon": "https://kitty.fo/favicon.svg",
+          "enabled": true
         }
       ],
       "subCategories": [],
