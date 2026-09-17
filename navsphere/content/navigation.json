@@ -484,6 +484,14 @@
           "description": "",
           "icon": "http://129.28.122.23:8696/favicon.ico",
           "enabled": true
+        },
+        {
+          "id": "site_1789609944133_c4fn86a",
+          "title": "奥德彪计划",
+          "href": "https://2468c.com/",
+          "description": "",
+          "icon": "https://2468c.com/favicon.ico",
+          "enabled": true
         }
       ],
       "subCategories": []
