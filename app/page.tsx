@@ -36,13 +36,15 @@ async function getData() {
 
     return { 
       navigationData,
-      siteData: (siteData || defaultSiteData) as SiteConfig
+      siteData: (siteData || defaultSiteData) as SiteConfig,
+      initiallyAuthenticated: Boolean(session?.user)
     }
   } catch (error) {
     console.error('Error in getData:', error)
     return {
       navigationData: defaultNavigationData,
-      siteData: defaultSiteData
+      siteData: defaultSiteData,
+      initiallyAuthenticated: false
     }
   }
 }
@@ -65,16 +67,15 @@ export function generateStaticParams() {
 }
 
 export default async function HomePage() {
-  const { navigationData, siteData } = await getData()
-  
-  console.log('Rendering HomePage with data:', { 
-    hasNavigation: !!navigationData?.navigationItems,
-    hasSiteData: !!siteData?.basic 
-  })
+  const { navigationData, siteData, initiallyAuthenticated } = await getData()
 
   return (
     <>
-      <NavigationContent navigationData={navigationData} siteData={siteData} />
+      <NavigationContent
+        navigationData={navigationData}
+        siteData={siteData}
+        initiallyAuthenticated={initiallyAuthenticated}
+      />
       <ScrollToTop />
     </>
   )

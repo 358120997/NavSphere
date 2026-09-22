@@ -34,6 +34,7 @@ import { cn } from '@/lib/utils'
 interface NavigationContentProps {
   navigationData: NavigationData
   siteData: SiteConfig
+  initiallyAuthenticated?: boolean
 }
 
 interface QuickAddSite {
@@ -69,7 +70,7 @@ const emptyQuickAddSite: QuickAddSite = {
 
 const DEFAULT_CATEGORY_TITLE = '常用推荐'
 
-export function NavigationContent({ navigationData, siteData }: NavigationContentProps) {
+export function NavigationContent({ navigationData, siteData, initiallyAuthenticated = false }: NavigationContentProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentNavigationData, setCurrentNavigationData] = useState(navigationData || emptyNavigationData)
   const [navigationLoadMessage, setNavigationLoadMessage] = useState('')
@@ -90,6 +91,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
   const { data: session, status } = useSession()
   const userName = session?.user?.name || session?.user?.email || (session?.user as any)?.accountId
   const isAuthenticated = status === 'authenticated'
+  const shouldShowLoginPrompt = status === 'unauthenticated' || (!initiallyAuthenticated && status === 'loading')
   const canManageCards = isAuthenticated && isCardEditMode
   const selectedQuickCategory = currentNavigationData.navigationItems.find(
     (category) => category.id === quickAddSite.categoryId
@@ -1245,7 +1247,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
         </Dialog>
 
         <div className="mx-auto max-w-[1540px] px-3 py-6 sm:px-6 sm:py-8">
-          {status === 'unauthenticated' ? (
+          {shouldShowLoginPrompt ? (
             <div className="mx-auto max-w-xl overflow-hidden rounded-lg border border-slate-200 bg-white text-center shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
               <div className="h-1 bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400" />
               <div className="px-6 py-16">
