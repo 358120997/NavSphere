@@ -16,6 +16,7 @@ interface NavigationCardProps {
   item: NavigationSubItem
   canManage?: boolean
   isDragging?: boolean
+  isDragOver?: boolean
   dragRootProps?: HTMLAttributes<HTMLDivElement>
   dragHandleProps?: ButtonHTMLAttributes<HTMLButtonElement>
   onEdit?: (item: NavigationSubItem) => void
@@ -26,6 +27,7 @@ export function NavigationCard({
   item,
   canManage = false,
   isDragging = false,
+  isDragOver = false,
   dragRootProps,
   dragHandleProps,
   onEdit,
@@ -43,6 +45,7 @@ export function NavigationCard({
               'hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_14px_32px_rgba(15,23,42,0.10)]',
               canManage ? 'cursor-grab select-none active:cursor-grabbing' : '',
               isDragging ? 'scale-[1.02] border-sky-300 shadow-[0_20px_45px_rgba(14,116,144,0.20)] ring-2 ring-sky-200' : '',
+              isDragOver ? 'border-cyan-300 ring-2 ring-cyan-100' : '',
             ].join(' ')}
           >
             {canManage && (
