@@ -3,6 +3,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import Link from 'next/link'
 import { Github, Loader2, Menu, Pencil, Plus, RefreshCw, Save, Trash2 } from 'lucide-react'
+import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd'
 import { signOut, useSession } from 'next-auth/react'
 import type { NavigationData, NavigationItem, NavigationSubItem } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
@@ -51,6 +52,8 @@ interface ManageCardContext {
   subCategoryId: string
 }
 
+const emptyNavigationData: NavigationData = { navigationItems: [] }
+
 const emptyQuickAddSite: QuickAddSite = {
   url: '',
   title: '',
@@ -64,7 +67,9 @@ const DEFAULT_CATEGORY_TITLE = '常用推荐'
 
 export function NavigationContent({ navigationData, siteData }: NavigationContentProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [currentNavigationData, setCurrentNavigationData] = useState(navigationData)
+  const [currentNavigationData, setCurrentNavigationData] = useState(navigationData || emptyNavigationData)
+  const [isNavigationLoading, setIsNavigationLoading] = useState(false)
+  const [navigationLoadMessage, setNavigationLoadMessage] = useState('')
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false)
   const [quickAddSite, setQuickAddSite] = useState<QuickAddSite>(emptyQuickAddSite)
   const [quickAddMessage, setQuickAddMessage] = useState('')
@@ -213,6 +218,43 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       }
     }),
   })
+
+  const reorderItemsInNavigation = (
+    data: NavigationData,
+    droppableId: string,
+    sourceIndex: number,
+    destinationIndex: number
+  ): NavigationData => {
+    const [scope, categoryId, subCategoryId = ''] = droppableId.split(':')
+
+    if (scope !== 'items') {
+      return data
+    }
+
+    return {
+      navigationItems: (data.navigationItems || []).map((category) => {
+        if (category.id !== categoryId) return category
+
+        if (subCategoryId && category.subCategories?.length) {
+          return {
+            ...category,
+            subCategories: category.subCategories.map((subCategory) => {
+              if (subCategory.id !== subCategoryId) return subCategory
+              const items = [...(subCategory.items || [])]
+              const [movedItem] = items.splice(sourceIndex, 1)
+              items.splice(destinationIndex, 0, movedItem)
+              return { ...subCategory, items }
+            }),
+          }
+        }
+
+        const items = [...(category.items || [])]
+        const [movedItem] = items.splice(sourceIndex, 1)
+        items.splice(destinationIndex, 0, movedItem)
+        return { ...category, items }
+      }),
+    }
+  }
 
   const moveOrUpdateItemInNavigation = (
     data: NavigationData,
@@ -542,6 +584,29 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
     }
   }
 
+  const handleCardDragEnd = async (result: DropResult) => {
+    if (!result.destination) return
+    if (result.source.droppableId !== result.destination.droppableId) return
+    if (result.source.index === result.destination.index) return
+
+    const previousNavigation = currentNavigationData
+    const updatedNavigation = reorderItemsInNavigation(
+      currentNavigationData,
+      result.source.droppableId,
+      result.source.index,
+      result.destination.index
+    )
+
+    setCurrentNavigationData(updatedNavigation)
+
+    try {
+      await saveNavigation(updatedNavigation, '排序保存失败')
+    } catch (error) {
+      setCurrentNavigationData(previousNavigation)
+      alert(error instanceof Error ? error.message : '排序保存失败')
+    }
+  }
+
   useEffect(() => {
     if (!isQuickAddOpen) {
       return
@@ -587,31 +652,45 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
 
   useEffect(() => {
     if (status === 'loading') {
+      setIsNavigationLoading(true)
       return
     }
 
     let isMounted = true
+    setIsNavigationLoading(true)
+    setNavigationLoadMessage('')
 
     fetch('/api/home/navigation', { cache: 'no-store' })
-      .then((response) => (response.ok ? response.json() : navigationData))
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('读取导航失败')
+        }
+        return response.json()
+      })
       .then((data) => {
         if (isMounted) {
-          setCurrentNavigationData(data?.navigationItems ? data : navigationData)
+          setCurrentNavigationData(data?.navigationItems ? data : emptyNavigationData)
         }
       })
-      .catch(() => {
+      .catch((error) => {
         if (isMounted) {
-          setCurrentNavigationData(navigationData)
+          setCurrentNavigationData(emptyNavigationData)
+          setNavigationLoadMessage(error instanceof Error ? error.message : '读取导航失败')
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsNavigationLoading(false)
         }
       })
 
     return () => {
       isMounted = false
     }
-  }, [navigationData, status])
+  }, [status])
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#d9dee3] text-[#20262c] dark:bg-[#202326] sm:flex-row">
+    <div className="flex min-h-screen flex-col bg-white text-slate-900 sm:flex-row">
       <div className="hidden sm:block">
         <Sidebar
           navigationData={currentNavigationData}
@@ -628,7 +707,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       >
         <div
           className={cn(
-            'fixed inset-y-0 right-0 w-40 transform bg-[#cbd3da] shadow-[0_18px_45px_rgba(28,34,40,0.24)] transition-transform duration-200 ease-in-out dark:bg-[#25282b] sm:left-0',
+            'fixed inset-y-0 right-0 w-44 transform bg-white shadow-[0_18px_45px_rgba(15,23,42,0.18)] transition-transform duration-200 ease-in-out sm:left-0',
             isSidebarOpen ? 'translate-x-0' : 'translate-x-full sm:-translate-x-full'
           )}
         >
@@ -642,22 +721,22 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       </div>
 
       <main className="flex-1">
-        <div className="sticky top-0 z-30 border-b border-[#aeb8c1]/35 bg-[#cbd3da]/88 px-3 py-4 shadow-[0_10px_30px_rgba(40,48,56,0.10)] backdrop-blur-xl dark:bg-[#25282b]/95 sm:px-6">
+        <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 px-3 py-4 shadow-sm backdrop-blur-xl sm:px-6">
           <div className="mx-auto flex max-w-[1500px] items-center gap-3">
             <div className="min-w-0 flex-1">
               <SearchBar />
             </div>
             <div className="flex items-center gap-1">
               {status === 'authenticated' ? (
-                <div className="flex items-center gap-2 rounded-lg bg-[#eef2f4]/58 px-2.5 py-1.5 text-sm text-[#3a444d] shadow-[0_8px_22px_rgba(50,58,66,0.10)] ring-1 ring-[#aeb8c1]/45 dark:bg-white/5 dark:ring-white/10">
+                <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-2.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-200">
                   <span className="hidden max-w-24 truncate sm:inline">{userName}</span>
                   <button
                     type="button"
                     className={cn(
                       'flex items-center gap-1 rounded-md px-1.5 py-0.5 font-medium transition',
                       isCardEditMode
-                        ? 'bg-[#c4cdd5] text-[#10161b]'
-                        : 'text-[#303943] hover:bg-[#d7dee4] hover:text-[#10161b]'
+                        ? 'bg-slate-900 text-white'
+                        : 'text-slate-700 hover:bg-slate-200 hover:text-slate-950'
                     )}
                     onClick={() => setIsCardEditMode((value) => !value)}
                     aria-pressed={isCardEditMode}
@@ -667,7 +746,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   </button>
                   <button
                     type="button"
-                    className="flex items-center gap-1 font-medium text-[#303943] transition hover:text-[#10161b]"
+                    className="flex items-center gap-1 font-medium text-slate-700 transition hover:text-slate-950"
                     onClick={() => {
                       setQuickAddMessage('')
                       setIsQuickAddOpen(true)
@@ -678,7 +757,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   </button>
                   <button
                     type="button"
-                    className="font-medium text-[#303943] transition hover:text-[#10161b]"
+                    className="font-medium text-slate-700 transition hover:text-slate-950"
                     onClick={() => signOut({ callbackUrl: '/' })}
                   >
                     退出
@@ -690,7 +769,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="rounded-lg px-3 text-[#3a444d] hover:bg-[#bcc7d0] hover:text-[#10161b]"
+                      className="rounded-lg px-3 text-slate-700 hover:bg-slate-100 hover:text-slate-950"
                     >
                       登录
                     </Button>
@@ -699,7 +778,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="hidden rounded-lg px-3 text-[#3a444d] hover:bg-[#bcc7d0] hover:text-[#10161b] sm:inline-flex"
+                      className="hidden rounded-lg px-3 text-slate-700 hover:bg-slate-100 hover:text-slate-950 sm:inline-flex"
                     >
                       注册
                     </Button>
@@ -715,7 +794,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                 <Button
                   variant="ghost"
                   size="icon"
-                  className="rounded-lg text-[#3f4a54] hover:bg-[#bcc7d0] hover:text-[#10161b]"
+                  className="rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-950"
                 >
                   <Github className="h-5 w-5" />
                 </Button>
@@ -933,7 +1012,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
         </Dialog>
 
         <Dialog open={!!editingCard} onOpenChange={(open) => !open && setEditingCard(null)}>
-          <DialogContent className="border-[#9faab4]/55 bg-[#eef2f4] text-[#20262c] shadow-[0_22px_60px_rgba(28,34,40,0.28)] sm:max-w-[520px]">
+          <DialogContent className="border-slate-200 bg-white text-slate-900 shadow-xl sm:max-w-[520px]">
             <DialogHeader>
               <DialogTitle>编辑网址</DialogTitle>
               <DialogDescription>
@@ -1085,7 +1164,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                   editMessage.includes('成功') || editMessage.includes('已识别')
                     ? 'text-emerald-700'
                     : editMessage.includes('正在')
-                      ? 'text-[#59636d]'
+                      ? 'text-slate-500'
                       : 'text-destructive'
                 )}>
                   {editMessage}
@@ -1120,7 +1199,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
         </Dialog>
 
         <Dialog open={!!deletingCard} onOpenChange={(open) => !open && setDeletingCard(null)}>
-          <DialogContent className="border-[#b98c86]/55 bg-[#f0e7e4] text-[#20262c] shadow-[0_22px_60px_rgba(28,34,40,0.28)] sm:max-w-[420px]">
+          <DialogContent className="border-slate-200 bg-white text-slate-900 shadow-xl sm:max-w-[420px]">
             <DialogHeader>
               <DialogTitle>删除网址</DialogTitle>
               <DialogDescription>
@@ -1138,7 +1217,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
               </Button>
               <Button
                 type="button"
-                className="bg-[#9b453b] text-white hover:bg-[#7d342c]"
+                className="bg-red-600 text-white hover:bg-red-700"
                 onClick={handleDeleteCard}
                 disabled={isDeletingCard}
               >
@@ -1159,69 +1238,149 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
         </Dialog>
 
         <div className="mx-auto max-w-[1540px] px-3 py-6 sm:px-6 sm:py-8">
-          <div className="space-y-9">
-            {currentNavigationData.navigationItems.map((category) => (
-              <section key={category.id} id={category.id} className="scroll-m-24">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3">
-                    <div className="h-5 w-1 rounded-full bg-[#6f7d88]" />
-                    <h2 className="text-base font-semibold tracking-tight text-[#151b20] sm:text-lg">
-                      {category.title}
-                    </h2>
-                  </div>
-
-                  {category.subCategories && category.subCategories.length > 0 ? (
-                    category.subCategories.map((subCategory) => (
-                      <div key={subCategory.id} id={subCategory.id} className="space-y-3 scroll-m-24">
-                        <h3 className="pl-4 text-sm font-medium text-[#59636d]">
-                          {subCategory.title}
-                        </h3>
-                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                          {(subCategory.items || []).map((item) => (
-                            <NavigationCard
-                              key={item.id}
-                              item={item}
-                              canManage={canManageCards}
-                              onEdit={() => openEditCard({
-                                item,
-                                categoryId: category.id,
-                                subCategoryId: subCategory.id,
-                              })}
-                              onDelete={() => setDeletingCard({
-                                item,
-                                categoryId: category.id,
-                                subCategoryId: subCategory.id,
-                              })}
-                            />
-                          ))}
-                        </div>
+          {isNavigationLoading ? (
+            <div className="rounded-lg border border-slate-200 bg-slate-50 px-5 py-10 text-center text-sm text-slate-500">
+              正在读取你的书签...
+            </div>
+          ) : status !== 'authenticated' ? (
+            <div className="rounded-lg border border-slate-200 bg-white px-5 py-14 text-center shadow-sm">
+              <h2 className="text-lg font-semibold text-slate-950">登录后查看个人书签</h2>
+              <p className="mt-2 text-sm text-slate-500">未登录状态不会展示默认书签，也不会闪现其他账号的数据。</p>
+              <Link href="/auth/signin?callbackUrl=/" className="mt-5 inline-flex">
+                <Button>登录</Button>
+              </Link>
+            </div>
+          ) : currentNavigationData.navigationItems.length === 0 ? (
+            <div className="rounded-lg border border-dashed border-slate-300 bg-white px-5 py-14 text-center">
+              <h2 className="text-lg font-semibold text-slate-950">还没有个人书签</h2>
+              <p className="mt-2 text-sm text-slate-500">
+                点击右上角添加，创建属于这个账号的导航。
+              </p>
+              {navigationLoadMessage && (
+                <p className="mt-3 text-xs text-red-600">{navigationLoadMessage}</p>
+              )}
+            </div>
+          ) : (
+            <DragDropContext onDragEnd={handleCardDragEnd}>
+              <div className="space-y-9">
+                {currentNavigationData.navigationItems.map((category) => (
+                  <section key={category.id} id={category.id} className="scroll-m-24">
+                    <div className="space-y-4">
+                      <div className="flex items-center gap-3">
+                        <div className="h-5 w-1 rounded-full bg-slate-900" />
+                        <h2 className="text-base font-semibold tracking-tight text-slate-950 sm:text-lg">
+                          {category.title}
+                        </h2>
                       </div>
-                    ))
-                  ) : (
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-                      {(category.items || []).map((item) => (
-                        <NavigationCard
-                          key={item.id}
-                          item={item}
-                          canManage={canManageCards}
-                          onEdit={() => openEditCard({
-                            item,
-                            categoryId: category.id,
-                            subCategoryId: '',
-                          })}
-                          onDelete={() => setDeletingCard({
-                            item,
-                            categoryId: category.id,
-                            subCategoryId: '',
-                          })}
-                        />
-                      ))}
+
+                      {category.subCategories && category.subCategories.length > 0 ? (
+                        category.subCategories.map((subCategory) => (
+                          <div key={subCategory.id} id={subCategory.id} className="space-y-3 scroll-m-24">
+                            <h3 className="pl-4 text-sm font-medium text-slate-500">
+                              {subCategory.title}
+                            </h3>
+                            <Droppable
+                              droppableId={`items:${category.id}:${subCategory.id}`}
+                              isDropDisabled={!canManageCards}
+                            >
+                              {(provided) => (
+                                <div
+                                  ref={provided.innerRef}
+                                  {...provided.droppableProps}
+                                  className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+                                >
+                                  {(subCategory.items || []).map((item, index) => (
+                                    <Draggable
+                                      key={item.id}
+                                      draggableId={item.id}
+                                      index={index}
+                                      isDragDisabled={!canManageCards}
+                                    >
+                                      {(dragProvided, snapshot) => (
+                                        <div
+                                          ref={dragProvided.innerRef}
+                                          {...dragProvided.draggableProps}
+                                          {...dragProvided.dragHandleProps}
+                                        >
+                                          <NavigationCard
+                                            item={item}
+                                            canManage={canManageCards}
+                                            isDragging={snapshot.isDragging}
+                                            onEdit={() => openEditCard({
+                                              item,
+                                              categoryId: category.id,
+                                              subCategoryId: subCategory.id,
+                                            })}
+                                            onDelete={() => setDeletingCard({
+                                              item,
+                                              categoryId: category.id,
+                                              subCategoryId: subCategory.id,
+                                            })}
+                                          />
+                                        </div>
+                                      )}
+                                    </Draggable>
+                                  ))}
+                                  {provided.placeholder}
+                                </div>
+                              )}
+                            </Droppable>
+                          </div>
+                        ))
+                      ) : (
+                        <Droppable
+                          droppableId={`items:${category.id}:`}
+                          isDropDisabled={!canManageCards}
+                        >
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.droppableProps}
+                              className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
+                            >
+                              {(category.items || []).map((item, index) => (
+                                <Draggable
+                                  key={item.id}
+                                  draggableId={item.id}
+                                  index={index}
+                                  isDragDisabled={!canManageCards}
+                                >
+                                  {(dragProvided, snapshot) => (
+                                    <div
+                                      ref={dragProvided.innerRef}
+                                      {...dragProvided.draggableProps}
+                                      {...dragProvided.dragHandleProps}
+                                    >
+                                      <NavigationCard
+                                        item={item}
+                                        canManage={canManageCards}
+                                        isDragging={snapshot.isDragging}
+                                        onEdit={() => openEditCard({
+                                          item,
+                                          categoryId: category.id,
+                                          subCategoryId: '',
+                                        })}
+                                        onDelete={() => setDeletingCard({
+                                          item,
+                                          categoryId: category.id,
+                                          subCategoryId: '',
+                                        })}
+                                      />
+                                    </div>
+                                  )}
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
+                            </div>
+                          )}
+                        </Droppable>
+                      )}
                     </div>
-                  )}
-                </div>
-              </section>
-            ))}
-          </div>
+                  </section>
+                ))}
+              </div>
+            </DragDropContext>
+          )}
         </div>
 
         <Footer siteInfo={siteData} />

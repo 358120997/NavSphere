@@ -5,7 +5,6 @@ export const revalidate = 3600 // Revalidate every hour
 import { NavigationContent } from '@/components/navigation-content'
 import { Metadata } from 'next/types'
 import { ScrollToTop } from '@/components/ScrollToTop'
-import navigationData from '@/navsphere/content/navigation.json'
 import siteData from '@/navsphere/content/site.json'
 import type { NavigationData } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
@@ -27,11 +26,10 @@ const defaultSiteData: SiteConfig = {
 async function getData() {
   try {
     // 添加数据验证日志
-    console.log('Navigation data received:', !!navigationData)
     console.log('Site data received:', !!siteData)
 
     return { 
-      navigationData: (navigationData || defaultNavigationData) as NavigationData, 
+      navigationData: defaultNavigationData,
       siteData: (siteData || defaultSiteData) as SiteConfig
     }
   } catch (error) {
