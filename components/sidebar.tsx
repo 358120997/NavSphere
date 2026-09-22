@@ -60,8 +60,8 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
   }
 
   return (
-    <div className={cn('w-36 border-r border-slate-200 bg-white text-slate-700 shadow-[1px_0_0_rgba(15,23,42,0.02)]', className)}>
-      <div className="flex h-16 items-center px-3">
+    <div className={cn('w-40 border-r border-slate-200/80 bg-white/90 text-slate-700 shadow-[1px_0_0_rgba(15,23,42,0.02)] backdrop-blur', className)}>
+      <div className="flex h-16 items-center border-b border-slate-100 px-3">
         <Link href="/" className="flex min-w-0 items-center gap-2 font-semibold">
           {siteInfo.appearance.logo ? (
             <Image
@@ -72,7 +72,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
               className="h-7 w-7 rounded-lg object-contain"
             />
           ) : (
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-700 ring-1 ring-slate-200">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-50 text-sky-700 ring-1 ring-sky-100">
               <LucideIcons.Globe className="h-5 w-5" />
             </div>
           )}
@@ -81,13 +81,13 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
       </div>
 
       <ScrollArea className="h-[calc(100vh-4rem)] px-3 py-3">
-        <div className="space-y-2">
+        <div className="space-y-1">
           {navigationData.navigationItems.map((category) => (
             <div key={category.id} className="py-1">
               <div className="flex items-center">
                 <Button
                   variant="ghost"
-                  className="min-w-0 flex-1 justify-start gap-2 rounded-md px-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-950"
+                  className="min-w-0 flex-1 justify-start gap-2 rounded-md px-2 text-sm font-medium text-slate-600 transition-colors hover:bg-sky-50 hover:text-sky-800"
                   onClick={() => scrollToSection(category.id)}
                 >
                   {renderIcon(category.icon)}
@@ -98,7 +98,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="ml-0.5 h-8 rounded-md px-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-950"
+                    className="ml-0.5 h-8 rounded-md px-1.5 text-slate-500 hover:bg-sky-50 hover:text-sky-800"
                     onClick={() => toggleCategory(category.id)}
                     aria-label="Toggle category"
                   >
@@ -122,7 +122,7 @@ export function Sidebar({ className, navigationData, siteInfo, onClose }: Sideba
                     <Button
                       key={subCategory.id}
                       variant="ghost"
-                      className="w-full justify-start rounded-md px-2 text-xs text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-900"
+                      className="w-full justify-start rounded-md px-2 text-xs text-slate-500 transition-colors hover:bg-sky-50 hover:text-sky-800"
                       onClick={() => scrollToSection(subCategory.id)}
                     >
                       <span className="truncate">{subCategory.title}</span>

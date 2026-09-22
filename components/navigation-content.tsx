@@ -1,9 +1,8 @@
 'use client'
 
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useState, type DragEvent, type FormEvent } from 'react'
 import Link from 'next/link'
 import { Github, Loader2, Menu, Pencil, Plus, RefreshCw, Save, Trash2 } from 'lucide-react'
-import { DragDropContext, Draggable, Droppable, type DropResult } from '@hello-pangea/dnd'
 import { signOut, useSession } from 'next-auth/react'
 import type { NavigationData, NavigationItem, NavigationSubItem } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
@@ -52,6 +51,11 @@ interface ManageCardContext {
   subCategoryId: string
 }
 
+interface DragCardContext extends ManageCardContext {
+  droppableId: string
+  index: number
+}
+
 const emptyNavigationData: NavigationData = { navigationItems: [] }
 
 const emptyQuickAddSite: QuickAddSite = {
@@ -68,7 +72,6 @@ const DEFAULT_CATEGORY_TITLE = '常用推荐'
 export function NavigationContent({ navigationData, siteData }: NavigationContentProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [currentNavigationData, setCurrentNavigationData] = useState(navigationData || emptyNavigationData)
-  const [isNavigationLoading, setIsNavigationLoading] = useState(false)
   const [navigationLoadMessage, setNavigationLoadMessage] = useState('')
   const [isQuickAddOpen, setIsQuickAddOpen] = useState(false)
   const [quickAddSite, setQuickAddSite] = useState<QuickAddSite>(emptyQuickAddSite)
@@ -83,6 +86,7 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
   const [deletingCard, setDeletingCard] = useState<ManageCardContext | null>(null)
   const [isDeletingCard, setIsDeletingCard] = useState(false)
   const [isCardEditMode, setIsCardEditMode] = useState(false)
+  const [draggingCard, setDraggingCard] = useState<DragCardContext | null>(null)
   const { data: session, status } = useSession()
   const userName = session?.user?.name || session?.user?.email || (session?.user as any)?.accountId
   const isAuthenticated = status === 'authenticated'
@@ -584,17 +588,19 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
     }
   }
 
-  const handleCardDragEnd = async (result: DropResult) => {
-    if (!result.destination) return
-    if (result.source.droppableId !== result.destination.droppableId) return
-    if (result.source.index === result.destination.index) return
+  const handleCardDrop = async (event: DragEvent<HTMLDivElement>, target: DragCardContext) => {
+    event.preventDefault()
+
+    if (!draggingCard) return
+    if (draggingCard.droppableId !== target.droppableId) return
+    if (draggingCard.index === target.index) return
 
     const previousNavigation = currentNavigationData
     const updatedNavigation = reorderItemsInNavigation(
       currentNavigationData,
-      result.source.droppableId,
-      result.source.index,
-      result.destination.index
+      draggingCard.droppableId,
+      draggingCard.index,
+      target.index
     )
 
     setCurrentNavigationData(updatedNavigation)
@@ -652,13 +658,18 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
 
   useEffect(() => {
     if (status === 'loading') {
-      setIsNavigationLoading(true)
       return
     }
 
     let isMounted = true
-    setIsNavigationLoading(true)
     setNavigationLoadMessage('')
+
+    if (status !== 'authenticated') {
+      setCurrentNavigationData(emptyNavigationData)
+      return () => {
+        isMounted = false
+      }
+    }
 
     fetch('/api/home/navigation', { cache: 'no-store' })
       .then((response) => {
@@ -678,19 +689,13 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
           setNavigationLoadMessage(error instanceof Error ? error.message : '读取导航失败')
         }
       })
-      .finally(() => {
-        if (isMounted) {
-          setIsNavigationLoading(false)
-        }
-      })
-
     return () => {
       isMounted = false
     }
   }, [status])
 
   return (
-    <div className="flex min-h-screen flex-col bg-white text-slate-900 sm:flex-row">
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900 sm:flex-row">
       <div className="hidden sm:block">
         <Sidebar
           navigationData={currentNavigationData}
@@ -721,14 +726,14 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
       </div>
 
       <main className="flex-1">
-        <div className="sticky top-0 z-30 border-b border-slate-200 bg-white/90 px-3 py-4 shadow-sm backdrop-blur-xl sm:px-6">
+        <div className="sticky top-0 z-30 border-b border-slate-200/80 bg-white/85 px-3 py-3 shadow-[0_1px_0_rgba(15,23,42,0.03)] backdrop-blur-xl sm:px-6">
           <div className="mx-auto flex max-w-[1500px] items-center gap-3">
             <div className="min-w-0 flex-1">
               <SearchBar />
             </div>
             <div className="flex items-center gap-1">
               {status === 'authenticated' ? (
-                <div className="flex items-center gap-2 rounded-lg bg-slate-50 px-2.5 py-1.5 text-sm text-slate-700 ring-1 ring-slate-200">
+                <div className="flex items-center gap-2 rounded-lg bg-white px-2.5 py-1.5 text-sm text-slate-700 shadow-sm ring-1 ring-slate-200">
                   <span className="hidden max-w-24 truncate sm:inline">{userName}</span>
                   <button
                     type="button"
@@ -763,6 +768,8 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                     退出
                   </button>
                 </div>
+              ) : status === 'loading' ? (
+                <div className="h-8 w-24 rounded-lg bg-white shadow-sm ring-1 ring-slate-200" />
               ) : (
                 <div className="flex items-center gap-1">
                   <Link href="/auth/signin?callbackUrl=/" aria-label="登录">
@@ -1238,37 +1245,49 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
         </Dialog>
 
         <div className="mx-auto max-w-[1540px] px-3 py-6 sm:px-6 sm:py-8">
-          {isNavigationLoading ? (
-            <div className="rounded-lg border border-slate-200 bg-slate-50 px-5 py-10 text-center text-sm text-slate-500">
-              正在读取你的书签...
-            </div>
-          ) : status !== 'authenticated' ? (
-            <div className="rounded-lg border border-slate-200 bg-white px-5 py-14 text-center shadow-sm">
-              <h2 className="text-lg font-semibold text-slate-950">登录后查看个人书签</h2>
-              <p className="mt-2 text-sm text-slate-500">未登录状态不会展示默认书签，也不会闪现其他账号的数据。</p>
-              <Link href="/auth/signin?callbackUrl=/" className="mt-5 inline-flex">
-                <Button>登录</Button>
-              </Link>
+          {status === 'unauthenticated' ? (
+            <div className="mx-auto max-w-xl overflow-hidden rounded-lg border border-slate-200 bg-white text-center shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
+              <div className="h-1 bg-gradient-to-r from-sky-500 via-cyan-400 to-emerald-400" />
+              <div className="px-6 py-16">
+                <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-sky-50 text-sky-700 ring-1 ring-sky-100">
+                  <Menu className="h-5 w-5" />
+                </div>
+                <h2 className="text-lg font-semibold text-slate-950">登录后查看个人书签</h2>
+                <p className="mt-2 text-sm text-slate-500">未登录状态不会展示默认书签，也不会闪现其他账号的数据。</p>
+                <div className="mt-6 flex justify-center">
+                  <Link href="/auth/signin?callbackUrl=/" className="inline-flex">
+                    <Button className="gap-2 rounded-lg bg-slate-950 px-5 text-white shadow-sm hover:bg-slate-800">
+                      登录
+                    </Button>
+                  </Link>
+                </div>
+              </div>
             </div>
           ) : currentNavigationData.navigationItems.length === 0 ? (
-            <div className="rounded-lg border border-dashed border-slate-300 bg-white px-5 py-14 text-center">
-              <h2 className="text-lg font-semibold text-slate-950">还没有个人书签</h2>
-              <p className="mt-2 text-sm text-slate-500">
-                点击右上角添加，创建属于这个账号的导航。
-              </p>
-              {navigationLoadMessage && (
-                <p className="mt-3 text-xs text-red-600">{navigationLoadMessage}</p>
-              )}
+            <div className="mx-auto max-w-xl overflow-hidden rounded-lg border border-dashed border-slate-300 bg-white text-center shadow-[0_18px_60px_rgba(15,23,42,0.07)]">
+              <div className="h-1 bg-gradient-to-r from-slate-300 via-sky-300 to-slate-300" />
+              <div className="px-6 py-16">
+                <div className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-lg bg-slate-50 text-slate-700 ring-1 ring-slate-200">
+                  <Plus className="h-5 w-5" />
+                </div>
+                <h2 className="text-lg font-semibold text-slate-950">还没有个人书签</h2>
+                <p className="mt-2 text-sm text-slate-500">
+                  点击右上角添加，创建属于这个账号的导航。
+                </p>
+                {navigationLoadMessage && (
+                  <p className="mt-3 text-xs text-red-600">{navigationLoadMessage}</p>
+                )}
+              </div>
             </div>
           ) : (
-            <DragDropContext onDragEnd={handleCardDragEnd}>
-              <div className="space-y-9">
+            <div>
+              <div className="space-y-10">
                 {currentNavigationData.navigationItems.map((category) => (
                   <section key={category.id} id={category.id} className="scroll-m-24">
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
-                        <div className="h-5 w-1 rounded-full bg-slate-900" />
-                        <h2 className="text-base font-semibold tracking-tight text-slate-950 sm:text-lg">
+                        <div className="h-8 w-1 rounded-full bg-sky-500" />
+                        <h2 className="text-lg font-semibold tracking-tight text-slate-950 sm:text-xl">
                           {category.title}
                         </h2>
                       </div>
@@ -1279,107 +1298,101 @@ export function NavigationContent({ navigationData, siteData }: NavigationConten
                             <h3 className="pl-4 text-sm font-medium text-slate-500">
                               {subCategory.title}
                             </h3>
-                            <Droppable
-                              droppableId={`items:${category.id}:${subCategory.id}`}
-                              isDropDisabled={!canManageCards}
-                            >
-                              {(provided) => (
-                                <div
-                                  ref={provided.innerRef}
-                                  {...provided.droppableProps}
-                                  className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
-                                >
-                                  {(subCategory.items || []).map((item, index) => (
-                                    <Draggable
-                                      key={item.id}
-                                      draggableId={item.id}
-                                      index={index}
-                                      isDragDisabled={!canManageCards}
-                                    >
-                                      {(dragProvided, snapshot) => (
-                                        <div
-                                          ref={dragProvided.innerRef}
-                                          {...dragProvided.draggableProps}
-                                          {...dragProvided.dragHandleProps}
-                                        >
-                                          <NavigationCard
-                                            item={item}
-                                            canManage={canManageCards}
-                                            isDragging={snapshot.isDragging}
-                                            onEdit={() => openEditCard({
-                                              item,
-                                              categoryId: category.id,
-                                              subCategoryId: subCategory.id,
-                                            })}
-                                            onDelete={() => setDeletingCard({
-                                              item,
-                                              categoryId: category.id,
-                                              subCategoryId: subCategory.id,
-                                            })}
-                                          />
-                                        </div>
-                                      )}
-                                    </Draggable>
-                                  ))}
-                                  {provided.placeholder}
-                                </div>
-                              )}
-                            </Droppable>
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                              {(subCategory.items || []).map((item, index) => {
+                                const dragContext = {
+                                  item,
+                                  categoryId: category.id,
+                                  subCategoryId: subCategory.id,
+                                  droppableId: `items:${category.id}:${subCategory.id}`,
+                                  index,
+                                }
+
+                                return (
+                                  <div
+                                    key={item.id}
+                                    onDragOver={(event) => canManageCards && event.preventDefault()}
+                                    onDrop={(event) => handleCardDrop(event, dragContext)}
+                                  >
+                                    <NavigationCard
+                                      item={item}
+                                      canManage={canManageCards}
+                                      isDragging={draggingCard?.item.id === item.id}
+                                      dragHandleProps={{
+                                        draggable: canManageCards,
+                                        onDragStart: (event) => {
+                                          event.dataTransfer.effectAllowed = 'move'
+                                          setDraggingCard(dragContext)
+                                        },
+                                        onDragEnd: () => setDraggingCard(null),
+                                      }}
+                                      onEdit={() => openEditCard({
+                                        item,
+                                        categoryId: category.id,
+                                        subCategoryId: subCategory.id,
+                                      })}
+                                      onDelete={() => setDeletingCard({
+                                        item,
+                                        categoryId: category.id,
+                                        subCategoryId: subCategory.id,
+                                      })}
+                                    />
+                                  </div>
+                                )
+                              })}
+                            </div>
                           </div>
                         ))
                       ) : (
-                        <Droppable
-                          droppableId={`items:${category.id}:`}
-                          isDropDisabled={!canManageCards}
-                        >
-                          {(provided) => (
-                            <div
-                              ref={provided.innerRef}
-                              {...provided.droppableProps}
-                              className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4"
-                            >
-                              {(category.items || []).map((item, index) => (
-                                <Draggable
-                                  key={item.id}
-                                  draggableId={item.id}
-                                  index={index}
-                                  isDragDisabled={!canManageCards}
-                                >
-                                  {(dragProvided, snapshot) => (
-                                    <div
-                                      ref={dragProvided.innerRef}
-                                      {...dragProvided.draggableProps}
-                                      {...dragProvided.dragHandleProps}
-                                    >
-                                      <NavigationCard
-                                        item={item}
-                                        canManage={canManageCards}
-                                        isDragging={snapshot.isDragging}
-                                        onEdit={() => openEditCard({
-                                          item,
-                                          categoryId: category.id,
-                                          subCategoryId: '',
-                                        })}
-                                        onDelete={() => setDeletingCard({
-                                          item,
-                                          categoryId: category.id,
-                                          subCategoryId: '',
-                                        })}
-                                      />
-                                    </div>
-                                  )}
-                                </Draggable>
-                              ))}
-                              {provided.placeholder}
-                            </div>
-                          )}
-                        </Droppable>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                          {(category.items || []).map((item, index) => {
+                            const dragContext = {
+                              item,
+                              categoryId: category.id,
+                              subCategoryId: '',
+                              droppableId: `items:${category.id}:`,
+                              index,
+                            }
+
+                            return (
+                              <div
+                                key={item.id}
+                                onDragOver={(event) => canManageCards && event.preventDefault()}
+                                onDrop={(event) => handleCardDrop(event, dragContext)}
+                              >
+                                <NavigationCard
+                                  item={item}
+                                  canManage={canManageCards}
+                                  isDragging={draggingCard?.item.id === item.id}
+                                  dragHandleProps={{
+                                    draggable: canManageCards,
+                                    onDragStart: (event) => {
+                                      event.dataTransfer.effectAllowed = 'move'
+                                      setDraggingCard(dragContext)
+                                    },
+                                    onDragEnd: () => setDraggingCard(null),
+                                  }}
+                                  onEdit={() => openEditCard({
+                                    item,
+                                    categoryId: category.id,
+                                    subCategoryId: '',
+                                  })}
+                                  onDelete={() => setDeletingCard({
+                                    item,
+                                    categoryId: category.id,
+                                    subCategoryId: '',
+                                  })}
+                                />
+                              </div>
+                            )
+                          })}
+                        </div>
                       )}
                     </div>
                   </section>
                 ))}
               </div>
-            </DragDropContext>
+            </div>
           )}
         </div>
 

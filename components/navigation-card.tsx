@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import type { ButtonHTMLAttributes } from 'react'
 import { GripVertical, Pencil, Trash2 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/registry/new-york/ui/card'
 import type { NavigationSubItem } from '@/types/navigation'
@@ -15,6 +16,7 @@ interface NavigationCardProps {
   item: NavigationSubItem
   canManage?: boolean
   isDragging?: boolean
+  dragHandleProps?: ButtonHTMLAttributes<HTMLButtonElement>
   onEdit?: (item: NavigationSubItem) => void
   onDelete?: (item: NavigationSubItem) => void
 }
@@ -23,6 +25,7 @@ export function NavigationCard({
   item,
   canManage = false,
   isDragging = false,
+  dragHandleProps,
   onEdit,
   onDelete,
 }: NavigationCardProps) {
@@ -32,20 +35,23 @@ export function NavigationCard({
         <TooltipTrigger asChild>
           <Card
             className={[
-              'group relative overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm transition-all duration-200 ease-out',
-              'hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md',
-              canManage ? 'cursor-grab active:cursor-grabbing' : '',
-              isDragging ? 'border-slate-400 shadow-lg ring-2 ring-slate-300' : '',
+              'group relative min-h-[92px] overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 ease-out',
+              'before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white',
+              'hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_14px_32px_rgba(15,23,42,0.10)]',
+              canManage ? 'select-none' : '',
+              isDragging ? 'scale-[1.02] border-sky-300 shadow-[0_20px_45px_rgba(14,116,144,0.20)] ring-2 ring-sky-200' : '',
             ].join(' ')}
           >
             {canManage && (
               <div className="absolute right-2 top-2 z-20 flex items-center gap-1 opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100">
-                <span
-                  className="flex h-7 w-7 items-center justify-center rounded-md bg-white/95 text-slate-500 shadow-sm ring-1 ring-slate-200"
-                  aria-hidden="true"
+                <button
+                  type="button"
+                  className="flex h-7 w-7 cursor-grab items-center justify-center rounded-md bg-white/95 text-slate-500 shadow-sm ring-1 ring-slate-200 transition hover:bg-sky-50 hover:text-sky-700 active:cursor-grabbing"
+                  aria-label={`拖动 ${item.title}`}
+                  {...dragHandleProps}
                 >
                   <GripVertical className="h-3.5 w-3.5" />
-                </span>
+                </button>
                 <button
                   type="button"
                   className="flex h-7 w-7 items-center justify-center rounded-md bg-white/95 text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-100 hover:text-slate-950"
@@ -86,7 +92,7 @@ export function NavigationCard({
               <CardHeader className="p-4 sm:p-5">
                 <div className="flex items-center gap-3 sm:gap-4">
                   {item.icon && (
-                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-slate-50 p-2 ring-1 ring-slate-200 transition-colors duration-200 group-hover:bg-slate-100 sm:h-11 sm:w-11">
+                    <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-slate-50 p-2 ring-1 ring-slate-200 transition-colors duration-200 group-hover:bg-sky-50 group-hover:ring-sky-100 sm:h-11 sm:w-11">
                       <img
                         src={item.icon}
                         alt={`${item.title} icon`}
@@ -95,7 +101,7 @@ export function NavigationCard({
                     </div>
                   )}
                   <div className="min-w-0 flex-1 space-y-1">
-                    <CardTitle className="truncate text-sm font-medium leading-tight text-slate-900 transition-colors duration-200 sm:text-base">
+                    <CardTitle className="truncate text-sm font-semibold leading-tight text-slate-900 transition-colors duration-200 sm:text-base">
                       {item.title}
                     </CardTitle>
                     {item.description && (

@@ -1,11 +1,12 @@
 export const runtime = 'edge'
 export const dynamic = 'force-dynamic'
-export const revalidate = 3600 // Revalidate every hour
 
 import { NavigationContent } from '@/components/navigation-content'
 import { Metadata } from 'next/types'
 import { ScrollToTop } from '@/components/ScrollToTop'
 import siteData from '@/navsphere/content/site.json'
+import { auth } from '@/lib/auth'
+import { getCurrentNavigationData } from '@/lib/user-data'
 import type { NavigationData } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
 
@@ -25,16 +26,20 @@ const defaultSiteData: SiteConfig = {
 
 async function getData() {
   try {
-    // 添加数据验证日志
-    console.log('Site data received:', !!siteData)
+    const session = await auth()
+    const navigationData = session?.user
+      ? await getCurrentNavigationData().catch((error) => {
+          console.error('Error loading account navigation:', error)
+          return defaultNavigationData
+        })
+      : defaultNavigationData
 
     return { 
-      navigationData: defaultNavigationData,
+      navigationData,
       siteData: (siteData || defaultSiteData) as SiteConfig
     }
   } catch (error) {
     console.error('Error in getData:', error)
-    // 返回默认数据而不是空值
     return {
       navigationData: defaultNavigationData,
       siteData: defaultSiteData
