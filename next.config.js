@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Docker 部署支持
-  output: 'standalone',
+  ...(process.env.CF_PAGES ? {} : { output: 'standalone' }),
   
   images: {
     domains: [
