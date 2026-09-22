@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type DragEvent, type FormEvent } from 'react'
 import Link from 'next/link'
-import { Github, Loader2, Menu, Pencil, Plus, RefreshCw, Save, Trash2 } from 'lucide-react'
+import { Loader2, Menu, Pencil, Plus, RefreshCw, Save, Trash2 } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
 import type { NavigationData, NavigationItem, NavigationSubItem } from '@/types/navigation'
 import type { SiteConfig } from '@/types/site'
@@ -794,20 +794,6 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
                   </Link>
                 </div>
               )}
-              <Link
-                href="https://github.com/358120997/NavSphere"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="访问 GitHub 仓库"
-              >
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-950"
-                >
-                  <Github className="h-5 w-5" />
-                </Button>
-              </Link>
               <Button
                 variant="ghost"
                 size="icon"
@@ -1320,13 +1306,20 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
                                       item={item}
                                       canManage={canManageCards}
                                       isDragging={draggingCard?.item.id === item.id}
-                                      dragHandleProps={{
+                                      dragRootProps={{
                                         draggable: canManageCards,
                                         onDragStart: (event) => {
                                           event.dataTransfer.effectAllowed = 'move'
+                                          event.dataTransfer.setData('text/plain', item.id)
                                           setDraggingCard(dragContext)
                                         },
                                         onDragEnd: () => setDraggingCard(null),
+                                      }}
+                                      dragHandleProps={{
+                                        onClick: (event) => {
+                                          event.preventDefault()
+                                          event.stopPropagation()
+                                        },
                                       }}
                                       onEdit={() => openEditCard({
                                         item,
@@ -1366,13 +1359,20 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
                                   item={item}
                                   canManage={canManageCards}
                                   isDragging={draggingCard?.item.id === item.id}
-                                  dragHandleProps={{
+                                  dragRootProps={{
                                     draggable: canManageCards,
                                     onDragStart: (event) => {
                                       event.dataTransfer.effectAllowed = 'move'
+                                      event.dataTransfer.setData('text/plain', item.id)
                                       setDraggingCard(dragContext)
                                     },
                                     onDragEnd: () => setDraggingCard(null),
+                                  }}
+                                  dragHandleProps={{
+                                    onClick: (event) => {
+                                      event.preventDefault()
+                                      event.stopPropagation()
+                                    },
                                   }}
                                   onEdit={() => openEditCard({
                                     item,

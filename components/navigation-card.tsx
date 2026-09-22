@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import type { ButtonHTMLAttributes } from 'react'
+import type { ButtonHTMLAttributes, HTMLAttributes } from 'react'
 import { GripVertical, Pencil, Trash2 } from 'lucide-react'
 import { Card, CardHeader, CardTitle, CardDescription } from '@/registry/new-york/ui/card'
 import type { NavigationSubItem } from '@/types/navigation'
@@ -16,6 +16,7 @@ interface NavigationCardProps {
   item: NavigationSubItem
   canManage?: boolean
   isDragging?: boolean
+  dragRootProps?: HTMLAttributes<HTMLDivElement>
   dragHandleProps?: ButtonHTMLAttributes<HTMLButtonElement>
   onEdit?: (item: NavigationSubItem) => void
   onDelete?: (item: NavigationSubItem) => void
@@ -25,6 +26,7 @@ export function NavigationCard({
   item,
   canManage = false,
   isDragging = false,
+  dragRootProps,
   dragHandleProps,
   onEdit,
   onDelete,
@@ -34,11 +36,12 @@ export function NavigationCard({
       <Tooltip>
         <TooltipTrigger asChild>
           <Card
+            {...dragRootProps}
             className={[
               'group relative min-h-[92px] overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 ease-out',
               'before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white',
               'hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_14px_32px_rgba(15,23,42,0.10)]',
-              canManage ? 'select-none' : '',
+              canManage ? 'cursor-grab select-none active:cursor-grabbing' : '',
               isDragging ? 'scale-[1.02] border-sky-300 shadow-[0_20px_45px_rgba(14,116,144,0.20)] ring-2 ring-sky-200' : '',
             ].join(' ')}
           >
