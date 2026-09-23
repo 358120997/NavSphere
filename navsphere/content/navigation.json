@@ -406,6 +406,14 @@
           "enabled": true
         },
         {
+          "id": "site_1789609944133_c4fn86a",
+          "title": "奥德彪计划",
+          "href": "https://2468c.com/",
+          "description": "",
+          "icon": "https://2468c.com/favicon.ico",
+          "enabled": true
+        },
+        {
           "id": "site_1754738812354_k849ojdif",
           "title": "Smash Karts 🏎️ 小游戏",
           "href": "https://www.crazygames.com/game/smash-karts",
@@ -483,14 +491,6 @@
           "href": "http://129.28.122.23:8696/",
           "description": "",
           "icon": "http://129.28.122.23:8696/favicon.ico",
-          "enabled": true
-        },
-        {
-          "id": "site_1789609944133_c4fn86a",
-          "title": "奥德彪计划",
-          "href": "https://2468c.com/",
-          "description": "",
-          "icon": "https://2468c.com/favicon.ico",
           "enabled": true
         }
       ],
