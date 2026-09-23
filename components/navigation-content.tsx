@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, type DragEvent, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type FormEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import Link from 'next/link'
 import { Loader2, Menu, Pencil, Plus, RefreshCw, Save, Trash2 } from 'lucide-react'
 import { signOut, useSession } from 'next-auth/react'
@@ -93,6 +93,8 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
   const dragStartNavigationRef = useRef<NavigationData | null>(null)
   const latestNavigationRef = useRef<NavigationData>(navigationData || emptyNavigationData)
   const dragFinalizedRef = useRef(false)
+  const restorePointerStylesRef = useRef<(() => void) | null>(null)
+  const previewTransitionRunningRef = useRef(false)
   const { data: session, status } = useSession()
   const userName = session?.user?.name || session?.user?.email || (session?.user as any)?.accountId
   const isAuthenticated = status === 'authenticated'
@@ -120,6 +122,10 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
   )
 
   const getDefaultQuickCategoryId = (data: NavigationData) => data.navigationItems?.[0]?.id || ''
+
+  const getCardTransitionName = (itemId: string) => (
+    `nav-card-${itemId.replace(/[^a-zA-Z0-9_-]/g, '-')}`
+  )
 
   const createDefaultCategory = (item: NavigationSubItem): NavigationItem => ({
     id: `category_${Date.now()}`,
@@ -299,6 +305,29 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
   ): NavigationData => {
     const sourceRemoved = deleteItemFromNavigation(data, context)
     return addItemToNavigation(sourceRemoved, nextItem, nextCategoryId, nextSubCategoryId)
+  }
+
+  const applyNavigationPreview = (data: NavigationData) => {
+    if (typeof document === 'undefined' || !('startViewTransition' in document)) {
+      setCurrentNavigationData(data)
+      return
+    }
+
+    if (previewTransitionRunningRef.current) {
+      setCurrentNavigationData(data)
+      return
+    }
+
+    previewTransitionRunningRef.current = true
+    const transition = (document as Document & {
+      startViewTransition: (callback: () => void) => { finished?: Promise<unknown> }
+    }).startViewTransition(() => {
+      setCurrentNavigationData(data)
+    })
+
+    transition.finished?.finally(() => {
+      previewTransitionRunningRef.current = false
+    })
   }
 
   const saveNavigation = async (data: NavigationData, errorMessage = '保存失败') => {
@@ -618,52 +647,6 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
     }
   }
 
-  const handleCardDragStart = (
-    event: DragEvent<HTMLDivElement>,
-    source: DragCardContext
-  ) => {
-    dragStartNavigationRef.current = currentNavigationData
-    latestNavigationRef.current = currentNavigationData
-    dragFinalizedRef.current = false
-    event.dataTransfer.effectAllowed = 'move'
-    event.dataTransfer.setData('text/plain', source.item.id)
-    draggingCardRef.current = source
-    setDraggingCard(source)
-  }
-
-  const handleCardDragOver = (event: DragEvent<HTMLDivElement>, target: DragCardContext) => {
-    event.preventDefault()
-    event.dataTransfer.dropEffect = 'move'
-
-    const activeDrag = draggingCardRef.current
-
-    if (!activeDrag) return
-    if (activeDrag.droppableId !== target.droppableId) return
-    if (activeDrag.item.id === target.item.id) return
-
-    setDragOverCardId(target.item.id)
-
-    const sourceIndex = findItemIndexInDroppable(
-      latestNavigationRef.current,
-      activeDrag.droppableId,
-      activeDrag.item.id
-    )
-
-    if (sourceIndex < 0 || sourceIndex === target.index) return
-
-    const updatedNavigation = reorderItemsInNavigation(
-      latestNavigationRef.current,
-      activeDrag.droppableId,
-      sourceIndex,
-      target.index
-    )
-
-    latestNavigationRef.current = updatedNavigation
-    setCurrentNavigationData(updatedNavigation)
-    draggingCardRef.current = { ...activeDrag, index: target.index }
-    setDraggingCard((card) => card ? { ...card, index: target.index } : card)
-  }
-
   const finishCardDrag = async () => {
     if (!draggingCardRef.current || dragFinalizedRef.current) return
 
@@ -676,6 +659,8 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
     setDragOverCardId(null)
     draggingCardRef.current = null
     dragStartNavigationRef.current = null
+    restorePointerStylesRef.current?.()
+    restorePointerStylesRef.current = null
 
     if (!previousNavigation || JSON.stringify(previousNavigation) === JSON.stringify(updatedNavigation)) {
       return
@@ -690,10 +675,96 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
     }
   }
 
-  const handleCardDrop = (event: DragEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    void finishCardDrag()
+  const previewCardReorder = (targetCard: Element | null) => {
+    const activeDrag = draggingCardRef.current
+    if (!activeDrag || !targetCard) return
+
+    const droppableId = targetCard.getAttribute('data-droppable-id') || ''
+    const targetItemId = targetCard.getAttribute('data-drag-card-id') || ''
+
+    if (!droppableId || !targetItemId) return
+    if (activeDrag.droppableId !== droppableId) return
+    if (activeDrag.item.id === targetItemId) return
+
+    const sourceIndex = findItemIndexInDroppable(
+      latestNavigationRef.current,
+      activeDrag.droppableId,
+      activeDrag.item.id
+    )
+    const targetIndex = findItemIndexInDroppable(
+      latestNavigationRef.current,
+      droppableId,
+      targetItemId
+    )
+
+    if (sourceIndex < 0 || targetIndex < 0 || sourceIndex === targetIndex) return
+
+    const updatedNavigation = reorderItemsInNavigation(
+      latestNavigationRef.current,
+      activeDrag.droppableId,
+      sourceIndex,
+      targetIndex
+    )
+
+    latestNavigationRef.current = updatedNavigation
+    applyNavigationPreview(updatedNavigation)
+    setDragOverCardId(targetItemId)
+    draggingCardRef.current = { ...activeDrag, index: targetIndex }
+    setDraggingCard((card) => card ? { ...card, index: targetIndex } : card)
   }
+
+  const handleCardPointerDown = (
+    event: ReactPointerEvent<HTMLDivElement>,
+    source: DragCardContext
+  ) => {
+    if (!canManageCards || event.button !== 0) return
+
+    const blockedTarget = (event.target as HTMLElement).closest('[data-card-action]:not([data-card-action="drag"])')
+    if (blockedTarget) return
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    dragStartNavigationRef.current = currentNavigationData
+    latestNavigationRef.current = currentNavigationData
+    dragFinalizedRef.current = false
+    draggingCardRef.current = source
+    setDraggingCard(source)
+    setDragOverCardId(source.item.id)
+
+    const previousCursor = document.body.style.cursor
+    const previousUserSelect = document.body.style.userSelect
+    document.body.style.cursor = 'grabbing'
+    document.body.style.userSelect = 'none'
+    restorePointerStylesRef.current = () => {
+      document.body.style.cursor = previousCursor
+      document.body.style.userSelect = previousUserSelect
+    }
+
+    const handlePointerMove = (moveEvent: PointerEvent) => {
+      if (!draggingCardRef.current) return
+      const target = document
+        .elementFromPoint(moveEvent.clientX, moveEvent.clientY)
+        ?.closest('[data-drag-card-id][data-droppable-id]')
+
+      previewCardReorder(target || null)
+    }
+
+    const handlePointerEnd = () => {
+      document.removeEventListener('pointermove', handlePointerMove)
+      document.removeEventListener('pointerup', handlePointerEnd)
+      document.removeEventListener('pointercancel', handlePointerEnd)
+      void finishCardDrag()
+    }
+
+    document.addEventListener('pointermove', handlePointerMove)
+    document.addEventListener('pointerup', handlePointerEnd)
+    document.addEventListener('pointercancel', handlePointerEnd)
+  }
+
+  useEffect(() => () => {
+    restorePointerStylesRef.current?.()
+  }, [])
 
   useEffect(() => {
     if (!isQuickAddOpen) {
@@ -1377,20 +1448,20 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
                                 }
 
                                 return (
-                                  <div
-                                    key={item.id}
-                                    onDragOver={(event) => canManageCards && handleCardDragOver(event, dragContext)}
-                                    onDrop={handleCardDrop}
-                                  >
+                                  <div key={item.id}>
                                     <NavigationCard
                                       item={item}
                                       canManage={canManageCards}
                                       isDragging={draggingCard?.item.id === item.id}
                                       isDragOver={dragOverCardId === item.id}
                                       dragRootProps={{
-                                        draggable: canManageCards,
-                                        onDragStart: (event) => handleCardDragStart(event, dragContext),
-                                        onDragEnd: () => void finishCardDrag(),
+                                        'data-drag-card-id': item.id,
+                                        'data-droppable-id': dragContext.droppableId,
+                                        style: canManageCards
+                                          ? ({ viewTransitionName: getCardTransitionName(item.id) } as CSSProperties)
+                                          : undefined,
+                                        onPointerDown: (event) => handleCardPointerDown(event, dragContext),
+                                        onDragStart: (event) => event.preventDefault(),
                                       }}
                                       dragHandleProps={{
                                         onClick: (event) => {
@@ -1427,20 +1498,20 @@ export function NavigationContent({ navigationData, siteData, initiallyAuthentic
                             }
 
                             return (
-                              <div
-                                key={item.id}
-                                onDragOver={(event) => canManageCards && handleCardDragOver(event, dragContext)}
-                                onDrop={handleCardDrop}
-                              >
+                              <div key={item.id}>
                                 <NavigationCard
                                   item={item}
                                   canManage={canManageCards}
                                   isDragging={draggingCard?.item.id === item.id}
                                   isDragOver={dragOverCardId === item.id}
                                   dragRootProps={{
-                                    draggable: canManageCards,
-                                    onDragStart: (event) => handleCardDragStart(event, dragContext),
-                                    onDragEnd: () => void finishCardDrag(),
+                                    'data-drag-card-id': item.id,
+                                    'data-droppable-id': dragContext.droppableId,
+                                    style: canManageCards
+                                      ? ({ viewTransitionName: getCardTransitionName(item.id) } as CSSProperties)
+                                      : undefined,
+                                    onPointerDown: (event) => handleCardPointerDown(event, dragContext),
+                                    onDragStart: (event) => event.preventDefault(),
                                   }}
                                   dragHandleProps={{
                                     onClick: (event) => {

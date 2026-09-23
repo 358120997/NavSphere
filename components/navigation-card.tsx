@@ -12,12 +12,17 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
+type DragRootProps = HTMLAttributes<HTMLDivElement> & {
+  'data-drag-card-id'?: string
+  'data-droppable-id'?: string
+}
+
 interface NavigationCardProps {
   item: NavigationSubItem
   canManage?: boolean
   isDragging?: boolean
   isDragOver?: boolean
-  dragRootProps?: HTMLAttributes<HTMLDivElement>
+  dragRootProps?: DragRootProps
   dragHandleProps?: ButtonHTMLAttributes<HTMLButtonElement>
   onEdit?: (item: NavigationSubItem) => void
   onDelete?: (item: NavigationSubItem) => void
@@ -43,8 +48,8 @@ export function NavigationCard({
               'group relative min-h-[92px] overflow-hidden rounded-lg border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)] transition-all duration-200 ease-out',
               'before:pointer-events-none before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-white',
               'hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-[0_14px_32px_rgba(15,23,42,0.10)]',
-              canManage ? 'cursor-grab select-none active:cursor-grabbing' : '',
-              isDragging ? 'scale-[1.02] border-sky-300 shadow-[0_20px_45px_rgba(14,116,144,0.20)] ring-2 ring-sky-200' : '',
+              canManage ? 'touch-none cursor-grab select-none active:cursor-grabbing' : '',
+              isDragging ? 'pointer-events-none scale-[1.02] border-sky-300 opacity-70 shadow-[0_20px_45px_rgba(14,116,144,0.20)] ring-2 ring-sky-200' : '',
               isDragOver ? 'border-cyan-300 ring-2 ring-cyan-100' : '',
             ].join(' ')}
           >
@@ -52,6 +57,7 @@ export function NavigationCard({
               <div className="absolute right-2 top-2 z-20 flex items-center gap-1 opacity-100 transition-opacity duration-200 sm:opacity-0 sm:group-hover:opacity-100">
                 <button
                   type="button"
+                  data-card-action="drag"
                   className="flex h-7 w-7 cursor-grab items-center justify-center rounded-md bg-white/95 text-slate-500 shadow-sm ring-1 ring-slate-200 transition hover:bg-sky-50 hover:text-sky-700 active:cursor-grabbing"
                   aria-label={`拖动 ${item.title}`}
                   {...dragHandleProps}
@@ -60,6 +66,7 @@ export function NavigationCard({
                 </button>
                 <button
                   type="button"
+                  data-card-action="edit"
                   className="flex h-7 w-7 items-center justify-center rounded-md bg-white/95 text-slate-700 shadow-sm ring-1 ring-slate-200 transition hover:bg-slate-100 hover:text-slate-950"
                   aria-label={`编辑 ${item.title}`}
                   onClick={(event) => {
@@ -72,6 +79,7 @@ export function NavigationCard({
                 </button>
                 <button
                   type="button"
+                  data-card-action="delete"
                   className="flex h-7 w-7 items-center justify-center rounded-md bg-white/95 text-red-600 shadow-sm ring-1 ring-red-100 transition hover:bg-red-50 hover:text-red-700"
                   aria-label={`删除 ${item.title}`}
                   onClick={(event) => {
@@ -102,6 +110,7 @@ export function NavigationCard({
                       <img
                         src={item.icon}
                         alt={`${item.title} icon`}
+                        draggable={false}
                         className="h-full w-full object-contain"
                       />
                     </div>
