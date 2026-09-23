@@ -22,19 +22,19 @@
           "enabled": true
         },
         {
-          "id": "1_4",
-          "title": "PingPong",
-          "href": "https://us.pingpongx.com/dashboard/account",
-          "description": "PingPong是跨境行业的创新推动者，业务现已覆盖全球超200个国家和地区，旗下拥有跨境收款、外贸B2B收付款、全球收单、供应链融资、SaaS等产品和服务",
-          "icon": "/assets/favicon_1754706289570.ico",
-          "enabled": true
-        },
-        {
           "id": "1_5",
           "title": "卖家之家-跨境电商一站式资讯和服务平台",
           "href": "https://mjzj.com/",
           "description": "卖家之家是国内领先的出口跨境电商卖家服务平台，为卖家提供最新跨境电商资讯、跨境电商运营工具以及测评黑名单，从而为电跨境电商卖家带来卓越用户体验。卖家之家整合跨境电商平台、服务商、工厂及众多卖家等，全力打造跨境电商新生态。",
           "icon": "/assets/favicon_1754706324732.ico",
+          "enabled": true
+        },
+        {
+          "id": "1_4",
+          "title": "PingPong",
+          "href": "https://us.pingpongx.com/dashboard/account",
+          "description": "PingPong是跨境行业的创新推动者，业务现已覆盖全球超200个国家和地区，旗下拥有跨境收款、外贸B2B收付款、全球收单、供应链融资、SaaS等产品和服务",
+          "icon": "/assets/favicon_1754706289570.ico",
           "enabled": true
         },
         {
