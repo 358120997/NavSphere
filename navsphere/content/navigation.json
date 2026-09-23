@@ -382,14 +382,6 @@
           "enabled": true
         },
         {
-          "id": "site_1754738790442_gbsox0ge4",
-          "title": "switch520",
-          "href": "https://laoquzhang.com/",
-          "description": "",
-          "icon": "/assets/img_1754797430609.png",
-          "enabled": true
-        },
-        {
           "id": "site_1754738843099_r90z7gw8v",
           "title": "GKinto 游戏大桶",
           "href": "https://www.gkinto.com/",
@@ -403,6 +395,14 @@
           "href": "https://2468c.com/",
           "description": "",
           "icon": "https://2468c.com/favicon.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738790442_gbsox0ge4",
+          "title": "switch520",
+          "href": "https://laoquzhang.com/",
+          "description": "",
+          "icon": "/assets/img_1754797430609.png",
           "enabled": true
         },
         {
