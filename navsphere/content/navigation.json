@@ -374,14 +374,6 @@
       "enabled": true,
       "items": [
         {
-          "id": "site_1754738768546_4tthah5wy",
-          "title": "switch618",
-          "href": "https://www.switch618.com/",
-          "description": "",
-          "icon": "/assets/img_1754738762753.png",
-          "enabled": true
-        },
-        {
           "id": "site_1754738945002_plfhu5h60",
           "title": "品技 - 论坛",
           "href": "https://www.tekqart.com/forum.php?mod=forumdisplay&fid=141&filter=author&orderby=dateline",
@@ -411,6 +403,14 @@
           "href": "https://2468c.com/",
           "description": "",
           "icon": "https://2468c.com/favicon.ico",
+          "enabled": true
+        },
+        {
+          "id": "site_1754738768546_4tthah5wy",
+          "title": "switch618",
+          "href": "https://www.switch618.com/",
+          "description": "",
+          "icon": "/assets/img_1754738762753.png",
           "enabled": true
         },
         {
