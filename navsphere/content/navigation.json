@@ -22,6 +22,14 @@
           "enabled": true
         },
         {
+          "id": "1741747111596",
+          "title": "Payoneer",
+          "href": "https://myaccount.payoneer.com/ma/",
+          "description": "",
+          "icon": "/assets/favicon_1754737125289.ico",
+          "enabled": true
+        },
+        {
           "id": "1_3",
           "title": "PayPal",
           "href": "https://www.paypal.com/",
@@ -51,14 +59,6 @@
           "href": "https://www.datatool.vip/",
           "description": "DataTool.vip is your All-in-One platform for video downloader, covering TikTok, Instagram, Twitter, Facebook, Dailymotion, Vimeo, and nearly all websites. Fast, watermark-free, and supporting up to 4K resolution. Download any video you want!",
           "icon": "/assets/favicon_1754737088658.ico",
-          "enabled": true
-        },
-        {
-          "id": "1741747111596",
-          "title": "Payoneer",
-          "href": "https://myaccount.payoneer.com/ma/",
-          "description": "",
-          "icon": "/assets/favicon_1754737125289.ico",
           "enabled": true
         },
         {
